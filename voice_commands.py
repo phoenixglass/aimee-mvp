@@ -145,9 +145,9 @@ class VoiceCommandSystem:
         """Request briefing from web service"""
         try:
             if briefing_type == "daily":
-                response = requests.get("http://localhost:5001/briefing/daily")
+                response = requests.get("http://localhost:5000/briefing/daily")
             elif briefing_type == "account" and account_id:
-                response = requests.get(f"http://localhost:5001/briefing/account/{account_id}")
+                response = requests.get(f"http://localhost:5000/briefing/account/{account_id}")
             else:
                 self.speak("Invalid briefing request.")
                 return
@@ -164,7 +164,7 @@ class VoiceCommandSystem:
     def get_pipeline_status(self):
         """Get and announce pipeline status"""
         try:
-            response = requests.get("http://localhost:5001/accounts")
+            response = requests.get("http://localhost:5000/accounts")
             if response.status_code == 200:
                 accounts = response.json()
                 total_value = sum(int(account['value']) for account in accounts.values())
@@ -202,7 +202,7 @@ class VoiceCommandSystem:
                 "gap": "portfolio"
             }
             
-            response = requests.post("http://localhost:5001/pitch/generate", json=pitch_data)
+            response = requests.post("http://localhost:5000/pitch/generate", json=pitch_data)
             
             if response.status_code == 200:
                 self.play_audio_response(response.content)
