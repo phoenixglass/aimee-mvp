@@ -23,6 +23,7 @@ from enhanced_aimee_wine_intelligence import (
 )
 from aimee_fairfield_integration import get_customer_intelligence
 from aimee_classifier import AimeeClassifier
+from salesforce_integration import get_salesforce
 from gtts import gTTS
 from dotenv import load_dotenv
 
@@ -1637,6 +1638,148 @@ def clear_cache():
     transcript_cache.clear()
     save_cache()
     return jsonify({"message": "Cache cleared successfully"})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Salesforce endpoints
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.route("/salesforce/health", methods=["GET"])
+def salesforce_health():
+    """Check Salesforce connectivity."""
+    sf = get_salesforce()
+    result = sf.health_check()
+    status = 200 if result.get("connected") else 503
+    return jsonify(result), status
+
+
+@app.route("/salesforce/account", methods=["POST"])
+def salesforce_get_account():
+    """
+    Pull account information from Salesforce.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    Returns the account record plus a voice-ready summary.
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_account(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_account_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
+
+
+@app.route("/salesforce/opportunities", methods=["POST"])
+def salesforce_get_opportunities():
+    """
+    Return open opportunities for an account.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_opportunities(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_opportunity_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
+
+
+@app.route("/salesforce/log-call", methods=["POST"])
+def salesforce_log_call():
+    """
+    Log a call note as a completed Task on a Salesforce Account.
+    Body: {
+        "account_name": "Barcelona Wine Bar",
+        "subject": "Follow-up call",
+        "description": "Discussed Rioja allocation and summer menu.",
+        "duration_minutes": 10,        (optional)
+        "contact_name": "Chef Misha"   (optional)
+    }
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    subject = (data.get("subject") or "").strip()
+    description = (data.get("description") or "").strip()
+    duration = int(data.get("duration_minutes") or 0)
+    contact_name = (data.get("contact_name") or "").strip() or None
+
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+    if not description:
+        return jsonify({"success": False, "error": "description is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.log_call_note(account_name, subject, description, duration, contact_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = f"Call note logged for {result['account']}."
+    return jsonify(result), 200 if result.get("success") else 400
+
+
+@app.route("/salesforce/update-account", methods=["POST"])
+def salesforce_update_account():
+    """
+    Update fields on a Salesforce Account record.
+    Body: {
+        "account_name": "Barcelona Wine Bar",
+        "fields": {
+            "Phone": "203-555-1234",
+            "Description": "Key Rioja account, Chef Misha contact."
+        }
+    }
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    fields = data.get("fields") or {}
+
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+    if not fields or not isinstance(fields, dict):
+        return jsonify({"success": False, "error": "fields dict is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.update_account(account_name, fields)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.update_account_voice_summary(account_name, fields)
+    return jsonify(result), 200 if result.get("success") else 400
+
+
+@app.route("/salesforce/recent-activity", methods=["POST"])
+def salesforce_recent_activity():
+    """
+    Return recent activity (Tasks) for an account.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_recent_activity(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_recent_activity_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
 
 
 def cleanup_old_files():
