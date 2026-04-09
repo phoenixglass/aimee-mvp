@@ -1347,92 +1347,64 @@ def test_wine_intelligence():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route("/process-text", methods=["POST"])
+def process_text():
+    """Handle text input directly, bypassing audio transcription."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON body provided"}), 400
+        transcript = data.get("text", "").strip()
+        if not transcript:
+            return jsonify({"error": "No text provided"}), 400
+
+        processing_start = time.time()
+        processed_transcript = preprocess_wine_terminology(transcript)
+        tone = detect_tone(transcript.lower())
+
+        if classifier is None:
+            return jsonify({"error": "Classifier not available"}), 500
+        classification = classifier.classify(processed_transcript)
+
+        intent = classification["intent"]
+        score = classification["match_score"]
+
+        special_response = detect_special_responses(transcript)
+        if special_response:
+            response_text = special_response
+        else:
+            if intent != "unknown":
+                key_details = extract_key_details(transcript, intent)
+                base_response = format_response(intent, tone)
+                response_text = f"{key_details} {base_response}"
+            else:
+                key_details = extract_key_details(transcript, intent)
+                response_text = f"{key_details} I'm Aimee. You talk. I'll catch what counts. No bosses. No filters. Just memory. Let's move."
+
+        audio_filename = generate_aimee_response(response_text)
+        processing_time = time.time() - processing_start
+
+        return jsonify({
+            "transcript": transcript,
+            "intent": intent,
+            "tone": tone,
+            "score": score,
+            "processing_time": round(processing_time, 2),
+            "model_used": "text_input",
+            "response_text": response_text,
+            "response_audio": f"/audio/{audio_filename}" if audio_filename else None,
+        })
+    except Exception as e:
+        print(f"process_text error: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route("/upload", methods=["POST"])
 def upload():
     start_time = time.time()
     print("=== upload() called ===")
 
-    # Handle voice demo requests
-    if "transcript_override" in request.form:
-        transcript = request.form["transcript_override"]
-        print(f"DEBUG - Voice demo transcript: {transcript}")
-
-        # Add debug output for voice demo processing
-        print(f"DEBUG - Raw transcript: '{transcript}'")
-        print(f"DEBUG - Transcript type: {type(transcript)}")
-        print(f"DEBUG - Transcript length: {len(transcript)}")
-
-        # Process the transcript with FULL pipeline (same as file upload)
-        processed_transcript = preprocess_wine_terminology(transcript)
-        print(f"DEBUG - Processed transcript: '{processed_transcript}'")
-
-        # Optimized tone detection (use original transcript for tone)
-        transcript_lower = transcript.lower()
-        tone = detect_tone(transcript_lower)
-        print(f"DEBUG - Detected tone: {tone}")
-
-        # Intent classification (use processed transcript with wine terms)
-        if classifier is None:
-            return jsonify({"error": "Classifier not available"}), 500
-
-        classification = classifier.classify(processed_transcript)
-
-        print(f"DEBUG - Classification result: {classification}")
-
-        intent = classification["intent"]
-        score = classification["match_score"]
-
-        # Check for special response scenarios first
-        special_response = detect_special_responses(transcript)
-        print(f"DEBUG - Special response: {special_response if special_response else 'None'}")
-
-        if special_response:
-            response_text = special_response
-        else:
-            # Generate response text with extracted key details (SAME AS FILE UPLOAD)
-            if intent != "unknown":
-                # Extract key details and create summary
-                key_details = extract_key_details(transcript, intent)
-                base_response = format_response(intent, tone)
-                response_text = f"{key_details} {base_response}"
-            else:
-                # For unknown intents, give brief summary
-                key_details = extract_key_details(transcript, intent)
-                response_text = f"{key_details} I'm Aimee. You talk. I'll catch what counts. No bosses. No filters. Just memory. Let's move."
-
-        print(f"DEBUG - Final response text: {response_text}")
-
-        # Quick wine pairing detection
-    if any(word in transcript for word in ["pair", "pairing", "goes with", "match with"]) \
-       and any(word in transcript for word in ["salmon", "seafood", "fish", "steak", "chicken"]):
-        if wine_intelligence:
-            food_type = "seafood" if any(f in transcript for f in ["salmon", "fish", "seafood"]) else "red meat"
-            response = handle_enhanced_pairing_query(food_type, wine_intelligence)
-            return f"I heard: {transcript}. {response}"
-
-        # Generate audio
-        audio_filename = generate_aimee_response(response_text)
-
-        return jsonify(
-            {
-                "transcript": transcript,
-                "intent": intent,
-                "tone": tone,
-                "score": score,
-                "response_text": response_text,
-                "response_audio": (
-                    f"/audio/{audio_filename}" if audio_filename else None
-                ),
-                "enhanced_intelligence": {
-                    "fairfield_accounts": 17,
-                    "wine_intelligence": wine_intelligence is not None
-                    and hasattr(wine_intelligence, "get_stats"),
-                    "tactical_briefings": True,
-                },
-            }
-        )
-
-    # Continue with normal file upload processing...
+    # Audio-only processing (text input uses /process-text)
     try:
         if not model_manager.is_available("base"):
             return (
