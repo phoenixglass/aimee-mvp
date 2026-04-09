@@ -145,15 +145,18 @@ class VoiceCommandSystem:
         """Request briefing from web service"""
         try:
             if briefing_type == "daily":
-                response = requests.get("http://localhost:5000/briefing/daily")
+                response = requests.post("http://localhost:5000/test-tactical-briefing",
+                                         json={"query": "daily priorities"})
             elif briefing_type == "account" and account_id:
-                response = requests.get(f"http://localhost:5000/briefing/account/{account_id}")
+                response = requests.post("http://localhost:5000/test-tactical-briefing",
+                                         json={"query": f"brief me on {account_id}"})
             else:
                 self.speak("Invalid briefing request.")
                 return
-            
+
             if response.status_code == 200:
-                self.play_audio_response(response.content)
+                data = response.json()
+                self.speak(data.get("main_response", "Briefing not available."))
             else:
                 self.speak("Unable to generate briefing.")
                 
