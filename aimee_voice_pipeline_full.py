@@ -1146,6 +1146,58 @@ def test_wine_intelligence():
         print(f"Wine intelligence test error: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/process-text', methods=['POST'])
+def process_text():
+    """Handle text input directly, bypassing audio transcription."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No JSON body provided'}), 400
+        transcript = data.get('text', '').strip()
+        if not transcript:
+            return jsonify({'error': 'No text provided'}), 400
+
+        processing_start = time.time()
+        processed_transcript = preprocess_wine_terminology(transcript)
+        tone = detect_tone(transcript.lower())
+
+        if classifier is None:
+            return jsonify({'error': 'Classifier not available'}), 500
+        classification = classifier.classify(processed_transcript)
+
+        intent = classification['intent']
+        score = classification['match_score']
+
+        special_response = detect_special_responses(transcript)
+        if special_response:
+            response_text = special_response
+        else:
+            if intent != 'unknown':
+                key_details = extract_key_details(transcript, intent)
+                base_response = format_response(intent, tone)
+                response_text = f"{key_details} {base_response}"
+            else:
+                key_details = extract_key_details(transcript, intent)
+                response_text = f"{key_details} I'm Aimee. You talk. I'll catch what counts. No bosses. No filters. Just memory. Let's move."
+
+        audio_filename = generate_aimee_response(response_text)
+        processing_time = time.time() - processing_start
+
+        return jsonify({
+            'transcript': transcript,
+            'intent': intent,
+            'tone': tone,
+            'score': score,
+            'processing_time': round(processing_time, 2),
+            'model_used': 'text_input',
+            'response_text': response_text,
+            'response_audio': f'/audio/{audio_filename}' if audio_filename else None,
+        })
+    except Exception as e:
+        print(f"process_text error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     start_time = time.time()
