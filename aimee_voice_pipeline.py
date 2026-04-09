@@ -1497,14 +1497,14 @@ def upload():
             except Exception as e:
                 print(f"Audio generation failed: {e}")
                 audio_filename = None
-            print(f"Processing completed in {time.process_time:.2f}s")
+            print(f"Processing completed in {time.time() - start_time:.2f}s")
 
             response_data = {
                 "transcript": transcript,
                 "intent": classification["intent"],
                 "tone": classification["tone"],
                 "score": classification["match_score"],
-                "processing_time": round(time.process_time, 2),
+                "processing_time": round(time.time() - start_time, 2),
                 "transcription_time": transcript_data.get("transcription_time", 0),
                 "model_used": transcript_data.get("model_used", "base"),
                 "cached": transcript_data.get("cached", False),
