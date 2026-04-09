@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aimee – Voice-Powered Wine & Spirits Sales Assistant</title>
+    <style>
+        /* Existing styles remain unchanged for brevity */
+    </style>
+</head>
+<body>
+    <div class="onboarding" id="onboarding" style="display: none">
+        <div class="onboarding-box">
+            <h2>Welcome to Aimee</h2>
+            <p>Tap the mic and speak your question, or just say "Aimee" to activate me.</p>
+            <label style="display:block; margin: 10px 0;">
+                <input type="checkbox" id="hideOnboardingToggle"> Don't show this again
+            </label>
+            <button onclick="dismissOnboarding()">Got it</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <img class="logo" src="Copy of Aimee.svg" alt="Aimee Logo" onerror="this.style.display='none'">
+        <h1>Aimee</h1>
+        <div class="subtitle">Trained for wine reps. Built for the road.</div>
+
+        <div id="loginForm" class="login-form" style="display: none;">
+            <h3>Please Login</h3>
+            <input type="text" id="username" placeholder="Username" value="admin">
+            <input type="password" id="password" placeholder="Password" value="wine123">
+            <button onclick="login()">Login</button>
+        </div>
+
+        <div id="mainInterface">
+            <button class="mic-button" id="micButton" title="Tap to speak">🎤</button>
+            <div class="status" id="status">Initializing…</div>
+            <div id="answer" class="answer"></div>
+
+            <div class="sample-questions">
+                <h3>Try asking me:</h3>
+                <div class="question-buttons">
+                    <button onclick="askSampleQuestion('How many bottles of 2021 Meursault do I have left?')">2021 Meursault inventory</button>
+                    <button onclick="askSampleQuestion('Price check: 2015 Gran Reserva 904?')">Price check: Gran Reserva 904</button>
+                    <button onclick="askSampleQuestion('Email Robert Kingston a follow-up.')">Email Kingston follow-up</button>
+                    <button onclick="askSampleQuestion('Who bought Barolo in the last 10 days?')">Recent Barolo buyers</button>
+                    <button onclick="askSampleQuestion('What do I need to follow up on this week?')">Weekly follow-ups</button>
+                    <button onclick="askSampleQuestion('Show current inventory by region')">Show inventory by region</button>
+                    <button onclick="askSampleQuestion('What did Robert Kingston ask about last time?')">Kingston history</button>
+                    <button onclick="askSampleQuestion('Log that I called Ridge Vineyards.')">Log Ridge call</button>
+                    <button onclick="askSampleQuestion('Remind me to follow up about Tempier Rosé on Friday.')">Tempier Rosé reminder</button>
+                    <button onclick="askSampleQuestion('Who haven’t I followed up with in the last 2 weeks?')">Missed follow-ups</button>
+                    <button onclick="askSampleQuestion('Summarize this week’s top-selling wines.')">Top sellers this week</button>
+                </div>
+            </div>
+
+            <div class="browser-notice">
+                <strong>ℹ️ How to Use:</strong> Tap the mic, speak clearly, and you'll hear the answer. Aimee responds to her name by default.<br>
+                <div class="tooltip">Try: “Aimee, how many bottles of Barolo do I have left?”</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

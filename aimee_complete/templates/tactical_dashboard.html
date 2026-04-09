@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aimee Tactical Command Center</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .control-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+        }
+        
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .account-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .priority {
+            font-size: 1.5em;
+        }
+        
+        .value {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .account-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .intel {
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .action {
+            color: #ffeaa7;
+            font-weight: bold;
+        }
+        
+        .account-controls {
+            margin-top: 15px;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .pitch-generator {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        select, input {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px;
+        }
+        
+        select option {
+            background: #333;
+            color: white;
+        }
+        
+        ::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍷 Aimee Tactical Command Center</h1>
+        
+        <div class="control-panel">
+            <h2>🎯 Command Operations</h2>
+            <a href="/briefing/daily" class="btn">📊 Generate Daily Briefing</a>
+            <button onclick="refreshData()" class="btn btn-success">🔄 Refresh Intelligence</button>
+        </div>
+
+        <div class="accounts-grid">
+            {% for account_id, account in accounts.items() %}
+            <div class="account-card">
+                <div class="account-header">
+                    <span class="priority">{{ account.priority }}</span>
+                    <span class="value">${{ account.value }}</span>
+                </div>
+                
+                <div class="account-name">{{ account.name }}</div>
+                <div class="intel">{{ account.intel }}</div>
+                <div class="action">🎯 {{ account.action }}</div>
+                
+                <div class="account-controls">
+                    <a href="/briefing/account/{{ account_id }}" class="btn btn-small">📋 Account Brief</a>
+                    <button onclick="showPitchGenerator('{{ account_id }}')" class="btn btn-small btn-success">🎤 Generate Pitch</button>
+                </div>
+
+                <div class="pitch-generator" id="pitch-{{ account_id }}" style="display: none;">
+                    <h4>🎤 Pitch Generator for {{ account.name }}</h4>
+                    <select id="tone-{{ account_id }}">
+                        <option value="tactical">Tactical</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="elegant">Elegant</option>
+                        <option value="casual">Casual</option>
+                        <option value="exclusive">Exclusive</option>
+                    </select>
+                    <input type="text" id="wine-{{ account_id }}" placeholder="Wine/Product" value="premium selection">
+                    <input type="text" id="gap-{{ account_id }}" placeholder="Gap/Need" value="portfolio">
+                    <button onclick="generatePitch('{{ account_id }}')" class="btn btn-small">🚀 Generate</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function showPitchGenerator(accountId) {
+            const generator = document.getElementById(`pitch-${accountId}`);
+            generator.style.display = generator.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function generatePitch(accountId) {
+            const tone = document.getElementById(`tone-${accountId}`).value;
+            const wine = document.getElementById(`wine-${accountId}`).value;
+            const gap = document.getElementById(`gap-${accountId}`).value;
+
+            fetch('/pitch/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    account_id: accountId,
+                    tone: tone,
+                    wine: wine,
+                    gap: gap
+                })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `pitch_${accountId}_${tone}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating pitch');
+            });
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>

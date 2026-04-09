@@ -1,0 +1,1502 @@
+[
+  {
+    "id": "5157a47c-fd6e-4491-842e-064e2936e2d5",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "gift_request",
+    "tone": "neutral"
+  },
+  {
+    "id": "467f8b42-6571-425f-822a-48e211f35c13",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "e61a5962-6553-4dc3-8c3a-b98df34a78bf",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "set_reminder",
+    "tone": "angry"
+  },
+  {
+    "id": "11684226-8500-4af0-96fe-99fb2057345b",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "5e4ae9cf-8d98-41ee-8d06-5831f901a6f0",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "56568647-21f5-4178-bf15-0aaf8f6db8c9",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "product_recommendation",
+    "tone": "polite"
+  },
+  {
+    "id": "304a3e94-0cde-475c-bb18-a642e5d0c69c",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "ca6b7832-9123-41a0-a1e7-a39937501843",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "26336ed2-5f03-43ed-9e99-eb58be6b3028",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "product_recommendation",
+    "tone": "cheerful"
+  },
+  {
+    "id": "83b1b760-00b9-4f27-9c0e-80605719f0c3",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "price_comment",
+    "tone": "polite"
+  },
+  {
+    "id": "3e42a1b6-fe9b-49d3-b893-51c9f7b16c92",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "misc",
+    "tone": "polite"
+  },
+  {
+    "id": "6fc10913-b9af-4ab7-bb0b-d36b05e5523a",
+    "text": "Send me a few bottles of that Spanish Garnacha to sample — the last one was a hit.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  {
+    "id": "2b9dc677-4e1d-48a5-bca9-f0a56fb4ddf5",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "quality_judgment",
+    "tone": "polite"
+  },
+  {
+    "id": "5dd791c2-d0ba-4b70-b2c3-9a1da6d1981e",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "set_reminder",
+    "tone": "cheerful"
+  },
+  {
+    "id": "c2bc27f5-6c07-45e8-9f7f-92afebecba6b",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "f645e14d-4555-4638-a877-c49d3f4272e7",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "product_recommendation",
+    "tone": "urgent"
+  },
+  {
+    "id": "a54bba39-050d-4ac6-ad51-d64df6137cf0",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "check_shipment_status",
+    "tone": "polite"
+  },
+  {
+    "id": "153977dc-4856-4271-a75a-d1b61d9b0b46",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "price_comment",
+    "tone": "polite"
+  },
+  {
+    "id": "43137be7-900e-438c-a53c-847eb7d4802c",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "misc",
+    "tone": "neutral"
+  },
+  {
+    "id": "c46c4a68-ee65-4ef3-9c6b-9c90f66b3a35",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "misc",
+    "tone": "urgent"
+  },
+  {
+    "id": "fcebe010-256e-4072-b87e-c3766f79176a",
+    "text": "Send me a few bottles of that Spanish Garnacha to sample — the last one was a hit.",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "id": "6523e0e6-3c2e-4353-bf55-26bfe961df17",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "check_shipment_status",
+    "tone": "frustrated"
+  },
+  {
+    "id": "1f34c0e8-8d21-43c5-a3b5-fbee55466d68",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "e36d6680-af62-4bc2-9c72-9e0f3e2bae24",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "383cc977-94d8-4520-bad8-31d3b58c6938",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "check_shipment_status",
+    "tone": "cheerful"
+  },
+  {
+    "id": "9a48f8eb-bfd1-42cd-8735-01ee15d83345",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "send_email",
+    "tone": "cheerful"
+  },
+  {
+    "id": "29e6bfaf-b4e0-41ab-bf4b-8faea1cd6147",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "ce3012d8-07fa-4e32-8dcc-45f46f977996",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "sample_request",
+    "tone": "polite"
+  },
+  {
+    "id": "63fcab69-79ee-4c5e-98f9-b4dc285f416c",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "sample_request",
+    "tone": "polite"
+  },
+  {
+    "id": "b56a1bcd-8bef-4557-881e-6bdc68ed8920",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "pairing_suggestion",
+    "tone": "neutral"
+  },
+  {
+    "id": "23dde057-9e58-43f3-8c56-5013da6d14dd",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "7f619543-0913-47ec-abff-ea5601cf01c4",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "misc",
+    "tone": "urgent"
+  },
+  {
+    "id": "98425703-0e47-4158-aaf6-2aa0be48bd6c",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "correct_order",
+    "tone": "neutral"
+  },
+  {
+    "id": "9192de65-d59f-430e-81c6-19f01233fbf6",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "quality_judgment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "407c6b5b-ce97-4463-afed-a402e3d4afaa",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "taste_description",
+    "tone": "polite"
+  },
+  {
+    "id": "78a5aa1e-7889-4e0f-a888-c8a01a645825",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "taste_description",
+    "tone": "cheerful"
+  },
+  {
+    "id": "ad2d92a5-1e94-4b73-8863-9b99516b26a0",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "gift_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "53a66284-6c87-4f32-bb61-c692dad6ee25",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "send_email",
+    "tone": "frustrated"
+  },
+  {
+    "id": "d36244aa-0f41-40be-a2ad-b5a80fc76fe6",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "taste_description",
+    "tone": "urgent"
+  },
+  {
+    "id": "5489bb2a-4707-42bb-af6a-e5726b7d7f98",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "taste_description",
+    "tone": "polite"
+  },
+  {
+    "id": "5dbb9719-086e-4dee-9878-cec0a5567f23",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "correct_order",
+    "tone": "urgent"
+  },
+  {
+    "id": "877b0ee0-425e-4540-b586-b06cdd4d3b1f",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "9b03ac36-f9a0-4223-b9d2-27b54c08b2f1",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "gift_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "f82a8b16-a836-4bac-98b9-4e8dfe3cc12e",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "misc",
+    "tone": "cheerful"
+  },
+  {
+    "id": "fa13a4be-f152-4deb-b445-467c6268a6c3",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "taste_description",
+    "tone": "neutral"
+  },
+  {
+    "id": "86b48dc4-8d2b-41e2-9a88-c2ab85b77c74",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "send_email",
+    "tone": "neutral"
+  },
+  {
+    "id": "02474bc3-e2ae-4ca2-bbd1-0719b14101d1",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "pairing_suggestion",
+    "tone": "frustrated"
+  },
+  {
+    "id": "de9386d3-9f7b-49ed-b13e-c33b97da64fa",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "id": "e986d90e-cf2a-4dd8-be2b-59d32c4329cd",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "fdacb12f-ef28-4f06-ab51-dce46bebb6e5",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "taste_description",
+    "tone": "angry"
+  },
+  {
+    "id": "d5dc1fb6-34e5-4f74-80ca-e5bb30c0e143",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "send_email",
+    "tone": "neutral"
+  },
+  {
+    "id": "83fb9bca-e7d9-4b08-ba8c-5913bcacb336",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "correct_order",
+    "tone": "cheerful"
+  },
+  {
+    "id": "3399ed1f-1a2b-4b5d-976d-0b88e998f3e1",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "gift_request",
+    "tone": "angry"
+  },
+  {
+    "id": "3f786a56-9e5b-4893-919e-1526d42270ba",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "pairing_suggestion",
+    "tone": "neutral"
+  },
+  {
+    "id": "44520120-c3e5-4fc1-9e14-5bc76ffdbf9c",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "check_shipment_status",
+    "tone": "urgent"
+  },
+  {
+    "id": "99d7e10d-b3e3-4acc-b7e1-03dd422fe77a",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "set_reminder",
+    "tone": "polite"
+  },
+  {
+    "id": "b7225f65-53d8-49ef-9cf8-b75040e5300c",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "gift_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "89dce9c3-6755-4d28-9025-05596b1f6b10",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "taste_description",
+    "tone": "frustrated"
+  },
+  {
+    "id": "f456d3ec-8664-40e0-936e-ccae35dc4ba7",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "gift_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "8fb183c6-f540-4bd2-a7f7-a9010575b527",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "taste_description",
+    "tone": "polite"
+  },
+  {
+    "id": "40c14e93-3d73-44e6-a505-9cce78a7b0c8",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "7afa60d0-a939-422a-83a2-5f36c9d64efa",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "gift_request",
+    "tone": "polite"
+  },
+  {
+    "id": "61f0f1c9-5aef-4598-9633-93f9ccf3e669",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "sample_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "8e6eb589-9ee2-4fdf-8caa-234fa822566b",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "bac10988-011f-4cfd-9ada-117f63dde05c",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "misc",
+    "tone": "neutral"
+  },
+  {
+    "id": "ae0dc79f-ccbb-470f-91d7-ef76e8723d74",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "b775ef32-721a-44ed-bb1d-ccb65d08e8fb",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "d10db670-62ae-445c-82be-0edafe8bc43c",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "product_recommendation",
+    "tone": "urgent"
+  },
+  {
+    "id": "d90713cb-7dab-4eff-9dac-948d5557485b",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "product_recommendation",
+    "tone": "urgent"
+  },
+  {
+    "id": "aa0adb99-29a4-470c-be5b-ec8c4ccdeee8",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "price_comment",
+    "tone": "angry"
+  },
+  {
+    "id": "cc2dd1a3-68e3-44f5-aca6-63dc5f48d2ac",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "quality_judgment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "f6a805ac-6fc1-4af1-898f-d8dee774653b",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "quality_judgment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "96643081-76d3-4782-851a-749deec3e8e8",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "id": "1c219a41-347e-4f8f-a644-636e75be3f76",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "54587f20-ed56-495f-8610-69b2b5ce32ee",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "follow_up_request",
+    "tone": "neutral"
+  },
+  {
+    "id": "730b0446-8633-4354-b297-e14c99999120",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "quality_judgment",
+    "tone": "neutral"
+  },
+  {
+    "id": "b8637e29-1edf-4831-989f-7012315c7c35",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "4ce0db88-8964-4bb1-923e-38eb40f19609",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "pairing_suggestion",
+    "tone": "cheerful"
+  },
+  {
+    "id": "02d2b43e-fba8-4afd-9c58-5f2278fd2e88",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "sample_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "a445dbc4-f885-4118-8c32-2c730811c462",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "pairing_suggestion",
+    "tone": "urgent"
+  },
+  {
+    "id": "3d461063-cc53-460f-86e0-c96db2771a96",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "misc",
+    "tone": "cheerful"
+  },
+  {
+    "id": "8ef7c04f-9df1-4815-824f-8aeabf1691c5",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "taste_description",
+    "tone": "polite"
+  },
+  {
+    "id": "548fd93b-bda1-44a7-9464-968257f111a0",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "price_comment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "d7789a73-437d-40a5-b9cc-a9edaf6f4a91",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "id": "64672fff-f37a-449b-91bb-a8c3e6548dfb",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "96c77a9d-b849-4674-b8c7-fb0134fc3a61",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "gift_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "a28588cc-d153-4c7c-b12e-33dad6b759e1",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "misc",
+    "tone": "neutral"
+  },
+  {
+    "id": "7f0191c5-6663-4cbf-9af3-22ee971cc216",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "follow_up_request",
+    "tone": "polite"
+  },
+  {
+    "id": "2211887b-8970-473b-a4aa-8555faefb7a7",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "pairing_suggestion",
+    "tone": "cheerful"
+  },
+  {
+    "id": "e252ac81-b462-4351-80b2-eb2990c6738f",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "follow_up_request",
+    "tone": "polite"
+  },
+  {
+    "id": "08c10aaf-7e86-489c-9938-05decc1cce47",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "661c6fce-49cb-44e0-afd0-50fe3e2ef307",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "correct_order",
+    "tone": "angry"
+  },
+  {
+    "id": "a0eb3d6d-7665-4112-8eee-2e2d401c187c",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "a275c331-a915-4bb9-b359-e858261cef63",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "set_reminder",
+    "tone": "frustrated"
+  },
+  {
+    "id": "9f013368-b69f-4449-bd32-8eb2ac7bd955",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "follow_up_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "cb9ce48a-d1d7-4078-8788-7a2683add7c8",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "correct_order",
+    "tone": "urgent"
+  },
+  {
+    "id": "5914acc5-274d-4726-af11-4626872d43a4",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "3f72198b-c10c-4874-a89e-4f4509fd205c",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "6a03d803-447e-4c65-b723-865a7d164d3b",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "quality_judgment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "dd659c95-cb1b-45d7-ae7c-1135f73224dc",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "check_shipment_status",
+    "tone": "polite"
+  },
+  {
+    "id": "9ee8b162-901c-46af-b0f7-f591d78af4fb",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "gift_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "8e06e56e-6692-4c09-b9a8-d4b771a74a11",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "misc",
+    "tone": "polite"
+  },
+  {
+    "id": "bff175c6-f597-4917-b17c-f4a40c3468ca",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "quality_judgment",
+    "tone": "polite"
+  },
+  {
+    "id": "dc6fba06-80dd-422c-84a8-ddb8af7d3755",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "edff2298-e8fe-4d45-8153-70eb6668b57c",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "price_comment",
+    "tone": "urgent"
+  },
+  {
+    "id": "d002780f-9792-47a7-aeae-57d6995f8deb",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "set_reminder",
+    "tone": "frustrated"
+  },
+  {
+    "id": "9c96d775-c03f-4ec4-8169-0381879f7f21",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "send_email",
+    "tone": "neutral"
+  },
+  {
+    "id": "03355759-a931-4c92-8555-543d76f75ee4",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "pairing_suggestion",
+    "tone": "neutral"
+  },
+  {
+    "id": "07d590f1-d272-435b-932e-00cf3b64419f",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "quality_judgment",
+    "tone": "polite"
+  },
+  {
+    "id": "f6e979a1-a857-4d5f-bb89-5a8c0844f2d2",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "price_comment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "d7f5c31f-fcae-41bf-bad3-09ea4b969e2f",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "pairing_suggestion",
+    "tone": "urgent"
+  },
+  {
+    "id": "d054c3ec-72c0-4a85-b218-828f2043da80",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "set_reminder",
+    "tone": "angry"
+  },
+  {
+    "id": "76dbed0e-6d13-498d-8ac8-42942e86fabf",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "id": "c59f8127-f3ef-44a3-acc2-f7623bdf33e3",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "misc",
+    "tone": "frustrated"
+  },
+  {
+    "id": "3d02f6f1-3e96-4ab8-8e85-cd5a59428075",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "quality_judgment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "8eeeb30b-34ac-4bb3-8ba8-a72087bd0052",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "misc",
+    "tone": "urgent"
+  },
+  {
+    "id": "e247d3c8-2ff2-4880-b072-60db812f5a08",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "a61d7002-8a78-4f85-ba2b-b9e1e23f9e0c",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "gift_request",
+    "tone": "angry"
+  },
+  {
+    "id": "7cb58b87-85ad-4005-a948-7959be2786be",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "correct_order",
+    "tone": "urgent"
+  },
+  {
+    "id": "6ae914cd-5342-4ed1-9757-ca97e19764c5",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "sample_request",
+    "tone": "neutral"
+  },
+  {
+    "id": "cb750ef9-bfc2-43c5-b754-f88e30260651",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "correct_order",
+    "tone": "angry"
+  },
+  {
+    "id": "0d94d2a8-fa5e-43e1-827d-4fa16e81d38d",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "gift_request",
+    "tone": "neutral"
+  },
+  {
+    "id": "bc0d6fd6-9780-48c5-ab99-60fde519bb60",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "price_comment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "5f0a3dd8-8d27-4685-925b-367e5749f429",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "4ca5b6ca-172c-4e89-8be0-7ed995d8d045",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "6781c986-4672-4bca-bbcc-44e6b8a33e1b",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "send_email",
+    "tone": "frustrated"
+  },
+  {
+    "id": "4d6f83ad-ce31-468b-b40e-fbfaa80fe9ad",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "sample_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "f058d817-253c-4bae-9679-415f7d307b5c",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "494d57e4-25b8-4b31-8984-849f7682e45d",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "id": "84e060be-c261-40ec-9f07-e5ce34d0fc15",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "1eeb3854-4f5b-4bbf-b1ea-98049aefb7ec",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "price_comment",
+    "tone": "neutral"
+  },
+  {
+    "id": "0b2f560d-a97e-486d-afa9-d9719f274e01",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "set_reminder",
+    "tone": "cheerful"
+  },
+  {
+    "id": "d35bfdc6-d040-47e6-b6d2-5c4c3411469e",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "sample_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "f8f01b82-032a-4217-bdae-e04b7395c6b0",
+    "text": "Send me a few bottles of that Spanish Garnacha to sample — the last one was a hit.",
+    "intent": "price_comment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "2918c207-42a9-4941-965b-52634262a587",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "send_email",
+    "tone": "cheerful"
+  },
+  {
+    "id": "c086bf4b-2d8a-4820-931b-79c2968ae5bf",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "taste_description",
+    "tone": "neutral"
+  },
+  {
+    "id": "c7db72f9-329d-4ce3-8fb4-6c399e6dab87",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "pairing_suggestion",
+    "tone": "polite"
+  },
+  {
+    "id": "5eb6a2b1-85a1-42f8-bf51-19b13cffbcd0",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "correct_order",
+    "tone": "angry"
+  },
+  {
+    "id": "afb37933-3b11-44e1-9e79-15377d708bfe",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "quality_judgment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "46de2933-3e0c-471d-a7e9-9151bb52d093",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "misc",
+    "tone": "polite"
+  },
+  {
+    "id": "f0971357-cc51-49cd-bc9e-e9163492a98e",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "2c3607e8-2afb-438d-a38c-301efaf75a79",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  {
+    "id": "4dfc9026-ab10-4287-a2d0-668b6937ddc4",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "7b79fbd2-5ca5-408a-8386-04885cd7dbe1",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "misc",
+    "tone": "polite"
+  },
+  {
+    "id": "e1380ba7-51be-4f15-ab24-03428823bdc5",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "set_reminder",
+    "tone": "polite"
+  },
+  {
+    "id": "561113b7-37b0-4a79-96f7-c8b954b346a5",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  {
+    "id": "a5ecb0e6-231d-4eab-8c50-210922c38de2",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "id": "99cf7263-c0fc-41ad-b90f-4d9cdba805d0",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "misc",
+    "tone": "cheerful"
+  },
+  {
+    "id": "7c5a1d60-1e3a-491e-9297-3b5d6f79041f",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "9ffd74e2-d289-4522-907b-4a402cb57233",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "misc",
+    "tone": "cheerful"
+  },
+  {
+    "id": "e248eb18-f821-4bc9-a98b-1179157de952",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "check_shipment_status",
+    "tone": "polite"
+  },
+  {
+    "id": "9bad9de3-bb08-4e2b-9374-44b0701dead3",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "b36316fb-4048-4858-9afb-7f6a68cb0614",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "product_recommendation",
+    "tone": "polite"
+  },
+  {
+    "id": "79dbf523-c377-4ccb-b7b1-e2fde23b1acd",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  {
+    "id": "ecabfc14-2506-4e7d-95a7-b6e0c4edd87f",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "check_shipment_status",
+    "tone": "urgent"
+  },
+  {
+    "id": "eaba1979-72c6-4063-ab53-bbdd0c5a4552",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "check_shipment_status",
+    "tone": "neutral"
+  },
+  {
+    "id": "8820d731-abba-4fa1-8625-b12b716674bb",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "price_comment",
+    "tone": "angry"
+  },
+  {
+    "id": "3fa98139-4fb9-4db3-ad6a-6af37aa9e64f",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "pairing_suggestion",
+    "tone": "frustrated"
+  },
+  {
+    "id": "5e8ef852-0028-46cf-8e3d-63c7a8206d2c",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "misc",
+    "tone": "angry"
+  },
+  {
+    "id": "ee1b36ce-c348-4b9a-9b14-eb5e9e041594",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "product_recommendation",
+    "tone": "frustrated"
+  },
+  {
+    "id": "e33c2801-7592-48dd-a057-d24043a2446f",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "check_shipment_status",
+    "tone": "cheerful"
+  },
+  {
+    "id": "a4f8bad8-cf7c-4fbc-80c5-64eca73cc96d",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "pairing_suggestion",
+    "tone": "polite"
+  },
+  {
+    "id": "255b69a3-d4a3-40a4-81a5-64d5f249c295",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "follow_up_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "24772ef8-3162-4b0f-bb9c-7f15dc9a918e",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "taste_description",
+    "tone": "frustrated"
+  },
+  {
+    "id": "def119a8-0ab8-4bcc-a25f-7d8796bdaeec",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "sample_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "50989be2-cba9-4b58-bdeb-9ec19bdd2c7e",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "send_email",
+    "tone": "frustrated"
+  },
+  {
+    "id": "be0a0db9-64bb-4a50-9210-8b66ca4c89bd",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "misc",
+    "tone": "urgent"
+  },
+  {
+    "id": "8f3db439-9c2d-4b65-875d-52e7b698e1af",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "misc",
+    "tone": "polite"
+  },
+  {
+    "id": "d18692e3-9f5c-4f77-8bc2-83c1ebd83ee1",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "quality_judgment",
+    "tone": "polite"
+  },
+  {
+    "id": "691ce7fe-51d4-4213-b919-772aede5fab5",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "send_email",
+    "tone": "neutral"
+  },
+  {
+    "id": "954f847f-4b88-4f5f-b78e-b8c6f3730f19",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "6747879b-1f1e-4431-ac43-fce68065223e",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "check_shipment_status",
+    "tone": "urgent"
+  },
+  {
+    "id": "f1b15b60-9d3e-4deb-9af7-6e5fdd0d0c16",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "84003035-21e8-4115-bbcb-3b02ebb9dd81",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "taste_description",
+    "tone": "cheerful"
+  },
+  {
+    "id": "7704199f-6a06-452a-9780-8de6a6f9779b",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "misc",
+    "tone": "angry"
+  },
+  {
+    "id": "5eb3f57a-697b-4c1d-9fa0-04dfae36e743",
+    "text": "Send me a few bottles of that Spanish Garnacha to sample — the last one was a hit.",
+    "intent": "taste_description",
+    "tone": "frustrated"
+  },
+  {
+    "id": "db53f499-6b66-4bf3-af83-e649b49aed56",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "pairing_suggestion",
+    "tone": "cheerful"
+  },
+  {
+    "id": "af5acb9c-2b11-43c2-9859-974297a34edc",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "sample_request",
+    "tone": "polite"
+  },
+  {
+    "id": "ee130a18-6b4b-4bd6-a41a-ffee13004538",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "product_recommendation",
+    "tone": "cheerful"
+  },
+  {
+    "id": "17fcc2c9-7337-46ce-b006-d9154d91171b",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  {
+    "id": "f566efb1-69a7-4b1c-8188-282ba8bd96f1",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "price_comment",
+    "tone": "polite"
+  },
+  {
+    "id": "359f2549-4248-49ca-b430-c4478680ff75",
+    "text": "Send me a few bottles of that Spanish Garnacha to sample — the last one was a hit.",
+    "intent": "correct_order",
+    "tone": "frustrated"
+  },
+  {
+    "id": "b22bd367-27ac-4df1-babc-6e7db0f8d051",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "d626d2f6-1958-40b2-8167-076a486f4964",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "product_recommendation",
+    "tone": "urgent"
+  },
+  {
+    "id": "6d1fb75f-5413-491a-904a-5dc75fd4e903",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "set_reminder",
+    "tone": "angry"
+  },
+  {
+    "id": "97920585-795f-4d45-b479-a8401caaeea0",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "check_shipment_status",
+    "tone": "neutral"
+  },
+  {
+    "id": "be6d3f9f-bef5-4ccd-887e-0d5dfcbd8bfa",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "price_comment",
+    "tone": "frustrated"
+  },
+  {
+    "id": "1b264850-88e5-4f16-9145-e1edb01d0cee",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "gift_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "ac08c25f-f7f4-4520-9aeb-d7a10531fa6a",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "check_shipment_status",
+    "tone": "urgent"
+  },
+  {
+    "id": "3e5c7dfc-6653-490b-ad21-8df569eceba8",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "48dea7ae-40f2-48c6-8fa6-4682ba23ca87",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "correct_order",
+    "tone": "frustrated"
+  },
+  {
+    "id": "5823a4f0-4cfe-4b8a-9268-08dfd853ff55",
+    "text": "I need something kosher and special — client prefers dry reds.",
+    "intent": "set_reminder",
+    "tone": "frustrated"
+  },
+  {
+    "id": "69a73691-82d9-4cc0-822f-aeb9861e96a5",
+    "text": "Bring 2 cases of that rosé for the event — they loved it last year.",
+    "intent": "pairing_suggestion",
+    "tone": "angry"
+  },
+  {
+    "id": "20a5f48c-f681-4fd5-a22d-2eb74e1eea2a",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "gift_request",
+    "tone": "polite"
+  },
+  {
+    "id": "c6c7ccf2-fe25-4be9-8d9f-dab7e67b23c9",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "set_reminder",
+    "tone": "cheerful"
+  },
+  {
+    "id": "efe3cda3-ebc9-49ad-b888-f94e57fa023a",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "50e172b1-0c0d-4ef2-acbf-70698acb71ec",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "misc",
+    "tone": "frustrated"
+  },
+  {
+    "id": "2723fa6f-eade-43fe-97fc-c6a1db7eed04",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "0d34a67e-6d54-41c1-a883-bdca5894c9e4",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "id": "92bcfac1-e3eb-4bc5-957a-9143f0cf263c",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "set_reminder",
+    "tone": "cheerful"
+  },
+  {
+    "id": "67dc91f5-074b-428f-9222-db8aedf0fc98",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "id": "d789f434-8a95-4253-80f6-486c778d0922",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "pairing_suggestion",
+    "tone": "polite"
+  },
+  {
+    "id": "ae71d4d6-05d5-40fd-8b1c-a619ce74166c",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "check_shipment_status",
+    "tone": "urgent"
+  },
+  {
+    "id": "3809b398-30c9-41a3-af44-6dbe5245f5ee",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "correct_order",
+    "tone": "urgent"
+  },
+  {
+    "id": "c661bf68-7b74-4242-b594-d5585d84f6fc",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "check_shipment_status",
+    "tone": "cheerful"
+  },
+  {
+    "id": "693804bc-a0de-4113-9182-d5ba70c466a0",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "39bda19a-40ad-48ef-b457-e5ffbefd9b55",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "price_comment",
+    "tone": "angry"
+  },
+  {
+    "id": "eb70be75-e284-4d04-8e43-455926bc6072",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "69a11f4e-6c73-410b-8d03-45ee3db7a34e",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "correct_order",
+    "tone": "frustrated"
+  },
+  {
+    "id": "c1791c7b-6f62-4744-85d7-7932f72610d3",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "e4595a4c-a3e0-43c0-b5e9-dea5dfcdcbf7",
+    "text": "Thanks again — this Riesling was perfect for the summer party.",
+    "intent": "taste_description",
+    "tone": "neutral"
+  },
+  {
+    "id": "46f41b70-186e-4ca4-b34c-7b09c516f80e",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "sample_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "281b149b-b386-4484-800f-394a55557cec",
+    "text": "This isn’t what I asked for. I ordered a Syrah, not a Merlot.",
+    "intent": "check_shipment_status",
+    "tone": "frustrated"
+  },
+  {
+    "id": "262fd4f0-83af-4f7b-be1b-d500426a7b59",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "follow_up_request",
+    "tone": "polite"
+  },
+  {
+    "id": "8d049750-e3bc-4c73-b818-86352802bd5e",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "pairing_suggestion",
+    "tone": "frustrated"
+  },
+  {
+    "id": "dea1decc-e62e-4354-aeb8-8a54423746bd",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "gift_request",
+    "tone": "angry"
+  },
+  {
+    "id": "4e9e6130-fa43-40c6-9568-ea5ec04b8fe3",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "misc",
+    "tone": "urgent"
+  },
+  {
+    "id": "3fd1516d-8686-4961-bc99-a389fec03e57",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "follow_up_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "8c04f8f9-dcf1-47b3-96c0-65121b0d7000",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "send_email",
+    "tone": "angry"
+  },
+  {
+    "id": "cd2e1c01-53c0-4680-9c0c-572c66ddc757",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "check_shipment_status",
+    "tone": "cheerful"
+  },
+  {
+    "id": "48e30517-5a5a-418c-95fd-a547a6396a97",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "correct_order",
+    "tone": "frustrated"
+  },
+  {
+    "id": "bcdfdbdd-d3da-4bcf-aaf4-c4e04179e50c",
+    "text": "Too oaky and overwhelming. Not what I was expecting at all.",
+    "intent": "gift_request",
+    "tone": "angry"
+  },
+  {
+    "id": "5f30e8a8-ba27-4b75-bd08-2961c29fea4b",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "sample_request",
+    "tone": "cheerful"
+  },
+  {
+    "id": "ccee7976-267b-44f9-9d6e-de848a357d0d",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "follow_up_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "602e5862-4f77-4efb-a959-607146d2862e",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "follow_up_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "aa916dd3-39db-4222-937c-4bbabd0d2907",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "set_reminder",
+    "tone": "frustrated"
+  },
+  {
+    "id": "44b999c4-70ef-421c-9531-36962d7874f4",
+    "text": "Can you follow up on the case of Barolo I ordered last week?",
+    "intent": "check_shipment_status",
+    "tone": "angry"
+  },
+  {
+    "id": "5a0c86a2-7def-4b83-a440-3d030675d8ab",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "id": "77d688c8-fccd-4f86-9271-19aedab2b80b",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "taste_description",
+    "tone": "urgent"
+  },
+  {
+    "id": "29366180-46b5-4c16-8ec6-bcbdc7220486",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "quality_judgment",
+    "tone": "polite"
+  },
+  {
+    "id": "b8b52f75-129e-40b6-9e9f-fa582355c61e",
+    "text": "This Pinot was watery and flat. Definitely not worth the price.",
+    "intent": "sample_request",
+    "tone": "polite"
+  },
+  {
+    "id": "e8bfbcf0-f70a-4330-86b1-3c05190f3133",
+    "text": "Do we still have that Oregon Pinot from last month? I need something elegant.",
+    "intent": "price_comment",
+    "tone": "cheerful"
+  },
+  {
+    "id": "c1f421db-abe5-408e-8604-8951b66d3fb0",
+    "text": "Loved the jammy finish on this Zinfandel. Perfect with BBQ.",
+    "intent": "send_email",
+    "tone": "frustrated"
+  },
+  {
+    "id": "75f96e5a-b0e8-4f46-a426-4f2513888543",
+    "text": "Is there a way to send this to their Hamptons house instead?",
+    "intent": "taste_description",
+    "tone": "cheerful"
+  },
+  {
+    "id": "6e5e80bc-e8fd-4019-8a0c-ea0f1d67e371",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "sample_request",
+    "tone": "angry"
+  },
+  {
+    "id": "258de697-52da-4829-8ab5-d384753b34b9",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "pairing_suggestion",
+    "tone": "neutral"
+  },
+  {
+    "id": "a830088b-3a5f-4a8c-b869-9d4d995c405b",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "follow_up_request",
+    "tone": "urgent"
+  },
+  {
+    "id": "3e594557-0139-4bdf-bca7-25a051eea23d",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "check_shipment_status",
+    "tone": "neutral"
+  },
+  {
+    "id": "4fe06c64-dc5d-46bb-b924-fe42c0a2313a",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "product_recommendation",
+    "tone": "angry"
+  },
+  {
+    "id": "1913295a-656c-4805-8101-cd3699d8a8b5",
+    "text": "Can we include a note in the shipment for their anniversary?",
+    "intent": "quality_judgment",
+    "tone": "angry"
+  },
+  {
+    "id": "41827b17-ba86-48cb-aab5-48ef99432974",
+    "text": "Can you recommend a crisp white with high acidity?",
+    "intent": "sample_request",
+    "tone": "neutral"
+  },
+  {
+    "id": "81ae1ded-b530-4bbb-900d-f90e308f6e7a",
+    "text": "The wine was corked. Please replace the bottle ASAP.",
+    "intent": "pairing_suggestion",
+    "tone": "neutral"
+  },
+  {
+    "id": "51654b46-5765-428a-9689-3f756a33311e",
+    "text": "I'm looking for a wine that pairs well with lamb. Maybe something bold?",
+    "intent": "taste_description",
+    "tone": "polite"
+  },
+  {
+    "id": "6d3bcf4c-0922-4e5b-8a8f-2f34b602f7ee",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "id": "35b712fd-7fb5-4bfb-bb22-af85cd1bf1e4",
+    "text": "Remind me to check inventory on the Napa blend before Friday.",
+    "intent": "follow_up_request",
+    "tone": "angry"
+  },
+  {
+    "id": "ee785fa6-37d8-4d14-9338-d60053189ec7",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "pairing_suggestion",
+    "tone": "cheerful"
+  },
+  {
+    "id": "f084ed07-f61a-436b-9279-5565c499fce2",
+    "text": "That Tempranillo was a steal at $18. Buy more if you can.",
+    "intent": "price_comment",
+    "tone": "angry"
+  },
+  {
+    "id": "5367ddd8-ecdd-44db-a131-df56ae5a4aea",
+    "text": "I need a dry red under $30 for a client gift — something French would be perfect.",
+    "intent": "sample_request",
+    "tone": "frustrated"
+  },
+  {
+    "id": "6b9a36c8-e3a7-4790-9f33-f1fe117709ac",
+    "text": "Why haven't they responded yet? This order was supposed to ship on Tuesday.",
+    "intent": "set_reminder",
+    "tone": "polite"
+  },
+  {
+    "id": "2c31d913-47cd-48b2-866f-b936a0e81883",
+    "text": "She said her favorite is buttery Chardonnay. Find something lush.",
+    "intent": "sample_request",
+    "tone": "angry"
+  }
+]

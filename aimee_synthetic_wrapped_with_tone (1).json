@@ -1,0 +1,152 @@
+[
+  {
+    "text": "Did we ever ship that 2020 Barolo to Le Bella’s?",
+    "intent": "check_shipment_status",
+    "tone": "confused"
+  },
+  {
+    "text": "Check if the Blackstone order was delivered yet.",
+    "intent": "check_shipment_status",
+    "tone": "curious"
+  },
+  {
+    "text": "What’s the ETA on the Ridge Zin for Bin 100?",
+    "intent": "check_shipment_status",
+    "tone": "confused"
+  },
+  {
+    "text": "Can you shoot a follow-up email to Blackstones about their order?",
+    "intent": "send_email",
+    "tone": "neutral"
+  },
+  {
+    "text": "Send a thank-you email to the sommelier at Elm.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  {
+    "text": "Email Dan from Spiga about the Tuscan allocation.",
+    "intent": "send_email",
+    "tone": "confused"
+  },
+  {
+    "text": "Remind me to call the buyer at Horse Neck tomorrow morning.",
+    "intent": "set_reminder",
+    "tone": "urgent"
+  },
+  {
+    "text": "Set a reminder for our Friday tasting with Rebecca’s.",
+    "intent": "set_reminder",
+    "tone": "neutral"
+  },
+  {
+    "text": "Ping me next week to check in with Missing Link.",
+    "intent": "set_reminder",
+    "tone": "confused"
+  },
+  {
+    "text": "They want a sample of something bold but not too dry — what should I bring?",
+    "intent": "sample_request",
+    "tone": "neutral"
+  },
+  {
+    "text": "Bring a sparkling rosé sample to 99 Bottles.",
+    "intent": "sample_request",
+    "tone": "neutral"
+  },
+  {
+    "text": "Drop off that Cabernet sample at The Cottage in Westport.",
+    "intent": "sample_request",
+    "tone": "urgent"
+  },
+  {
+    "text": "Customer is asking for a wine gift under $60 — any recs?",
+    "intent": "gift_request",
+    "tone": "curious"
+  },
+  {
+    "text": "Find me something elegant to give a client — nothing too sweet.",
+    "intent": "gift_request",
+    "tone": "curious"
+  },
+  {
+    "text": "They need a corporate gift — red, French, $100 budget.",
+    "intent": "gift_request",
+    "tone": "neutral"
+  },
+  {
+    "text": "Recommend a white Burgundy for a seafood-focused tasting menu.",
+    "intent": "product_recommendation",
+    "tone": "neutral"
+  },
+  {
+    "text": "What’s a crowd-pleaser red with medium tannins?",
+    "intent": "product_recommendation",
+    "tone": "urgent"
+  },
+  {
+    "text": "Suggest a Napa Cab that drinks above its price.",
+    "intent": "product_recommendation",
+    "tone": "neutral"
+  },
+  {
+    "text": "What pairs well with grilled lamb and rosemary potatoes?",
+    "intent": "pairing_question",
+    "tone": "neutral"
+  },
+  {
+    "text": "Suggest a wine to go with oysters and mignonette.",
+    "intent": "pairing_question",
+    "tone": "neutral"
+  },
+  {
+    "text": "Need something for a cheese-heavy charcuterie board.",
+    "intent": "pairing_question",
+    "tone": "neutral"
+  },
+  {
+    "text": "Describe the taste profile of the 2019 Chablis we carry.",
+    "intent": "taste_profile",
+    "tone": "neutral"
+  },
+  {
+    "text": "Is that Pinot light-bodied or fuller?",
+    "intent": "taste_profile",
+    "tone": "urgent"
+  },
+  {
+    "text": "What’s the finish like on that 2017 Tempranillo?",
+    "intent": "taste_profile",
+    "tone": "neutral"
+  },
+  {
+    "text": "Find restaurants in Greenwich that list Sassicaia.",
+    "intent": "restaurant_lookup",
+    "tone": "curious"
+  },
+  {
+    "text": "Who in Norwalk carries the 2021 Gavi di Gavi?",
+    "intent": "restaurant_lookup",
+    "tone": "confused"
+  },
+  {
+    "text": "Check if Elm still lists the Antinori Tignanello.",
+    "intent": "restaurant_lookup",
+    "tone": "polite"
+  },
+  {
+    "text": "That Pinot was wrong — they asked for the 2017 vintage, not 2018.",
+    "intent": "correct_order",
+    "tone": "neutral"
+  },
+  {
+    "text": "Correct the order for New Canaan Wine — remove the rosé.",
+    "intent": "correct_order",
+    "tone": "confused"
+  },
+  {
+    "text": "We sent Chianti, but they wanted Barbera. Fix it before delivery.",
+    "intent": "correct_order",
+    "tone": "confused"
+  }
+]

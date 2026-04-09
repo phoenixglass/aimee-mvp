@@ -1,0 +1,1260 @@
+{
+  "training_examples": [
+    {
+      "id": 1,
+      "text": "Amy, I need to send three cases of Chateau de Bocastel, Rouge, Chateau de Nouveau de Pupp. It needs to be 2019 vintage. And did I say three cases? Yes, it needs to be three cases. Please, tomorrow, to Acme, Wine and Lickers. And please confirm.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "Acme Wine and Lickers",
+        "wine": "Chateau de Bocastel Rouge",
+        "quantity": "three cases",
+        "vintage": "2019",
+        "delivery": "tomorrow"
+      }
+    },
+    {
+      "id": 2,
+      "text": "Hey Amy, LeBella's customer customer, I don't know the customer number, it's LeBella's fine wine and spirits, you find it and make it happen please. They need seven bottles of Charchoos green delivered tomorrow, please. And thank you. Send me a confirmation text and email at your earliest convenience.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "LeBella's fine wine and spirits",
+        "wine": "Charchoos green", 
+        "quantity": "seven bottles",
+        "delivery": "tomorrow"
+      }
+    },
+    {
+      "id": 3,
+      "text": "Amy, please send an email to purchasing. Can you also see Franklin, Co-brand Regional Manager as well on that? Subject line need to focus. That's, quote, need to focus. End quote. Ask them for an update, be polite, but also make them aware that I need this by the end of day. Thank you, and don't forget to see C.C. Paul.",
+      "intent": "send_email",
+      "entities": {
+        "recipient": "purchasing",
+        "subject": "need to focus",
+        "urgency": "end of day"
+      }
+    },
+    {
+      "id": 4,
+      "text": "Amy, my competitor ran out of Frenet Bronca. Can you recommend something to me similar in profile and in taste? Preferably something that has a lower cost per ounce. Never less send me all options, send to my email and text. Thank you.",
+      "intent": "product_recommendation",
+      "entities": {
+        "wine": "Frenet Bronca",
+        "criteria": "similar profile and taste, lower cost"
+      }
+    },
+    {
+      "id": 5,
+      "text": "Amy, one of my beverage directors is looking for a gin. However, they want the gin to be, what they say, less junipery. So can you please find me some jins that have less juniper than otherwise? Send it to my email, please. And text to me. Thank you.",
+      "intent": "product_recommendation",
+      "entities": {
+        "product": "gin",
+        "criteria": "less junipery"
+      }
+    },
+    {
+      "id": 6,
+      "text": "Amy, I have a very important account looking for a very important gift for a very important client. It's a wedding gift. It's a mother to daughter gift. It's a special bottle of champagne. The vintage needs to be 1982 as best as we have. Let me know, okay? Just send it to my email.",
+      "intent": "gift_request",
+      "entities": {
+        "occasion": "wedding",
+        "relationship": "mother to daughter",
+        "wine": "champagne",
+        "vintage": "1982"
+      }
+    },
+    {
+      "id": 7,
+      "text": "Hey Amy, I don't have an order. I'm just looking for an ETA on the following item number. It's item number one, three, two, two, four. The item is, it's a Jean-Marc Crochet Sans-Cé at 2023. Is that still in port in France or on the water or give me your best? Thanks. Bye.",
+      "intent": "check_shipment_status",
+      "entities": {
+        "item_number": "13224",
+        "wine": "Jean-Marc Crochet Sans-Cé 2023"
+      }
+    },
+    {
+      "id": 8,
+      "text": "Amy, I need a SF delivery and SF order, excuse me, to deliver two customer 715602 greens, farms and Westport. I need April pricing and I need 11 cases of Jordan, Shardinay 750 of course for Wednesday May 16th delivery. Please. Thank you. Please confirm my email.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "715602 greens farms Westport",
+        "wine": "Jordan Chardonnay",
+        "quantity": "11 cases",
+        "delivery": "Wednesday May 16th"
+      }
+    },
+    {
+      "id": 9,
+      "text": "Amy, please put an order for DB Fine Wine for tomorrow delivery for seven cases of Vega Cecilia Unico 2012, 750 on out, please. Thank you. Please confirm with an email.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "DB Fine Wine",
+        "wine": "Vega Cecilia Unico 2012",
+        "quantity": "seven cases",
+        "delivery": "tomorrow"
+      }
+    },
+    {
+      "id": 10,
+      "text": "Amy, again, I'm sorry to bother you with this. I normally use you for a point of sale, but again my phone fell in between my car seat and my console. I'm coming home from a tasting and my wife asked me to be home at 6.30 pm. Could you please text her, let her know that I'm running 10 minutes behind and that my phone is stuck in between my car seat and my console. Thanks.",
+      "intent": "send_text",
+      "entities": {
+        "recipient": "wife",
+        "message": "running 10 minutes late"
+      }
+    },
+    {
+      "id": 11,
+      "text": "Hey Amy, I know I don't usually use this, use you for this sort of thing but I'm stuck in traffic and my phone fell in between my car seat and the console so I can't reach it so I know you're the only app that responds to my voice competently. Could you reach out to the buyer from my next appointment my 3pm in Greenwich and tell them cordially please that I'm going to be roughly 15 to 20 minutes late due to a traffic situation caused by a crash here in Daryan about exit 11. Thank you.",
+      "intent": "send_text",
+      "entities": {
+        "recipient": "3pm Greenwich appointment",
+        "message": "15-20 minutes late due to traffic"
+      }
+    },
+    {
+      "id": 12,
+      "text": "Amy, I have a basement, dweller, customer looking for the cheapest possible bubbles we have. All right? Check what's available, check with our suppliers, and see what we have in stock in the warehouse. If it's over $52, a case they don't want to see it. So what you got, Amy, thanks, bye.",
+      "intent": "check_inventory",
+      "entities": {
+        "product": "bubbles",
+        "criteria": "cheapest possible",
+        "price_limit": "$52 per case"
+      }
+    },
+    {
+      "id": 13,
+      "text": "Amy Blackstone's Steakhouse is saying that they received half bottles of Antenora Tinello 2022 when they ordered 750 MLs. Could you please advise on that and while you're at it can you please put a pickup in for the 375 case please? That's invoice 7610434 and please follow up with a confirmation email. Appreciate you thank you.",
+      "intent": "check_invoice",
+      "entities": {
+        "customer": "Blackstone's Steakhouse",
+        "wine": "Antenora Tinello 2022",
+        "issue": "wrong bottle size",
+        "invoice": "7610434"
+      }
+    },
+    {
+      "id": 14,
+      "text": "Amy, horse neck, wine and spirits needs 55 cases of Domain-Aut Chateau de Salle, Rosé 2023 delivered tomorrow. Okay? Please confirm that you got this message. Thank you.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "horse neck wine and spirits",
+        "wine": "Domain-Aut Chateau de Salle Rosé 2023",
+        "quantity": "55 cases",
+        "delivery": "tomorrow"
+      }
+    },
+    {
+      "id": 15,
+      "text": "Amy, I didn't do my homework last night. I really need your help. I need you to give me the top 100 SKU for the zip code 06-855, please. I have a new store opening and I think this could really nail down our place in the pecking order. So as soon as you can get that to me, please forward it. Thank you.",
+      "intent": "research_product",
+      "entities": {
+        "request": "top 100 SKU",
+        "location": "zip code 06-855",
+        "purpose": "new store opening"
+      }
+    },
+    {
+      "id": 16,
+      "text": "Clive, sorry to disturb you. Yes, Pleasantry Yacht Club on Essex is going to need a pallet, an entire pallet, yes. Of the Long Island Express Rose that we have. Hold it please until Thursday and we'll build out for Friday. And I truck going that way of course. You know logistics and all. We're delivering once a week to one sector of the state of course. Anyway, please confirm you received this message. Thank you and good afternoon.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "Pleasantry Yacht Club Essex",
+        "wine": "Long Island Express Rose",
+        "quantity": "pallet",
+        "delivery": "Friday"
+      }
+    },
+    {
+      "id": 17,
+      "text": "Amy, I need a list compiled of all current vintage ports that we have in stock. Nothing under a six pack, okay? Please don't waste my time. I need to know, also separate them by organic, biodynamic, sustainable, regenerative farming, or conventional, all right? Thank you. And make sure you CC Paul.",
+      "intent": "check_inventory",
+      "entities": {
+        "product": "vintage ports",
+        "minimum_quantity": "six pack",
+        "classification": "farming methods"
+      }
+    },
+    {
+      "id": 18,
+      "text": "Amy, contact the TDM for cake bread vineyards. Ask them if they could forward a six month pricing grid. Please, I'm getting requests from some pretty solid retailers. I'd like to have an answer by the end of the day. So if you could mark the email, high importance. Thank you, Amy.",
+      "intent": "send_email",
+      "entities": {
+        "recipient": "cake bread vineyards TDM",
+        "request": "six month pricing grid",
+        "urgency": "end of day"
+      }
+    },
+    {
+      "id": 19,
+      "text": "Amy, please put together a cell sheet for the, um, all the sancer that we have in stock that worldwide brings in. The price point has to be under 380, a case, okay? Don't give me anything over that. 380 and under has to be in stock and we also have to have, um, more than 25 cases on hand. All right? All right, let me know. Thank you.",
+      "intent": "check_inventory",
+      "entities": {
+        "product": "sancer",
+        "price_limit": "$380 per case",
+        "minimum_quantity": "25 cases"
+      }
+    },
+    {
+      "id": 20,
+      "text": "Amy, for tomorrow, May 12th Friday, delivery, it's super important. Mother's Day, I need for you to execute a five case order of AIX or X Rose de Provence 2020-24 needs to be shipped to Blackstone, not Blackstone's Grill, Blackstone's Statecast, so it's 788-811, not Southport, Norwalk. Thank you, again, confirm and also CC Paul. Thank you.",
+      "intent": "add_to_order",
+      "entities": {
+        "customer": "Blackstone Statecast Norwalk",
+        "wine": "AIX Rose de Provence 2020-24",
+        "quantity": "five cases",
+        "delivery": "May 12th Friday",
+        "occasion": "Mother's Day"
+      }
+    },
+    {
+      "id": 21,
+      "text": "I want something fruity for seafood",
+      "intent": "wine_recommendation",
+      "entities": {
+        "taste_preference": "fruity",
+        "food_pairing": "seafood"
+      }
+    },
+    {
+      "id": 22,
+      "text": "I want something bold and fruity",
+      "intent": "wine_recommendation",
+      "entities": {
+        "taste_preference": ["bold", "fruity"]
+      }
+    },
+    {
+      "id": 23,
+      "text": "I want something fruity and light",
+      "intent": "taste_preference_query",
+      "entities": {
+        "taste_preference": ["fruity", "light"]
+      }
+    },
+    {
+      "id": 24,
+      "text": "Find me a bold red wine",
+      "intent": "taste_preference_query",
+      "entities": {
+        "taste_preference": "bold",
+        "wine_type": "red"
+      }
+    },
+    {
+      "id": 25,
+      "text": "I need something crisp for seafood",
+      "intent": "wine_pairing_request",
+      "entities": {
+        "taste_preference": "crisp",
+        "food_pairing": "seafood"
+      }
+    },
+    {
+      "id": 26,
+      "text": "What wine goes with salmon?",
+      "intent": "wine_pairing_request",
+      "entities": {
+        "food_pairing": "salmon"
+      }
+    },
+    {
+      "id": 27,
+      "text": "What wine pairs with celebration?",
+      "intent": "wine_pairing_request",
+      "entities": {
+        "food_pairing": "celebration"
+      }
+    },
+    {
+      "id": 28,
+      "text": "Tell me about this wine's flavor profile",
+      "intent": "flavor_profile_inquiry",
+      "entities": {}
+    },
+    {
+      "id": 29,
+      "text": "I love Pinot Noir, what's similar?",
+      "intent": "taste_based_recommendation",
+      "entities": {
+        "wine": "Pinot Noir"
+      }
+    },
+    {
+      "id": 30,
+      "text": "What should I focus on today?",
+      "intent": "daily_briefing",
+      "entities": {}
+    },
+    {
+      "id": 31,
+      "text": "Brief me on LeBella's",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "LeBella's Fine Wine"
+      }
+    },
+    {
+      "id": 32,
+      "text": "How do I beat Wine Warehouse?",
+      "intent": "competitive_intelligence",
+      "entities": {
+        "competitor": "Wine Warehouse"
+      }
+    },
+    {
+      "id": 33,
+      "text": "Brief me on Barcelona Wine Bar",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 34,
+      "text": "Tell me about Barcelona",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 35,
+      "text": "What's the opportunity at Barcelona Wine Bar?",
+      "intent": "opportunity_analysis",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 36,
+      "text": "Brief me on Bin 100",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    },
+    {
+      "id": 37,
+      "text": "What should I know about Bin 100 Restaurant?",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    },
+    {
+      "id": 38,
+      "text": "Tell me about Spiga",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 39,
+      "text": "What's missing from Bin 100's wine list?",
+      "intent": "gap_analysis",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "analysis_type": "wine_list_gaps"
+      }
+    },
+    {
+      "id": 40,
+      "text": "Who's the decision maker at Spiga?",
+      "intent": "contact_intelligence",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "info_type": "decision_maker"
+      }
+    },
+    {
+      "id": 41,
+      "text": "What Spanish wines can I sell to Barcelona?",
+      "intent": "product_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "product_category": "Spanish wines"
+      }
+    },
+    {
+      "id": 42,
+      "text": "When does Barcelona usually reorder?",
+      "intent": "timing_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "info_type": "reorder_pattern"
+      }
+    },
+    {
+      "id": 43,
+      "text": "What's the best approach for New Canaan customers?",
+      "intent": "market_strategy",
+      "entities": {
+        "location": "New Canaan",
+        "strategy_type": "customer_approach"
+      }
+    },
+    {
+      "id": 44,
+      "text": "How do I compete with Wine Warehouse at Bin 100?",
+      "intent": "competitive_strategy",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "competitor": "Wine Warehouse",
+        "strategy_type": "competitive_response"
+      }
+    },
+    {
+      "id": 45,
+      "text": "What's the revenue opportunity at Spiga?",
+      "intent": "revenue_analysis",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 46,
+      "text": "Tell me about Connecticut Distributors",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Connecticut Distributors Inc."
+      }
+    },
+    {
+      "id": 47,
+      "text": "Who should I contact at CDI?",
+      "intent": "contact_intelligence",
+      "entities": {
+        "distributor_name": "Connecticut Distributors Inc.",
+        "info_type": "key_contacts"
+      }
+    },
+    {
+      "id": 48,
+      "text": "What's the total market size in Fairfield County?",
+      "intent": "market_analysis",
+      "entities": {
+        "location": "Fairfield County",
+        "analysis_type": "market_size"
+      }
+    },
+    {
+      "id": 49,
+      "text": "Which distributor serves Barcelona Wine Bar?",
+      "intent": "distributor_mapping",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 50,
+      "text": "What Italian wines work for Spiga's wealthy customers?",
+      "intent": "product_recommendation",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "product_category": "Italian wines",
+        "customer_type": "wealthy"
+      }
+    },
+    {
+      "id": 51,
+      "text": "How often does Bin 100 rotate their wine list?",
+      "intent": "timing_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "info_type": "wine_list_rotation"
+      }
+    },
+    {
+      "id": 52,
+      "text": "What's Barcelona's Spanish wine program like?",
+      "intent": "program_analysis",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "program_type": "Spanish wine program"
+      }
+    },
+    {
+      "id": 53,
+      "text": "Brief me on all my Fairfield County accounts",
+      "intent": "regional_briefing",
+      "entities": {
+        "location": "Fairfield County"
+      }
+    },
+    {
+      "id": 54,
+      "text": "What premium opportunities exist at Spiga?",
+      "intent": "premium_opportunity",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 55,
+      "text": "How do I position against chain restaurants at Bin 100?",
+      "intent": "competitive_positioning",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "competitor_type": "chain restaurants"
+      }
+    },
+    {
+      "id": 56,
+      "text": "What's the wine spend at these three restaurants?",
+      "intent": "financial_analysis",
+      "entities": {
+        "analysis_type": "wine_spend",
+        "scope": "multiple_customers"
+      }
+    },
+    {
+      "id": 57,
+      "text": "Tell me about Missing Link Wine Company",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Missing Link Wine Company"
+      }
+    },
+    {
+      "id": 58,
+      "text": "What Portuguese wines could work at Barcelona?",
+      "intent": "expansion_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "product_category": "Portuguese wines"
+      }
+    },
+    {
+      "id": 59,
+      "text": "When should I call Dan at Spiga?",
+      "intent": "timing_strategy",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "contact_name": "Dan"
+      }
+    },
+    {
+      "id": 60,
+      "text": "What makes New Canaan different from other markets?",
+      "intent": "market_differentiation",
+      "entities": {
+        "location": "New Canaan"
+      }
+    },
+    {
+      "id": 61,
+      "text": "How do I get an appointment with Barcelona's wine director?",
+      "intent": "appointment_strategy",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "contact_type": "wine director"
+      }
+    },
+    {
+      "id": 62,
+      "text": "What's the competitive landscape in Milford?",
+      "intent": "competitive_landscape",
+      "entities": {
+        "location": "Milford"
+      }
+    },
+    {
+      "id": 63,
+      "text": "Brief me on today's priorities",
+      "intent": "daily_priorities",
+      "entities": {}
+    },
+    {
+      "id": 64,
+      "text": "What boutique Italian producers work for Bin 100?",
+      "intent": "product_recommendation",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "product_category": "boutique Italian producers"
+      }
+    },
+    {
+      "id": 65,
+      "text": "How big is Barcelona's wine program compared to competitors?",
+      "intent": "competitive_comparison",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "comparison_type": "wine program size"
+      }
+    },
+    {
+      "id": 66,
+      "text": "What's the best time to approach Spiga with premium wines?",
+      "intent": "timing_strategy",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "product_category": "premium wines"
+      }
+    },
+    {
+      "id": 67,
+      "text": "Tell me about Martignetti Companies",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Martignetti Companies"
+      }
+    },
+    {
+      "id": 68,
+      "text": "What wine education opportunities exist at Barcelona?",
+      "intent": "education_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 69,
+      "text": "How do I counter Costco's pricing at LeBella's?",
+      "intent": "pricing_strategy",
+      "entities": {
+        "customer_name": "LeBella's Fine Wine",
+        "competitor": "Costco"
+      }
+    },
+    {
+      "id": 70,
+      "text": "What's my total addressable market in Connecticut?",
+      "intent": "market_size",
+      "entities": {
+        "location": "Connecticut"
+      }
+    },
+    {
+      "id": 71,
+      "text": "Give me talking points for my Spiga meeting",
+      "intent": "meeting_preparation",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 72,
+      "text": "Amy brief me on Barcelona Wine Bar",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 73,
+      "text": "brief me on Barcelona Wine Bar",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 74,
+      "text": "What is missing from Bin 100 wine list",
+      "intent": "gap_analysis",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    },
+    {
+      "id": 75,
+      "text": "tell me about bin 100",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    }
+  ],
+[
+  {
+    "text": "Amy, I need to send three cases of Chateau de Bocastel, Rouge, Chateau de Nouveau de Pupp. It needs to be 2019 vintage. And did I say three cases? Yes, it needs to be three cases. Please, tomorrow, to Acme, Wine and Lickers. And please confirm.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "Acme Wine and Lickers",
+      "wine": "Chateau de Bocastel Rouge",
+      "quantity": "three cases",
+      "vintage": "2019",
+      "delivery": "tomorrow"
+    }
+  },
+  {
+    "text": "Hey Amy, LeBella's customer customer, I don't know the customer number, it's LeBella's fine wine and spirits, you find it and make it happen please. They need seven bottles of Charchoos green delivered tomorrow, please. And thank you. Send me a confirmation text and email at your earliest convenience.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "LeBella's fine wine and spirits",
+      "wine": "Charchoos green", 
+      "quantity": "seven bottles",
+      "delivery": "tomorrow"
+    }
+  },
+  {
+    "text": "Amy, please send an email to purchasing. Can you also see Franklin, Co-brand Regional Manager as well on that? Subject line need to focus. That's, quote, need to focus. End quote. Ask them for an update, be polite, but also make them aware that I need this by the end of day. Thank you, and don't forget to see C.C. Paul.",
+    "intent": "send_email",
+    "entities": {
+      "recipient": "purchasing",
+      "subject": "need to focus",
+      "urgency": "end of day"
+    }
+  },
+  {
+    "text": "Amy, my competitor ran out of Frenet Bronca. Can you recommend something to me similar in profile and in taste? Preferably something that has a lower cost per ounce. Never less send me all options, send to my email and text. Thank you.",
+    "intent": "product_recommendation",
+    "entities": {
+      "wine": "Frenet Bronca",
+      "criteria": "similar profile and taste, lower cost"
+    }
+  },
+  {
+    "text": "Amy, one of my beverage directors is looking for a gin. However, they want the gin to be, what they say, less junipery. So can you please find me some jins that have less juniper than otherwise? Send it to my email, please. And text to me. Thank you.",
+    "intent": "product_recommendation",
+    "entities": {
+      "product": "gin",
+      "criteria": "less junipery"
+    }
+  },
+  {
+    "text": "Amy, I have a very important account looking for a very important gift for a very important client. It's a wedding gift. It's a mother to daughter gift. It's a special bottle of champagne. The vintage needs to be 1982 as best as we have. Let me know, okay? Just send it to my email.",
+    "intent": "gift_request",
+    "entities": {
+      "occasion": "wedding",
+      "relationship": "mother to daughter",
+      "wine": "champagne",
+      "vintage": "1982"
+    }
+  },
+  {
+    "text": "Hey Amy, I don't have an order. I'm just looking for an ETA on the following item number. It's item number one, three, two, two, four. The item is, it's a Jean-Marc Crochet Sans-Cé at 2023. Is that still in port in France or on the water or give me your best? Thanks. Bye.",
+    "intent": "check_shipment_status",
+    "entities": {
+      "item_number": "13224",
+      "wine": "Jean-Marc Crochet Sans-Cé 2023"
+    }
+  },
+  {
+    "text": "Amy, I need a SF delivery and SF order, excuse me, to deliver two customer 715602 greens, farms and Westport. I need April pricing and I need 11 cases of Jordan, Shardinay 750 of course for Wednesday May 16th delivery. Please. Thank you. Please confirm my email.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "715602 greens farms Westport",
+      "wine": "Jordan Chardonnay",
+      "quantity": "11 cases",
+      "delivery": "Wednesday May 16th"
+    }
+  },
+  {
+    "text": "Amy, please put an order for DB Fine Wine for tomorrow delivery for seven cases of Vega Cecilia Unico 2012, 750 on out, please. Thank you. Please confirm with an email.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "DB Fine Wine",
+      "wine": "Vega Cecilia Unico 2012",
+      "quantity": "seven cases",
+      "delivery": "tomorrow"
+    }
+  },
+  {
+    "text": "Amy, again, I'm sorry to bother you with this. I normally use you for a point of sale, but again my phone fell in between my car seat and my console. I'm coming home from a tasting and my wife asked me to be home at 6.30 pm. Could you please text her, let her know that I'm running 10 minutes behind and that my phone is stuck in between my car seat and my console. Thanks.",
+    "intent": "send_text",
+    "entities": {
+      "recipient": "wife",
+      "message": "running 10 minutes late"
+    }
+  },
+  {
+    "text": "Hey Amy, I know I don't usually use this, use you for this sort of thing but I'm stuck in traffic and my phone fell in between my car seat and the console so I can't reach it so I know you're the only app that responds to my voice competently. Could you reach out to the buyer from my next appointment my 3pm in Greenwich and tell them cordially please that I'm going to be roughly 15 to 20 minutes late due to a traffic situation caused by a crash here in Daryan about exit 11. Thank you.",
+    "intent": "send_text",
+    "entities": {
+      "recipient": "3pm Greenwich appointment",
+      "message": "15-20 minutes late due to traffic"
+    }
+  },
+  {
+    "text": "Amy, I have a basement, dweller, customer looking for the cheapest possible bubbles we have. All right? Check what's available, check with our suppliers, and see what we have in stock in the warehouse. If it's over $52, a case they don't want to see it. So what you got, Amy, thanks, bye.",
+    "intent": "check_inventory",
+    "entities": {
+      "product": "bubbles",
+      "criteria": "cheapest possible",
+      "price_limit": "$52 per case"
+    }
+  },
+  {
+    "text": "Amy Blackstone's Steakhouse is saying that they received half bottles of Antenora Tinello 2022 when they ordered 750 MLs. Could you please advise on that and while you're at it can you please put a pickup in for the 375 case please? That's invoice 7610434 and please follow up with a confirmation email. Appreciate you thank you.",
+    "intent": "check_invoice",
+    "entities": {
+      "customer": "Blackstone's Steakhouse",
+      "wine": "Antenora Tinello 2022",
+      "issue": "wrong bottle size",
+      "invoice": "7610434"
+    }
+  },
+  {
+    "text": "Amy, horse neck, wine and spirits needs 55 cases of Domain-Aut Chateau de Salle, Rosé 2023 delivered tomorrow. Okay? Please confirm that you got this message. Thank you.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "horse neck wine and spirits",
+      "wine": "Domain-Aut Chateau de Salle Rosé 2023",
+      "quantity": "55 cases",
+      "delivery": "tomorrow"
+    }
+  },
+  {
+    "text": "Amy, I didn't do my homework last night. I really need your help. I need you to give me the top 100 SKU for the zip code 06-855, please. I have a new store opening and I think this could really nail down our place in the pecking order. So as soon as you can get that to me, please forward it. Thank you.",
+    "intent": "research_product",
+    "entities": {
+      "request": "top 100 SKU",
+      "location": "zip code 06-855",
+      "purpose": "new store opening"
+    }
+  },
+  {
+    "text": "Clive, sorry to disturb you. Yes, Pleasantry Yacht Club on Essex is going to need a pallet, an entire pallet, yes. Of the Long Island Express Rose that we have. Hold it please until Thursday and we'll build out for Friday. And I truck going that way of course. You know logistics and all. We're delivering once a week to one sector of the state of course. Anyway, please confirm you received this message. Thank you and good afternoon.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "Pleasantry Yacht Club Essex",
+      "wine": "Long Island Express Rose",
+      "quantity": "pallet",
+      "delivery": "Friday"
+    }
+  },
+  {
+    "text": "Amy, I need a list compiled of all current vintage ports that we have in stock. Nothing under a six pack, okay? Please don't waste my time. I need to know, also separate them by organic, biodynamic, sustainable, regenerative farming, or conventional, all right? Thank you. And make sure you CC Paul.",
+    "intent": "check_inventory",
+    "entities": {
+      "product": "vintage ports",
+      "minimum_quantity": "six pack",
+      "classification": "farming methods"
+    }
+  },
+  {
+    "text": "Amy, contact the TDM for cake bread vineyards. Ask them if they could forward a six month pricing grid. Please, I'm getting requests from some pretty solid retailers. I'd like to have an answer by the end of the day. So if you could mark the email, high importance. Thank you, Amy.",
+    "intent": "send_email",
+    "entities": {
+      "recipient": "cake bread vineyards TDM",
+      "request": "six month pricing grid",
+      "urgency": "end of day"
+    }
+  },
+  {
+    "text": "Amy, please put together a cell sheet for the, um, all the sancer that we have in stock that worldwide brings in. The price point has to be under 380, a case, okay? Don't give me anything over that. 380 and under has to be in stock and we also have to have, um, more than 25 cases on hand. All right? All right, let me know. Thank you.",
+    "intent": "check_inventory",
+    "entities": {
+      "product": "sancer",
+      "price_limit": "$380 per case",
+      "minimum_quantity": "25 cases"
+    }
+  },
+  {
+    "text": "Amy, for tomorrow, May 12th Friday, delivery, it's super important. Mother's Day, I need for you to execute a five case order of AIX or X Rose de Provence 2020-24 needs to be shipped to Blackstone, not Blackstone's Grill, Blackstone's Statecast, so it's 788-811, not Southport, Norwalk. Thank you, again, confirm and also CC Paul. Thank you.",
+    "intent": "add_to_order",
+    "entities": {
+      "customer": "Blackstone Statecast Norwalk",
+      "wine": "AIX Rose de Provence 2020-24",
+      "quantity": "five cases",
+      "delivery": "May 12th Friday",
+      "occasion": "Mother's Day"
+    }
+  },
+  {
+    "text": "I want something fruity for seafood",
+    "intent": "wine_recommendation",
+    "entities": {
+      "taste_preference": "fruity",
+      "food_pairing": "seafood"
+    }
+  },
+  {
+    "text": "I want something bold and fruity",
+    "intent": "wine_recommendation",
+    "entities": {
+      "taste_preference": ["bold", "fruity"]
+    }
+  },
+  {
+    "text": "I want something fruity and light",
+    "intent": "taste_preference_query",
+    "entities": {
+      "taste_preference": ["fruity", "light"]
+    }
+  },
+  {
+    "text": "Find me a bold red wine",
+    "intent": "taste_preference_query",
+    "entities": {
+      "taste_preference": "bold",
+      "wine_type": "red"
+    }
+  },
+  {
+    "text": "I need something crisp for seafood",
+    "intent": "wine_pairing_request",
+    "entities": {
+      "taste_preference": "crisp",
+      "food_pairing": "seafood"
+    }
+  },
+  {
+    "text": "What wine goes with salmon?",
+    "intent": "wine_pairing_request",
+    "entities": {
+      "food_pairing": "salmon"
+    }
+  },
+  {
+    "text": "What wine pairs with celebration?",
+    "intent": "wine_pairing_request",
+    "entities": {
+      "food_pairing": "celebration"
+    }
+  },
+  {
+    "text": "Tell me about this wine's flavor profile",
+    "intent": "flavor_profile_inquiry",
+    "entities": {}
+  },
+  {
+    "text": "I love Pinot Noir, what's similar?",
+    "intent": "taste_based_recommendation",
+    "entities": {
+      "wine": "Pinot Noir"
+    }
+  },
+  {
+    "text": "What should I focus on today?",
+    "intent": "daily_briefing",
+    "entities": {}
+  },
+  {
+    "text": "Brief me on LeBella's",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "LeBella's Fine Wine"
+    }
+  },
+  {
+    "text": "How do I beat Wine Warehouse?",
+    "intent": "competitive_intelligence",
+    "entities": {
+      "competitor": "Wine Warehouse"
+    }
+  },
+  {
+    "text": "Brief me on Barcelona Wine Bar",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "Tell me about Barcelona",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "What's the opportunity at Barcelona Wine Bar?",
+    "intent": "opportunity_analysis",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "Brief me on Bin 100",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant"
+    }
+  },
+  {
+    "text": "What should I know about Bin 100 Restaurant?",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant"
+    }
+  },
+  {
+    "text": "Tell me about Spiga",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria"
+    }
+  },
+  {
+    "text": "What's missing from Bin 100's wine list?",
+    "intent": "gap_analysis",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant",
+      "analysis_type": "wine_list_gaps"
+    }
+  },
+  {
+    "text": "Who's the decision maker at Spiga?",
+    "intent": "contact_intelligence",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria",
+      "info_type": "decision_maker"
+    }
+  },
+  {
+    "text": "What Spanish wines can I sell to Barcelona?",
+    "intent": "product_opportunity",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "product_category": "Spanish wines"
+    }
+  },
+  {
+    "text": "When does Barcelona usually reorder?",
+    "intent": "timing_intelligence",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "info_type": "reorder_pattern"
+    }
+  },
+  {
+    "text": "What's the best approach for New Canaan customers?",
+    "intent": "market_strategy",
+    "entities": {
+      "location": "New Canaan",
+      "strategy_type": "customer_approach"
+    }
+  },
+  {
+    "text": "How do I compete with Wine Warehouse at Bin 100?",
+    "intent": "competitive_strategy",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant",
+      "competitor": "Wine Warehouse",
+      "strategy_type": "competitive_response"
+    }
+  },
+  {
+    "text": "What's the revenue opportunity at Spiga?",
+    "intent": "revenue_analysis",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria"
+    }
+  },
+  {
+    "text": "Tell me about Connecticut Distributors",
+    "intent": "distributor_intelligence",
+    "entities": {
+      "distributor_name": "Connecticut Distributors Inc."
+    }
+  },
+  {
+    "text": "Who should I contact at CDI?",
+    "intent": "contact_intelligence",
+    "entities": {
+      "distributor_name": "Connecticut Distributors Inc.",
+      "info_type": "key_contacts"
+    }
+  },
+  {
+    "text": "What's the total market size in Fairfield County?",
+    "intent": "market_analysis",
+    "entities": {
+      "location": "Fairfield County",
+      "analysis_type": "market_size"
+    }
+  },
+  {
+    "text": "Which distributor serves Barcelona Wine Bar?",
+    "intent": "distributor_mapping",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "What Italian wines work for Spiga's wealthy customers?",
+    "intent": "product_recommendation",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria",
+      "product_category": "Italian wines",
+      "customer_type": "wealthy"
+    }
+  },
+  {
+    "text": "How often does Bin 100 rotate their wine list?",
+    "intent": "timing_intelligence",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant",
+      "info_type": "wine_list_rotation"
+    }
+  },
+  {
+    "text": "What's Barcelona's Spanish wine program like?",
+    "intent": "program_analysis",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "program_type": "Spanish wine program"
+    }
+  },
+  {
+    "text": "Brief me on all my Fairfield County accounts",
+    "intent": "regional_briefing",
+    "entities": {
+      "location": "Fairfield County"
+    }
+  },
+  {
+    "text": "What premium opportunities exist at Spiga?",
+    "intent": "premium_opportunity",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria"
+    }
+  },
+  {
+    "text": "How do I position against chain restaurants at Bin 100?",
+    "intent": "competitive_positioning",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant",
+      "competitor_type": "chain restaurants"
+    }
+  },
+  {
+    "text": "What's the wine spend at these three restaurants?",
+    "intent": "financial_analysis",
+    "entities": {
+      "analysis_type": "wine_spend",
+      "scope": "multiple_customers"
+    }
+  },
+  {
+    "text": "Tell me about Missing Link Wine Company",
+    "intent": "distributor_intelligence",
+    "entities": {
+      "distributor_name": "Missing Link Wine Company"
+    }
+  },
+  {
+    "text": "What Portuguese wines could work at Barcelona?",
+    "intent": "expansion_opportunity",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "product_category": "Portuguese wines"
+    }
+  },
+  {
+    "text": "When should I call Dan at Spiga?",
+    "intent": "timing_strategy",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria",
+      "contact_name": "Dan"
+    }
+  },
+  {
+    "text": "What makes New Canaan different from other markets?",
+    "intent": "market_differentiation",
+    "entities": {
+      "location": "New Canaan"
+    }
+  },
+  {
+    "text": "How do I get an appointment with Barcelona's wine director?",
+    "intent": "appointment_strategy",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "contact_type": "wine director"
+    }
+  },
+  {
+    "text": "What's the competitive landscape in Milford?",
+    "intent": "competitive_landscape",
+    "entities": {
+      "location": "Milford"
+    }
+  },
+  {
+    "text": "Brief me on today's priorities",
+    "intent": "daily_priorities",
+    "entities": {}
+  },
+  {
+    "text": "What boutique Italian producers work for Bin 100?",
+    "intent": "product_recommendation",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant",
+      "product_category": "boutique Italian producers"
+    }
+  },
+  {
+    "text": "How big is Barcelona's wine program compared to competitors?",
+    "intent": "competitive_comparison",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar",
+      "comparison_type": "wine program size"
+    }
+  },
+  {
+    "text": "What's the best time to approach Spiga with premium wines?",
+    "intent": "timing_strategy",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria",
+      "product_category": "premium wines"
+    }
+  },
+  {
+    "text": "Tell me about Martignetti Companies",
+    "intent": "distributor_intelligence",
+    "entities": {
+      "distributor_name": "Martignetti Companies"
+    }
+  },
+  {
+    "text": "What wine education opportunities exist at Barcelona?",
+    "intent": "education_opportunity",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "How do I counter Costco's pricing at LeBella's?",
+    "intent": "pricing_strategy",
+    "entities": {
+      "customer_name": "LeBella's Fine Wine",
+      "competitor": "Costco"
+    }
+  },
+  {
+    "text": "What's my total addressable market in Connecticut?",
+    "intent": "market_size",
+    "entities": {
+      "location": "Connecticut"
+    }
+  },
+  {
+    "text": "Give me talking points for my Spiga meeting",
+    "intent": "meeting_preparation",
+    "entities": {
+      "customer_name": "Spiga Wine Bar & Salumeria"
+    }
+  },
+  {
+    "text": "Amy brief me on Barcelona Wine Bar",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "brief me on Barcelona Wine Bar",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Barcelona Wine Bar"
+    }
+  },
+  {
+    "text": "What is missing from Bin 100 wine list",
+    "intent": "gap_analysis",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant"
+    }
+  },
+  {
+    "text": "tell me about bin 100",
+    "intent": "customer_intelligence",
+    "entities": {
+      "customer_name": "Bin 100 Restaurant"
+    }
+  }
+]

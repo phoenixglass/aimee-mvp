@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wine Inventory Assistant - API Ready</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .mode-selector {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .mode-selector h3 {
+            color: white;
+            margin-bottom: 15px;
+        }
+        
+        .mode-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 150px;
+        }
+        
+        .mode-btn.local {
+            background: #28a745;
+            color: white;
+        }
+        
+        .mode-btn.api {
+            background: #007bff;
+            color: white;
+        }
+        
+        .mode-btn.active {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px 15px 0 0;
+            overflow: hidden;
+            margin-bottom: 0;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+        
+        .tab.active {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+        }
+        
+        .tab-content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 0 0 20px 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            min-height: 600px;
+        }
+        
+        .api-setup {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .api-setup h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .api-input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        
+        .login-section {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .login-section.show {
+            display: block;
+        }
+        
+        .login-form {
+            display: flex;
+            gap: 10px;
+            align-items: end;
+        }
+        
+        .login-form input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .mic-button {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+            font-size: 3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+        
+        .mic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+        
+        .mic-button.listening {
+            background: linear-gradient(45deg, #4ecdc4, #44a08d);
+            animation: pulse 1s infinite;
+        }
+        
+        .mic-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .status.idle { background: #e3f2fd; color: #1976d2; }
+        .status.listening { background: #e8f5e8; color: #388e3c; }
+        .status.processing { background: #fff3e0; color: #f57c00; }
+        .status.speaking { background: #fce4ec; color: #c2185b; }
+        .status.error { background: #ffebee; color: #c62828; }
+        .status.success { background: #e8f5e8; color: #2e7d32; }
+        
+        .query-display, .response-display {
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .query-display {
+            background: #f5f5f5;
+            font-style: italic;
+            color: #555;
+        }
+        
+        .response-display {
+            background: #e8f5e8;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-danger { background: #dc3545; color: white; }
+        .btn-secondary { background: #6c757d; color: white; }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .instructions {
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .simple-message {
+            text-align: center;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .simple-message h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .simple-message p {
+            color: #666;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .mode-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .mode-btn {
+                width: 200px;
+            }
+            
+            .mic-button {
+                width: 100px;
+                height: 100px;
+                font-size: 2.5em;
+            }
+            
+            .login-form {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>🍷 Wine Inventory Assistant</h1>
+            <p>Voice-controlled wine management system</p>
+        </div>
+        
+        <div class="mode-selector">
+            <h3>Choose Your Mode:</h3>
+            <div class="mode-buttons">
+                <button class="mode-btn local active" onclick="setMode('local')">
+                    📱 Local Mode<br>
+                    <small>Works offline, saves to this device</small>
+                </button>
+                <button class="mode-btn api" onclick="setMode('api')">
+                    🌐 Server Mode<br>
+                    <small>Syncs with your backend server</small>
+                </button>
+            </div>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('voice')">🎤 Voice Assistant</button>
+            <button class="tab" onclick="showTab('inventory')">📦 Inventory</button>
+            <button class="tab" onclick="showTab('history')">📊 History</button>
+            <button class="tab" onclick="showTab('setup')">⚙️ Setup</button>
+        </div>
+        
+        <div class="tab-content">
+            <!-- Voice Assistant Tab -->
+            <div id="voice-tab" class="tab-panel active">
+                <div class="api-setup">
+                    <h3>🔧 Voice API Configuration</h3>
+                    <input type="password" class="api-input" id="elevenLabsKey" placeholder="ElevenLabs API Key (sk_17254b66372cebc52de070e2d8584e0309333848556a0065)">
+                    <input type="text" class="api-input" id="voiceId" placeholder="Voice ID" value="rzsnuMd2pwYz1rGtMIVI">
+                    <input type="password" class="api-input" id="openAiKey" placeholder="OpenAI API Key for Whisper (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)">
+                </div>
+                
+                <div class="login-section" id="loginSection">
+                    <h3>🔐 Server Login</h3>
+                    <div class="login-form">
+                        <input type="text" id="username" placeholder="Username">
+                        <input type="password" id="password" placeholder="Password">
+                        <button class="btn btn-primary" onclick="login()">Login</button>
+                    </div>
+                </div>
+                
+                <div style="text-align: center;">
+                    <button class="mic-button" id="micButton">🎤</button>
+                    <div class="status idle" id="status">Configure your APIs above, then click the microphone</div>
+                    <div class="query-display" id="queryDisplay">Your question will appear here...</div>
+                    <div class="response-display" id="responseDisplay">Response will appear here...</div>
+                </div>
+                
+                <div class="instructions">
+                    <h3>Try asking:</h3>
+                    <ul>
+                        <li>"How much Pinot Noir do we have?"</li>
+                        <li>"What's the price of Cabernet Sauvignon?"</li>
+                        <li>"Who last ordered Syrah?"</li>
+                        <li>"Show me all wines"</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Inventory Tab -->
+            <div id="inventory-tab" class="tab-panel" style="display: none;">
+                <div id="inventoryContent">
+                    <div class="simple-message">
+                        <h2>Wine Inventory</h2>
+                        <p>Your wines will appear here. Use the voice assistant to query them, or switch to Server Mode to add/edit wines through a web interface.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Tab -->
+            <div id="history-tab" class="tab-panel" style="display: none;">
+                <div class="simple-message">
+                    <h2>Query History</h2>
+                    <p>Your voice queries and responses will be logged here.</p>
+                    <button class="btn btn-danger" onclick="clearHistory()" style="margin-top: 15px;">Clear History</button>
+                </div>
+                <div id="historyContent"></div>
+            </div>
+            
+            <!-- Setup Tab -->
+            <div id="setup-tab" class="tab-panel" style="display: none;">
+                <div class="api-setup">
+                    <h3>🌐 Server Configuration</h3>
+                    <input type="text" class="api-input" id="backendUrl" placeholder="Your Backend Server URL (e.g., https://your-app.railway.app)">
+                    <button class="btn btn-primary" onclick="testConnection()" style="margin-top: 10px;">Test Connection</button>
+                </div>
+                
+                <div class="simple-message">
+                    <h2>How to Set Up Server Mode</h2>
+                    <p><strong>Local Mode:</strong> Everything works on this device only. Perfect for testing.</p>
+                    <p><strong>Server Mode:</strong> Data syncs with your backend. Multiple people can use it.</p>
+                    <br>
+                    <p><strong>To enable Server Mode:</strong></p>
+                    <ol style="text-align: left; max-width: 600px; margin: 0 auto;">
+                        <li>Deploy the backend code I provided</li>
+                        <li>Enter your server URL above</li>
+                        <li>Test the connection</li>
+                        <li>Switch to "Server Mode" in the header</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentMode = 'local';
+        let authToken = null;
+        let wineInventory = [
+            {
+                id: 1,
+                wine_name: "Pinot Noir",
+                price: "$18",
+                inventory: 120,
+                customer_last_ordered: "Thompson Restaurant"
+            },
+            {
+                id: 2,
+                wine_name: "Cabernet Sauvignon",
+                price: "$35",
+                inventory: 12,
+                customer_last_ordered: "Johnson Winery"
+            },
+            {
+                id: 3,
+                wine_name: "Syrah",
+                price: "$25",
+                inventory: 0,
+                customer_last_ordered: "Westport Spirits"
+            }
+        ];
+
+        // DOM elements
+        const micButton = document.getElementById('micButton');
+        const status = document.getElementById('status');
+        const queryDisplay = document.getElementById('queryDisplay');
+        const responseDisplay = document.getElementById('responseDisplay');
+        
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // Mode management
+        function setMode(mode) {
+            currentMode = mode;
+            
+            // Update button states
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.mode-btn.${mode}`).classList.add('active');
+            
+            // Show/hide login section
+            const loginSection = document.getElementById('loginSection');
+            if (mode === 'api') {
+                loginSection.classList.add('show');
+                setStatus('Server mode enabled. Login required.', 'idle');
+            } else {
+                loginSection.classList.remove('show');
+                setStatus('Local mode enabled. Click microphone to start.', 'idle');
+            }
+        }
+
+        // API functions
+        async function apiRequest(endpoint, options = {}) {
+            const backendUrl = document.getElementById('backendUrl').value;
+            if (!backendUrl) {
+                throw new Error('No backend URL configured');
+            }
+
+            const url = `${backendUrl}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...options.headers,
+                },
+                ...options,
+            };
+
+            if (authToken) {
+                config.headers.Authorization = `Bearer ${authToken}`;
+            }
+
+            const response = await fetch(url, config);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return await response.json();
+        }
+
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if (!username || !password) {
+                setStatus('Please enter username and password', 'error');
+                return;
+            }
+
+            try {
+                setStatus('Logging in...', 'processing');
+                const response = await apiRequest('/api/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ username, password }),
+                });
+                
+                authToken = response.token;
+                localStorage.setItem('authToken', authToken);
+                setStatus('Logged in successfully!', 'success');
+                
+                // Load data from server
+                await loadInventoryFromServer();
+                
+            } catch (error) {
+                console.error('Login failed:', error);
+                setStatus('Login failed. Check credentials and server URL.', 'error');
+            }
+        }
+
+        async function testConnection() {
+            try {
+                setStatus('Testing connection...', 'processing');
+                const response = await apiRequest('/');
+                setStatus('✅ Connection successful!', 'success');
+            } catch (error) {
+                setStatus('❌ Connection failed. Check your server URL.', 'error');
+            }
+        }
+
+        async function loadInventoryFromServer() {
+            if (currentMode !== 'api' || !authToken) return;
+            
+            try {
+                wineInventory = await apiRequest('/api/inventory');
+                updateInventoryDisplay();
+            } catch (error) {
+                console.error('Failed to load inventory:', error);
+            }
+        }
+
+        async function logToServer(query, response) {
+            if (currentMode !== 'api' || !authToken) return;
+            
+            try {
+                await apiRequest('/api/logs', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        query,
+                        response,
+                        timestamp: new Date().toISOString()
+                    }),
+                });
+            } catch (error) {
+                console.error('Failed to log to server:', error);
+            }
+        }
+
+        // Local storage functions
+        function loadFromLocalStorage() {
+            const saved = localStorage.getItem('wineInventory');
+            if (saved) {
+                wineInventory = JSON.parse(saved);
+            }
+            
+            // Load API keys
+            const savedElevenLabs = localStorage.getItem('elevenLabsKey');
+            const savedOpenAI = localStorage.getItem('openAiKey');
+            if (savedElevenLabs) document.getElementById('elevenLabsKey').value = savedElevenLabs;
+            if (savedOpenAI) document.getElementById('openAiKey').value = savedOpenAI;
+            
+            // Load auth token
+            const savedToken = localStorage.getItem('authToken');
+            if (savedToken) authToken = savedToken;
+        }
+
+        function saveToLocalStorage() {
+            if (currentMode === 'local') {
+                localStorage.setItem('wineInventory', JSON.stringify(wineInventory));
+            }
+        }
+
+        function logInteraction(query, response) {
+            const timestamp = new Date().toISOString();
+            const logEntry = { timestamp, query, response };
+            
+            // Always save to localStorage
+            const logs = JSON.parse(localStorage.getItem('queryLogs') || '[]');
+            logs.unshift(logEntry);
+            localStorage.setItem('queryLogs', JSON.stringify(logs.slice(0, 100)));
+            
+            // Also save to server if in API mode
+            logToServer(query, response);
+            
+            updateHistoryDisplay();
+        }
+
+        // Wine query logic
+        function findInfo(query) {
+            const queryLower = query.toLowerCase();
+            
+            // Check for customer queries
+            for (const wine of wineInventory) {
+                const customer = wine.customer_last_ordered.toLowerCase();
+                if (queryLower.includes(customer) || customer.split(' ').some(word => queryLower.includes(word))) {
+                    return `${wine.customer_last_ordered} last ordered ${wine.wine_name}.`;
+                }
+            }
+
+            // Check for wine-specific queries
+            for (const wine of wineInventory) {
+                const wineName = wine.wine_name.toLowerCase();
+                const wineWords = wineName.split(' ');
+                
+                if (queryLower.includes(wineName) || 
+                    wineWords.some(word => queryLower.includes(word))) {
+                    
+                    if (queryLower.includes('inventory') || queryLower.includes('stock') || 
+                        queryLower.includes('how many') || queryLower.includes('how much')) {
+                        return `We have ${wine.inventory} bottles of ${wine.wine_name} in stock.`;
+                    } else if (queryLower.includes('price') || queryLower.includes('cost')) {
+                        return `The price of ${wine.wine_name} is ${wine.price}.`;
+                    } else if (queryLower.includes('ordered') || queryLower.includes('customer') || queryLower.includes('who')) {
+                        return `The last customer to order ${wine.wine_name} was ${wine.customer_last_ordered}.`;
+                    } else {
+                        return `${wine.wine_name}: ${wine.inventory} bottles at ${wine.price} (last ordered by ${wine.customer_last_ordered})`;
+                    }
+                }
+            }
+
+            // Show all wines
+            if (queryLower.includes('show') || queryLower.includes('all') || queryLower.includes('list')) {
+                return "Here's our complete wine inventory: " + 
+                       wineInventory.map(w => `${w.wine_name} (${w.inventory} bottles at ${w.price})`).join(', ');
+            }
+
+            return "Sorry, I couldn't find information about that wine or customer.";
+        }
+
+        // Speech functions
+        async function speakWithElevenLabs(text) {
+            const apiKey = document.getElementById('elevenLabsKey').value;
+            const voiceId = document.getElementById('voiceId').value;
+            
+            if (!apiKey || !voiceId) {
+                setStatus('Please enter your ElevenLabs API key and Voice ID', 'error');
+                return;
+            }
+
+            try {
+                setStatus('Speaking...', 'speaking');
+                
+                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+                    method: 'POST',
+                    headers: {
+                        'xi-api-key': apiKey,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.75
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    const audioBlob = await response.blob();
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    
+                    audio.onended = () => {
+                        URL.revokeObjectURL(audioUrl);
+                        setStatus('Click the microphone to ask another question', 'idle');
+                    };
+                    
+                    await audio.play();
+                } else {
+                    throw new Error(`ElevenLabs API error: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('ElevenLabs error:', error);
+                setStatus('Speech synthesis failed', 'error');
+            }
+        }
+
+        async function transcribeWithWhisper(audioBlob) {
+            const apiKey = document.getElementById('openAiKey').value;
+            
+            if (!apiKey) {
+                setStatus('Please enter your OpenAI API key', 'error');
+                return null;
+            }
+
+            try {
+                const formData = new FormData();
+                formData.append('file', audioBlob, 'audio.wav');
+                formData.append('model', 'whisper-1');
+
+                const response = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    return result.text;
+                } else {
+                    throw new Error(`Whisper API error: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Whisper error:', error);
+                setStatus('Speech recognition failed', 'error');
+                return null;
+            }
+        }
+
+        // Recording functions
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    setStatus('Processing speech...', 'processing');
+                    
+                    const transcription = await transcribeWithWhisper(audioBlob);
+                    if (transcription) {
+                        queryDisplay.textContent = transcription;
+                        const response = findInfo(transcription);
+                        responseDisplay.textContent = response;
+                        
+                        logInteraction(transcription, response);
+                        await speakWithElevenLabs(response);
+                    }
+                    
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                micButton.classList.add('listening');
+                setStatus('Listening... Click to stop', 'listening');
+                
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                setStatus('Microphone access denied', 'error');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                micButton.classList.remove('listening');
+            }
+        }
+
+        // UI functions
+        function setStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+        }
+
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.style.display = 'none';
+            });
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName + '-tab').style.display = 'block';
+            event.target.classList.add('active');
+            
+            if (tabName === 'inventory') {
+                updateInventoryDisplay();
+            } else if (tabName === 'history') {
+                updateHistoryDisplay();
+            }
+        }
+
+        function updateInventoryDisplay() {
+            const content = document.getElementById('inventoryContent');
+            content.innerHTML = `
+                <h2>Current Inventory</h2>
+                ${wineInventory.map(wine => `
+                    <div style="background: #f8f9fa; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #667eea;">
+                        <strong>${wine.wine_name}</strong><br>
+                        ${wine.price} • ${wine.inventory} bottles in stock<br>
+                        <small>Last ordered by: ${wine.customer_last_ordered}</small>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function updateHistoryDisplay() {
+            const logs = JSON.parse(localStorage.getItem('queryLogs') || '[]');
+            const content = document.getElementById('historyContent');
+            
+            if (logs.length === 0) {
+                content.innerHTML = '<p style="text-align: center; color: #666; padding: 20px;">No queries yet. Start using the voice assistant!</p>';
+                return;
+            }
+            
+            content.innerHTML = logs.map(log => `
+                <div style="border-bottom: 1px solid #eee; padding: 15px 0;">
+                    <div style="font-size: 0.8em; color: #666; margin-bottom: 5px;">${new Date(log.timestamp).toLocaleString()}</div>
+                    <div style="font-weight: bold; color: #333; margin-bottom: 5px;">Q: ${log.query}</div>
+                    <div style="color: #555; font-style: italic;">A: ${log.response}</div>
+                </div>
+            `).join('');
+        }
+
+        function clearHistory() {
+            if (confirm('Are you sure you want to clear all query history?')) {
+                localStorage.removeItem('queryLogs');
+                updateHistoryDisplay();
+            }
+        }
+
+        // Event listeners
+        micButton.addEventListener('click', () => {
+            if (!isRecording) {
+                startRecording();
+            } else {
+                stopRecording();
+            }
+        });
+
+        // Save API keys when changed
+        document.getElementById('elevenLabsKey').addEventListener('change', (e) => {
+            localStorage.setItem('elevenLabsKey', e.target.value);
+        });
+
+        document.getElementById('openAiKey').addEventListener('change', (e) => {
+            localStorage.setItem('openAiKey', e.target.value);
+        });
+
+        // Initialize app
+        function init() {
+            loadFromLocalStorage();
+            updateInventoryDisplay();
+            updateHistoryDisplay();
+            setStatus('Ready! Configure your APIs and click the microphone.', 'idle');
+        }
+
+        // Start the app when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

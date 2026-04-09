@@ -1,0 +1,227 @@
+{
+  "clip_005": {
+    "transcript": "Amy, I need to send three cases of Chateau de Bocastel, Rouge, Chateau de Nouveau de Pupp. It needs to be 2019 vintage. And did I say three cases? Yes, it needs to be three cases. Please, tomorrow, to Acme, Wine and Lickers. And please confirm.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_006": {
+    "transcript": "Hey Amy, LeBella's customer customer, I don't know the customer number, it's LeBella's fine wine and spirits, you find it and make it happen please. They need seven bottles of Charchoos green delivered tomorrow, please. And thank you. Send me a confirmation text and email at your earliest convenience.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_007": {
+    "transcript": "Amy, please send an email to purchasing. Can you also see Franklin, Co-brand Regional Manager as well on that? Subject line need to focus. That's, quote, need to focus. End quote. Ask them for an update, be polite, but also make them aware that I need this by the end of day. Thank you, and don't forget to see C.C. Paul.",
+    "intent": "send_email",
+    "tone": "polite"
+  },
+  "clip_008": {
+    "transcript": "Amy, my competitor ran out of Frenet Bronca. Can you recommend something to me similar in profile and in taste? Preferably something that has a lower cost per ounce. Never less send me all options, send to my email and text. Thank you.",
+    "intent": "product_recommendation",
+    "tone": "casual"
+  },
+  "clip_009": {
+    "transcript": "Amy, one of my beverage directors is looking for a gin. However, they want the gin to be, what they say, less junipery. So can you please find me some jins that have less juniper than otherwise? Send it to my email, please. And text to me. Thank you.",
+    "intent": "product_recommendation",
+    "tone": "polite"
+  },
+  "clip_011": {
+    "transcript": "Amy, I have a very important account looking for a very important gift for a very important client. It's a wedding gift. It's a mother to daughter gift. It's a special bottle of champagne. The vintage needs to be 1982 as best as we have. Let me know, okay? Just send it to my email.",
+    "intent": "gift_request",
+    "tone": "polite"
+  },
+  "clip_012": {
+    "transcript": "Hey Amy, I don't have an order. I'm just looking for an ETA on the following item number. It's item number one, three, two, two, four. The item is, it's a Jean-Marc Crochet Sans-Cé at 2023. Is that still in port in France or on the water or give me your best? Thanks. Bye.",
+    "intent": "check_shipment_status",
+    "tone": "casual"
+  },
+  "clip_014": {
+    "transcript": "Amy, I need a SF delivery and SF order, excuse me, to deliver two customer 715602 greens, farms and Westport. I need April pricing and I need 11 cases of Jordan, Shardinay 750 of course for Wednesday May 16th delivery. Please. Thank you. Please confirm my email.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_015": {
+    "transcript": "Amy, please put an order for DB Fine Wine for tomorrow delivery for seven cases of Vega Cecilia Unico 2012, 750 on out, please. Thank you. Please confirm with an email.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_016": {
+    "transcript": "Amy, again, I'm sorry to bother you with this. I normally use you for a point of sale, but again my phone fell in between my car seat and my console. I'm coming home from a tasting and my wife asked me to be home at 6.30 pm. Could you please text her, let her know that I'm running 10 minutes behind and that my phone is stuck in between my car seat and my console. Thanks.",
+    "intent": "send_text",
+    "tone": "polite"
+  },
+  "clip_017": {
+    "transcript": "Hey Amy, I know I don't usually use this, use you for this sort of thing but I'm stuck in traffic and my phone fell in between my car seat and the console so I can't reach it so I know you're the only app that responds to my voice competently. Could you reach out to the buyer from my next appointment my 3pm in Greenwich and tell them cordially please that I'm going to be roughly 15 to 20 minutes late due to a traffic situation caused by a crash here in Daryan about exit 11. Thank you.",
+    "intent": "send_text",
+    "tone": "polite"
+  },
+  "clip_018": {
+    "transcript": "Amy, I have a basement, dweller, customer looking for the cheapest possible bubbles we have. All right? Check what's available, check with our suppliers, and see what we have in stock in the warehouse. If it's over $52, a case they don't want to see it. So what you got, Amy, thanks, bye.",
+    "intent": "check_inventory",
+    "tone": "casual"
+  },
+  "clip_019": {
+    "transcript": "Amy Blackstone's Steakhouse is saying that they received half bottles of Antenora Tinello 2022 when they ordered 750 MLs. Could you please advise on that and while you're at it can you please put a pickup in for the 375 case please? That's invoice 7610434 and please follow up with a confirmation email. Appreciate you thank you.",
+    "intent": "check_invoice",
+    "tone": "polite"
+  },
+  "clip_020": {
+    "transcript": "Amy, horse neck, wine and spirits needs 55 cases of Domain-Aut Chateau de Salle, Rosé 2023 delivered tomorrow. Okay? Please confirm that you got this message. Thank you.",
+    "intent": "add_to_order",
+    "tone": "urgent"
+  },
+  "clip_021": {
+    "transcript": "Amy, I didn't do my homework last night. I really need your help. I need you to give me the top 100 SKU for the zip code 06-855, please. I have a new store opening and I think this could really nail down our place in the pecking order. So as soon as you can get that to me, please forward it. Thank you.",
+    "intent": "research_product",
+    "tone": "polite"
+  },
+  "clip_022": {
+    "transcript": "Clive, sorry to disturb you. Yes, Pleasantry Yacht Club on Essex is going to need a pallet, an entire pallet, yes. Of the Long Island Express Rose that we have. Hold it please until Thursday and we'll build out for Friday. And I truck going that way of course. You know logistics and all. We're delivering once a week to one sector of the state of course. Anyway, please confirm you received this message. Thank you and good afternoon.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_023": {
+    "transcript": "Amy, I need a list compiled of all current vintage ports that we have in stock. Nothing under a six pack, okay? Please don't waste my time. I need to know, also separate them by organic, biodynamic, sustainable, regenerative farming, or conventional, all right? Thank you. And make sure you CC Paul.",
+    "intent": "check_inventory",
+    "tone": "polite"
+  },
+  "clip_024": {
+    "transcript": "Amy, contact the TDM for cake bread vineyards. Ask them if they could forward a six month pricing grid. Please, I'm getting requests from some pretty solid retailers. I'd like to have an answer by the end of the day. So if you could mark the email, high importance. Thank you, Amy.",
+    "intent": "send_email",
+    "tone": "urgent"
+  },
+  "clip_026": {
+    "transcript": "Amy, please put together a cell sheet for the, um, all the sancer that we have in stock that worldwide brings in. The price point has to be under 380, a case, okay? Don't give me anything over that. 380 and under has to be in stock and we also have to have, um, more than 25 cases on hand. All right? All right, let me know. Thank you.",
+    "intent": "check_inventory",
+    "tone": "polite"
+  },
+  "clip_027": {
+    "transcript": "Amy, for tomorrow, May 12th Friday, delivery, it's super important. Mother's Day, I need for you to execute a five case order of AIX or X Rose de Provence 2020-24 needs to be shipped to Blackstone, not Blackstone's Grill, Blackstone's Statecast, so it's 788-811, not Southport, Norwalk. Thank you, again, confirm and also CC Paul. Thank you.",
+    "intent": "add_to_order",
+    "tone": "urgent"
+  },
+  "clip_028": {
+    "transcript": "Hi Amy, I noticed we're running low on domain at Bando Chateau, Ramassan 2021. I want to secure the last five cases. I want you to send it to Roe and see food. That's customer seven, four, five, three, two, four. And I want you to send it for the last day of the month, the last day of June. Sorry. Again, send a confirmation email to me and text and also copy Paul Bern. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_029": {
+    "transcript": "Hey Amy, whoa, whoa, that was the biggest B I've ever seen. Wow, right by my head. Anyway, this order is for Westport wine and spirits. It's for tomorrow, Wednesday, May 12th delivery. I need one case of Tanuta Sanguido, Sasekaya 2021. Please, that's one six back of Sanguido, Sasekaya 2021. Please, confirm to email in text. Thank you, Amy.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_031": {
+    "transcript": "Hey Amy, I just tasted Dan at Dan's wine and liquors in Darianne on some Diffy gin. He really loved it. He doesn't have any room for it right now, but I want you to make a note and set a reminder for a week from now same time for directly to my phone and my email. And CC Paul on that reminder as well, just in case. I really want to make sure we close on this Diffy gin. It's really special. It's from Wales. It's hand harvested and harvested in a national forest as well. So it's really special. Why don't you taste it you'll know. I look forward to it. Bye.",
+    "intent": "set_reminder",
+    "tone": "casual"
+  },
+  "clip_033": {
+    "transcript": "Hi Amy, just really quick. I need three cases of Gurgich Hill's Fume Blanc delivered to Putnam-Wine spirits for tomorrow June 6th delivery. Please send a confirmed email and text to me as soon as you can. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_034": {
+    "transcript": "Amy, Greenwich, wine and spirits needs two pallets. That's 112 cases of Cavett, Pinot Grigio, 1.5 liter bottles delivered on Thursday. They needed delivered as early as possible. If you can coordinate with the warehouse, that would be great. Please CC Debbie on this email. Also, CC Brian in the warehouse and specifically asked for a merchandise or to meet the truck. All right. I want to confirmation email from all parties or at least a red receipt by end of day. Thank you and please do not forget to CC Paul.",
+    "intent": "add_to_order",
+    "tone": "urgent"
+  },
+  "clip_036": {
+    "transcript": "Hi Amy. Can you email Antonella in purchasing and let her know that Paul's fine wine and spirits and gran age, customer 7156000 wants to pre-order off of the Frederick Wildman. We offer for burgundy 7 bottles of the Russo Shembo, Shem Barton, I think it's called, and three bottles of the Mazzi Shem Barton 2019. Thank you. Please confirm and also don't forget to see Paul burn.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_037": {
+    "transcript": "Hey Amy, I need to email head of compliance. It looks like our customer number 703244 was charged the wrong price. The customers are asking for credit and for it to be issued promptly. The item in question was seven cases of Masher Ali, Motopacana da Bruto 2022. It's item 74432. If we can get this squared away promptly, I'm sure the customer will be very generous with his gratitude. Thank you.",
+    "intent": "send_email",
+    "tone": "unknown"
+  },
+  "clip_038": {
+    "transcript": "Hey Amy, our customers at branch street wine and liquor, they need 10 cases of... Oh, the Casa La Postole, Cabernet from... Alexander Vineyard 2021. 10 cases of that. Please confirm to me and of course, Suicy Paul. Thanks.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_039": {
+    "transcript": "Amy Elm needs access to one of the reserve wines that we have for them. It's the Domanda Véday, Newi Saint-George 2016. We need to ship six bottles out of that reserve to Elm for Friday, June 17th delivery. And while you're at it, please extend the reserve for the remaining six bottles to August 1st, that's 8125. Thank you and don't forget to see see Paul with confirmation. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_049": {
+    "transcript": "Amy, you made a mistake yesterday. You sent, you sent customer 7, 75109, 99 bottles, Westport. You sent them the wrong size of the Paul Buies terrain. It needed to be 750s. You sent half bottles, 3759. I need to pick up for the 375s and I need you to re-ship or finally ship the Paul Buies terrain 7509. Please. Thank you and for tomorrow. Again, confirm to my email and text.",
+    "intent": "correct_order",
+    "tone": "polite"
+  },
+  "clip_050": {
+    "transcript": "Amy please email credit department let them know that I collected a check for customer 703333 that's Blackstone Grille Southport let them know that I collected the entire past due and I have a order scheduled for tomorrow delivery it just needs to arrive with net 30 terms thanks again confirmation to my email and text thank you",
+    "intent": "send_email",
+    "tone": "polite"
+  },
+  "clip_051": {
+    "transcript": "Hey there, Amy. Pass this message along to the credit department and compliance. I want to let them know that customer 795542 has given me a certified bank check with the payoff amount for his entire balance. So please take note of that. There will be deposit coming soon. Amy, please give me a receipt on this email. A red receipt. Thank you.",
+    "intent": "send_email",
+    "tone": "polite"
+  },
+  "clip_052": {
+    "transcript": "Hey Amy, I just got a call from Bev Director down on Grantedjav. This order is not for us, it's for one of my colleagues, but it's very important that it arrives in the morning before 10 a.m. I need a bottle of Hennessy Peralis in the gift bottle, gift pack, excuse me, and that needs to be with the co-pack with the Crystal Stems arrive with it. Alright, thank you, send the confirmation email out and also send it to my phone. Thank you.",
+    "intent": "add_to_order",
+    "tone": "urgent"
+  },
+  "clip_054": {
+    "transcript": "Amy, I have a Bev Director over at Hennoki. Excuse me. Hennoki's sushi. Oh my God, oh this guy almost just hit me. Jesus. How did anyone just get their license now? Oh my God. Anyway, I need, I forgot exactly what I was going to, oh that's right. The buyer at Hennoki sushi wants a sample of drum, shembo, gum powder, Irish gin. Please put that on the next sample request form. Thank you. Send a confirmation text and email to me. Thank you.",
+    "intent": "sample_request",
+    "tone": "polite"
+  },
+  "clip_069": {
+    "transcript": "Amy, sorry about the background, noisy landscapers, just cutting the grass around my office. I need to know when the on-premure offering is going to arrive from Bordeaux. I'm looking for 2023, obviously, you know that. And need to know because prices are changing and the dollar and euro are obviously in flux with each other. So please get that to me as soon as possible. Thank you very much. Goodbye.",
+    "intent": "check_shipment_status",
+    "tone": "polite"
+  },
+  "clip_070": {
+    "transcript": "Amy, I'm getting a lot of questions regarding Chateau de Boca, Coude de laie de Boca, 2023 vintage. What's the ETA on that? Has that left France yet? Or is it still stuck in port? Will that be affected by tariffs? Or are we holding on price? Can you update me please with your most recent information? Appreciate it. Thank you.",
+    "intent": "check_shipment_status",
+    "tone": "polite"
+  },
+  "clip_071": {
+    "transcript": "Amy, Akmi needs 10 cases of Lovey FM, Rose Magbams delivered tomorrow. Please make it happen. Thanks.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_017": {
+    "transcript": "Amy, Akmi needs 10 cases of Lovey FM, Rose Magbams, and 5 cases of Domaine de Soiree. Please deliver by Friday.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "wine_001": {
+    "transcript": "I want something fruity and light",
+    "intent": "taste_preference_query",
+    "tone": "neutral"
+  },
+  "wine_002": {
+    "transcript": "Find me a bold red wine",
+    "intent": "taste_preference_query", 
+    "tone": "neutral"
+  },
+  "wine_003": {
+    "transcript": "I need something crisp for seafood",
+    "intent": "wine_pairing_request",
+    "tone": "neutral"
+  },
+  "wine_004": {
+    "transcript": "What wine goes with salmon?",
+    "intent": "wine_pairing_request",
+    "tone": "neutral"
+  },
+  "wine_005": {
+    "transcript": "What wine pairs with celebration?",
+    "intent": "wine_pairing_request",
+    "tone": "neutral"
+  },
+  "wine_006": {
+    "transcript": "Tell me about this wine's flavor profile",
+    "intent": "flavor_profile_inquiry",
+    "tone": "neutral"
+  },
+  "wine_007": {
+    "transcript": "I love Pinot Noir, what's similar?",
+    "intent": "taste_based_recommendation",
+    "tone": "neutral"
+  }
+}

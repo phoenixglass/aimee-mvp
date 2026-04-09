@@ -1,0 +1,48 @@
+2025-06-09 06:03:37,688 - AIMEE_ENGINE - INFO - ================================================================================
+2025-06-09 06:03:37,705 - AIMEE_ENGINE - INFO -   spanish: 258 examples (85.7%)
+2025-06-09 06:03:37,705 - AIMEE_ENGINE - INFO -   french: 12 examples (4.0%)
+2025-06-09 06:03:37,705 - AIMEE_ENGINE - INFO -   portuguese: 12 examples (4.0%)
+2025-06-09 06:03:37,705 - AIMEE_ENGINE - INFO -   russian: 10 examples (3.3%)
+2025-06-09 06:03:37,705 - AIMEE_ENGINE - INFO -   chinese: 6 examples (2.0%)
+2025-06-09 06:03:37,706 - AIMEE_ENGINE - INFO -   korean: 2 examples (0.7%)
+2025-06-09 06:03:37,706 - AIMEE_ENGINE - INFO -   swedish: 1 examples (0.3%)
+2025-06-09 06:03:37,708 - AIMEE_ENGINE - INFO - ======================================================================
+2025-06-09 06:03:37,713 - AIMEE_ENGINE - INFO -   quality_judgment: 73 examples (24.3%)
+2025-06-09 06:03:37,713 - AIMEE_ENGINE - INFO -   pairing_suggestion: 29 examples (9.6%)
+2025-06-09 06:03:37,713 - AIMEE_ENGINE - INFO -   taste_profile: 141 examples (46.8%)
+2025-06-09 06:03:37,713 - AIMEE_ENGINE - INFO -   price_comment: 25 examples (8.3%)
+2025-06-09 06:03:37,720 - AIMEE_ENGINE - INFO -   Avg words per input: 17.7
+2025-06-09 06:03:37,720 - AIMEE_ENGINE - INFO -   Punctuation rate: 85.0%
+2025-06-09 06:03:37,720 - AIMEE_ENGINE - INFO -   Contraction rate: 1.7%
+2025-06-09 06:03:37,723 - AIMEE_ENGINE - INFO -   Samples with entities: 2/301
+2025-06-09 06:03:37,723 - AIMEE_ENGINE - INFO -   Avg entities per sample: 0.02
+2025-06-09 06:03:37,725 - AIMEE_ENGINE - INFO - ==================================================
+2025-06-09 06:03:37,727 - AIMEE_ENGINE - WARNING -    Recommendation: Balance high-frequency intents for optimal performance
+2025-06-09 06:03:37,792 - AIMEE_ENGINE - INFO - ============================================================
+2025-06-09 06:03:37,801 - AIMEE_ENGINE - INFO -   Train: 195 samples
+2025-06-09 06:03:37,801 - AIMEE_ENGINE - INFO -   Validation: 45 samples
+2025-06-09 06:03:37,801 - AIMEE_ENGINE - INFO -   Test: 61 samples
+2025-06-09 06:03:37,802 - AIMEE_ENGINE - INFO -   Training logistic_regression...
+2025-06-09 06:03:40,035 - AIMEE_ENGINE - INFO -     CV F1: 0.370 ± 0.050
+2025-06-09 06:03:40,035 - AIMEE_ENGINE - INFO -     Val F1: 0.311, Accuracy: 0.467
+2025-06-09 06:03:40,035 - AIMEE_ENGINE - INFO -     Speed: 0.03ms
+2025-06-09 06:03:40,035 - AIMEE_ENGINE - INFO -   Training random_forest...
+2025-06-09 06:03:42,308 - AIMEE_ENGINE - INFO -     CV F1: 0.422 ± 0.054
+2025-06-09 06:03:42,309 - AIMEE_ENGINE - INFO -     Val F1: 0.358, Accuracy: 0.467
+2025-06-09 06:03:42,309 - AIMEE_ENGINE - INFO -     Speed: 4.17ms
+2025-06-09 06:03:42,309 - AIMEE_ENGINE - INFO -   Training extra_trees...
+2025-06-09 06:03:44,466 - AIMEE_ENGINE - INFO -     CV F1: 0.462 ± 0.063
+2025-06-09 06:03:44,467 - AIMEE_ENGINE - INFO -     Val F1: 0.430, Accuracy: 0.511
+2025-06-09 06:03:44,467 - AIMEE_ENGINE - INFO -     Speed: 3.06ms
+2025-06-09 06:03:44,467 - AIMEE_ENGINE - INFO -   Training gradient_boosting...
+2025-06-09 06:03:57,595 - AIMEE_ENGINE - INFO -     CV F1: 0.457 ± 0.068
+2025-06-09 06:03:57,595 - AIMEE_ENGINE - INFO -     Val F1: 0.457, Accuracy: 0.511
+2025-06-09 06:03:57,596 - AIMEE_ENGINE - INFO -     Speed: 0.07ms
+2025-06-09 06:03:57,597 - AIMEE_ENGINE - INFO -   Training complement_nb...
+2025-06-09 06:03:57,628 - AIMEE_ENGINE - INFO -     CV F1: 0.466 ± 0.047
+2025-06-09 06:03:57,628 - AIMEE_ENGINE - INFO -     Val F1: 0.308, Accuracy: 0.333
+2025-06-09 06:03:57,628 - AIMEE_ENGINE - INFO -     Speed: 0.03ms
+2025-06-09 06:03:57,629 - AIMEE_ENGINE - INFO -   Training svm_linear...
+2025-06-09 06:03:57,809 - AIMEE_ENGINE - INFO -     CV F1: 0.375 ± 0.035
+2025-06-09 06:03:57,810 - AIMEE_ENGINE - INFO -     Val F1: 0.319, Accuracy: 0.333
+2025-06-09 06:03:57,810 - AIMEE_ENGINE - INFO -     Speed: 0.04ms

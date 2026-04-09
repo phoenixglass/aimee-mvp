@@ -1,0 +1,64 @@
+1
+00:00:000 --> 00:00:050
+Wine sales reps waste hours every week on admin. Updating call notes. Tracking inventory. Remembering who to follow up with...
+
+2
+00:00:050 --> 00:00:080
+Meet Aimee. Your voice-powered sales assistant—trained for the wine industry.
+
+3
+00:00:080 --> 00:00:120
+Hey Aimee, how many bottles of the 2021 Sylvain Dussort Meursault Vieilles Vignes do I have left?
+
+4
+00:00:120 --> 00:00:170
+You’ve got 12 bottles of the 2021 Sylvain Dussort Meursault Vieilles Vignes left in inventory. It’s part of a tight allocation, mostly earmarked for somm-driven accounts.
+
+5
+00:00:170 --> 00:00:200
+She knows your inventory—without opening a single spreadsheet.
+
+6
+00:00:200 --> 00:00:230
+Aimee, did I talk to Robert Kingston about the Gran Reserva 904?
+
+7
+00:00:230 --> 00:00:270
+Yes. Last month, Robert Kingston asked about the 2015 La Rioja Alta Gran Reserva 904. You told him you’d circle back once stock was replenished.
+
+8
+00:00:270 --> 00:00:300
+She remembers every detail—even when you don’t.
+
+9
+00:00:300 --> 00:00:320
+Aimee, send him a follow-up.
+
+10
+00:00:320 --> 00:00:380
+Email ready: ‘Hi Robert—We’ve just received 30 bottles of the 2015 Gran Reserva 904. Outstanding vintage, 96 points, and ready to move. Would you like me to hold some for you?’ Ready to send?
+
+11
+00:00:380 --> 00:00:400
+No typing. No CRM. Just sales.
+
+12
+00:00:400 --> 00:00:420
+Aimee, log that I followed up on Rioja.
+
+13
+00:00:420 --> 00:00:450
+Got it. Follow-up with Robert Kingston about Gran Reserva 904 logged for June 22nd.
+
+14
+00:00:450 --> 00:00:480
+Aimee updates your CRM behind the scenes.
+
+15
+00:00:480 --> 00:00:510
+This is what sales should feel like.
+
+16
+00:00:510 --> 00:00:550
+Aimee: Your smartest rep. Always listening. Never forgetting. Book your test drive today.
+

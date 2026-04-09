@@ -1,0 +1,261 @@
+{"text": "Did we ever ship that 2020 Barolo to Le Bella\u2019s?", "intent": "check_shipment_status", "tone": "curious", "entities": []}
+{"text": "Check if the Blackstone order was delivered yet.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "What\u2019s the ETA on the Ridge Zin for Bin 100?", "intent": "check_shipment_status", "tone": "curious", "entities": []}
+{"text": "Can you shoot a follow-up email to Blackstones about their order?", "intent": "send_email", "tone": "neutral", "entities": []}
+{"text": "Send a thank-you email to the sommelier at Elm.", "intent": "send_email", "tone": "polite", "entities": []}
+{"text": "Email Dan from Spiga about the Tuscan allocation.", "intent": "send_email", "tone": "neutral", "entities": []}
+{"text": "Remind me to call the buyer at Horse Neck tomorrow morning.", "intent": "set_reminder", "tone": "neutral", "entities": []}
+{"text": "Set a reminder for our Friday tasting with Rebecca\u2019s.", "intent": "set_reminder", "tone": "neutral", "entities": []}
+{"text": "Ping me next week to check in with Missing Link.", "intent": "set_reminder", "tone": "neutral", "entities": []}
+{"text": "They want a sample of something bold but not too dry \u2014 what should I bring?", "intent": "product_recommendation", "tone": "curious", "entities": []}
+{"text": "Bring a sparkling ros\u00e9 sample to 99 Bottles.", "intent": "sample_request", "tone": "neutral", "entities": []}
+{"text": "Drop off that Cabernet sample at The Cottage in Westport.", "intent": "sample_request", "tone": "neutral", "entities": []}
+{"text": "Customer is asking for a wine gift under $60 \u2014 any recs?", "intent": "gift_request", "tone": "curious", "entities": []}
+{"text": "Find me something elegant to give a client \u2014 nothing too sweet.", "intent": "gift_request", "tone": "neutral", "entities": []}
+{"text": "They need a corporate gift \u2014 red, French, $100 budget.", "intent": "gift_request", "tone": "neutral", "entities": []}
+{"text": "Recommend a white Burgundy for a seafood-focused tasting menu.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "What\u2019s a crowd-pleaser red with medium tannins?", "intent": "product_recommendation", "tone": "curious", "entities": []}
+{"text": "Suggest a Napa Cab that drinks above its price.", "intent": "product_recommendation", "tone": "neutral", "entities": []}
+{"text": "What pairs well with grilled lamb and rosemary potatoes?", "intent": "pairing_suggestion", "tone": "curious", "entities": []}
+{"text": "Suggest a wine to go with oysters and mignonette.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Need something for a cheese-heavy charcuterie board.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Describe the taste profile of the 2019 Chablis we carry.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Is that Pinot light-bodied or fuller?", "intent": "taste_profile", "tone": "curious", "entities": []}
+{"text": "What\u2019s the finish like on that 2017 Tempranillo?", "intent": "taste_profile", "tone": "curious", "entities": []}
+{"text": "Find restaurants in Greenwich that list Sassicaia.", "intent": "restaurant_lookup", "tone": "neutral", "entities": []}
+{"text": "Who in Norwalk carries the 2021 Gavi di Gavi?", "intent": "restaurant_lookup", "tone": "curious", "entities": []}
+{"text": "Check if Elm still lists the Antinori Tignanello.", "intent": "restaurant_lookup", "tone": "neutral", "entities": []}
+{"text": "That Pinot was wrong \u2014 they asked for the 2017 vintage, not 2018.", "intent": "correct_order", "tone": "urgent", "entities": []}
+{"text": "Correct the order for New Canaan Wine \u2014 remove the ros\u00e9.", "intent": "correct_order", "tone": "neutral", "entities": []}
+{"text": "We sent Chianti, but they wanted Barbera. Fix it before delivery.", "intent": "correct_order", "tone": "neutral", "entities": []}
+{"text": "\u041d\u0438\u0447\u0435\u0433\u043e \u043e\u0441\u043e\u0431\u043e\u0433\u043e \u0432 \u043d\u0435\u043c \u043d\u0435 \u043d\u0430\u0448\u0435\u043b. \u0412 \u043c\u0435\u0440\u0443 \u0441\u0443\u0445\u043e\u0435, \u0432\u043a\u0443\u0441 \u043d\u0435 \u0441\u0438\u043b\u044c\u043d\u043e \u0432\u044b\u0440\u0430\u0436\u0435\u043d. \u0414\u043b\u044f \u0442\u0438\u0445\u043e\u0433\u043e \u0432\u0435\u0447\u0435\u0440\u0430 \u0437\u0430 \u0443\u0436\u0438\u043d \u043f\u043e\u0439\u0434\u0435\u0442", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Parfum! Super frumos!", "intent": "taste_description", "tone": "positive", "entities": []}
+{"text": "V nice whitr", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Happy, dry, bubbles.", "intent": "taste_description", "tone": "positive", "entities": []}
+{"text": "Light and sweet", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Plum, rich, fruity, pepper, delicious Red.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Nice peach, pineapple, mango fruit with a backdrop of cut grass, minerality, and a hint of petrol. Elegant wine.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Dried fruits, plumbs, peppery notes, spices. Full body, medium low acidity, silky tannins. Very good Nero d\u2019avola", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Wow a very easy drinking Pinot Noir. Fresh on the palate with a lovely soft finish. Good to see a Pinot Noir being produced by the clever team at this winery. Great fresh labels to match the wine.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Full body, goes with meat", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Swiss Cheese, yeast, lime, high acidity, med body, finish with honey, yeast, pear, mineral, very pleasing and enjoyable.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "\u0426\u0432\u0435\u0442 \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u044b\u0439 \u0437\u043e\u043b\u043e\u0442\u043e\u0439. \u0412 \u0430\u0440\u043e\u043c\u0430\u0442\u0435 \u0433\u0440\u0443\u0448\u0430, \u043f\u0435\u0440\u0441\u0438\u043a, \u0434\u044b\u043d\u044f, \u0430\u043d\u0430\u043d\u0430\u0441. \u0412\u043e \u0432\u043a\u0443\u0441\u0435 \u044f\u0431\u043b\u043e\u043a\u043e, \u0433\u0440\u0443\u0448\u0430, \u043b\u0430\u0439\u043c. \u041a\u0438\u0441\u043b\u043e\u0442\u043d\u043e\u0441\u0442\u044c \u043d\u0438\u0437\u043a\u0430\u044f.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "A bit harsh Cabernet Sauvignon. Good with food such as a hamburger.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Drank at Tast\u00e9, not really a Gaja...", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "A terrific rose, light, but some body, dry. Yum! Bought it at Malloy\u2019s, on special", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "\u2757Meio Seco\u2757observar temperatura de consumo apropriada, a 12\u00b0C ficou bom. Exala muito \u00e1lcool na ta\u00e7a.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Red fruits, chocolate, some oak, balsamic. Very well balanced, med tanins, med+ finish. Great wine!", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Drink now.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "This wine reminds me of a walk a late summer day along a path surrounded by dry flowers and bushes of herbs. It gives the sensation of being \u2018unbridled\u2019 as a teenager who is fervently trying to discover his personality.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "3.8\ud83c\udf1f\nSome Spanish Rioja \ud83c\uddea\ud83c\uddf8 from 100% Tempranillo Blanco grapes!\ud83c\udf47\nHints of citrus \ud83c\udf4aand some stone like \ud83d\uddffLike notes. \nHigh acidity but seems very light! \ud83d\udc68\u200d\ud83d\udd2c\n12.5% of alcohol! \ud83e\udd42\n\ud83d\udc43: oak, vanilla, cherry, grapefruit, smoke, apple and some ash\n\ud83d\udc45: blackberry, lemon, lime, strawberry, pepper, blackcurrant, tobacco, stone, spiced pear and baked apple", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Very good sparkling wine\nCrisp refreshing tiny bubbles", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "A fresh sweet SPanish blend of SB95 & Perellada5, shows tropical fruits(passion fruit) and fig, herbal notes and aromas from the aging", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "A great wine!\nAlthough doubled in price in the past 2 years, still enjoy this wine.  I feel that the \u201818 vintage is slightly sweeter than the \u201817 but that might just be due to the pairings.  Well balanced tannins with some licorice, smoke and leather notes on the pallet.  Really enjoy this wine and still a good buy at around \u00a52,000.", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "Dry, and fruity, good!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Great value for money. Tastes like,,,,,, a piece of raspberry cake fallen on a heavy smoker\u2019s leather jacket.", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "Very good - and great value. Available from Uncle Dans.", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "My perfect idea of a good Bordeaux", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Great with vietnamien food", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Decent blend of Merlot and Malbec.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Delicious \ud83d\ude0d\ud83d\ude0d\ud83d\ude0d very musty in flavor", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Prowein 2019 #268\n\nIntense lemon zest with lots of jasminium and peach and lemon flowers\n\nMouth is creamy smooth with a medium (+) acidity and mineral sweet exit and aftertaste\n\n3.7", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Fruity nose of lemon and wildflowers. Nice  sharp acidity and bright fruit. Very enjoyable. Certainly not a pedigree Chardonnay nit a step up from a Pinot Grigio 88", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Dry but fresh with lots of citrus, some green apple, and minerals on the palate with fairly long finish. Would pair well with grilled fish or sashimi. Excellent value.", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Great aroma. Red fruit with Tar cinnamon and spice. Nice!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Sweet and not bitter.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Achei um pouco doce demais para o meu gosto.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Always a reliable wine.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Super smooth", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Very good for R145 a bottle! Soft and easy drinking", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "Herbaceous, fruity, stone fruit, can drink more than one glass. Good easy drinking sav", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Very young Fronsac that will become better with age. Lots of tannins, nose is closed up yet, good balance. You can tell that it will be a very good wine after 10 years.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "\u723d\u3084\u304b\u3067\u98f2\u307f\u3084\u3059\u3044\u3002\u98f2\u307f\u3084\u3059\u904e\u304e\u308b\u304f\u3089\u3044\u3042\u3063\u3055\u308a\uff01", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Not too dry. Fresh and crisp. Great accompanying fish.", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "10/1/2020 \ubbf8\uad6d \uc0dd\ud65c 14\ub144\uc9f8 \uc2dc\uc791\n\ud76c\uc218\uc5c4\ub9c8 \uc2a4\ud398\uc778 \uce5c\uad6c \uc120\ubb3c\n citrus green apple pear\nGood color. High acidity. Light body. Mineral. \nGood. Dry.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Super smooth, berry and soft tanins. Great!!", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Good bang for the buck.", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "Bold and punchy, with some spice or even pepper for an aftertaste. Oak and some dark fruit, but not enough to make this memorable. Would pair beautifully with a nice steak", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Earthy, light spice, juicy red fruit, soft tannins, lovely finish. Excellent drop especially for under $20", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "Excellent wine, perfect with fish or BBQ\u2019d chicken!", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Fine, fine, fine, from the very first time/sip :)", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Grass and straw on the nose with maybe some peach...green fruits, kiwi and maybe less-ripe mango on the palate with a good amount of acid zip...a bit of minerality.  Medium-long finish.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Nice blackberry flavor", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Very good, it had a little bit of q alcohol flavour in the taste but I like it Very much.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Sweeter than your typical gruner. Reminded my friend of Woodchuck pear cider. High, racy acidity. Floral and aromatic with a funkiness on the end of the nose", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Good barolo at its drinking window. \n\nDark cherries and strawberries, tobacco, tar and vanilla oak on nose. Good acidity and balanced tannins on palate. Medium plus bodied and medium fruity finish. Quality structure and balance. Still long life ahead. Tasted in the VinVin winebar in Helsinki.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Excellent. Smooth and great value. Less than a tenner in SuperValu", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "Apparently good to cellar for 10 years but I love it 90", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Good accompanying swordfish with a mango and berry compote.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "\u0423\u0434\u0438\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u043e, \u043d\u043e \u044d\u0442\u0430 \u0448\u0430\u0440\u0434\u0430\u043d\u0435\u0448\u043a\u0430 \u043d\u0430 \u0443\u0440\u043e\u0432\u043d\u0435 \u0440\u0435\u0437\u0435\u0440\u0432\u044b, \u0434\u0430\u0436\u0435 \u0435\u0441\u0442\u044c \u043c\u043e\u043c\u0435\u043d\u0442\u044b \u043f\u0440\u0435\u0432\u043e\u0441\u0445\u043e\u0434\u0441\u0442\u0432\u0430.", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Prowein 2019 #143\n\nBordeaux blend\n\n74 cab 10 merlot franc petit verdot\n\nMix of Rutherford and napa\nSlow 2 months fermentation\n\nMix of overripe blackberry, Ripe strawberry confiture, touch of bee wax\n\nMouth is very smooth silky with a lovely sweetness and a velvety mouthfeel with a rich full jammy flavours remaining light and elegant with a medium (+) acidity and tannin. Very persistent and expressive exit with eucalyptus sandalwood cocoa and tobacco. Crazy oscillating aftertaste long after its finished \n4.3", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Very good value .... representing Spain in the best way \ud83d\udc4d", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Beautiful.  Very balanced between earthy and fruit. Had with free range chicken cacciatore and a Japanese akisake (wild chum salmon)  with fresh porcini sauce. Loverly...\nPaired well with the chocolate or torte, too... Till I moved on to the amarone grappa.", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "\u0412\u0441\u0442\u0440\u0435\u0447\u0430\u0435\u0442\u0441\u044f \u0441 \u0437\u0430\u0432\u044b\u0448\u0435\u043d\u043d\u044b\u043c \u0446\u0435\u043d\u043d\u0438\u043a\u043e\u043c\n\u041f\u0438\u0442\u043a\u043e\u0435, \u043a\u0438\u0441\u043b\u0435\u043d\u044c\u043a\u043e\u0435 \u0438 \u043b\u0435\u0442\u043e\u043c \u0437\u0430\u0445\u043e\u0434\u0438\u0442 \u0445\u043e\u0440\u043e\u0448\u043e.", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "Pale yellow color, with interesting yellow fruit aromas, and a very characteristic oil touch. Medium bodied, with a nice balance of green apple, petroleum, minerals and mushrooms.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Apoel, peer, geel fruit, grapefruit. Perzik, ananas, limoen,  bloemig, zacht bittertje,  hoog in de zuren, citrus", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Solid Tuscan red that makes for good company to steak and risotto.", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Strong cured meat on the nose, a bit unimpressed with the taste, high tannins.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Fresh and elegant !", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "100% Chardonnay fermentowane i dojrzewaj\u0105ce przez 6 miesi\u0119cy nad osadem w beczkach z francuskiego d\u0119bu. Jasnos\u0142omkowa barwa ze z\u0142ocistymi refleksami. Aromat melona, mango z akcentami drewna i pra\u017conych migda\u0142\u00f3w. Do\u015b\u0107 mocno zbudowane z podwy\u017cszon\u0105 kwasowo\u015bci\u0105. W ustach \u017cywe smaki moreli, mango i ananasa z goryczkowym wyko\u0144czeniem.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Fruity and dry.... good for doesn\u2019t like sweet \nreally cold, really nice...", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Slightly alcoholic, watered down raspberry-grape punch.", "intent": "taste_profile", "tone": "negative", "entities": []}
+{"text": "Absolutely love!", "intent": "product_recommendation", "tone": "cheerful", "entities": []}
+{"text": "Excellent vino.\nDark, juicy, and perfect with a bludon burger.\n\nWay more complex than I'd expect for a $15 bottle", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Good solid medium sweet Riesling. Light crisp fruitness. Lovely.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Deep purple colour. On the nose black cherry, spice and a hint of oak. On the palate rich layers of cherry, dark chocolate and a nuance of liquorice and spice. Full-bodied, dry, silky tannins, an exceptional wine. A benchmark in the new style Pinotage. Deserving of its accolades. One of the better wines in this varietal I have tasted.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "The first California Pinot that I\u2019ve truly loved.  Nice structure.  Good acidity.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Fresh pineapple lime", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Happy International women\u2019s day!\n\nThis Rosso di montalcino has cassis and red berries with complexity of spices on the nose.\nThe spices are like cinnamon, fennels, and licorices. \nCan be Burunello taste after few years! \nMedium tannins is good as one of the characteristics of the vino.\n\nThere is one more that we smelled often when we were kids and we want to describe but cannot find which one!  \n\nSaluti!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Pairs great with homemade pizza with venison sausage", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Not too sweet, not too dry. Smells like pineapple, lemon-strawberry aftertaste.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Nice wine together with a bloody piece of cow.", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Best value Rioja for money. Velvety, spicy vanilla, smooth finish.", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "Lovely stone fruit, apricot and apple with vanilla", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Leather and a little bit of smoke. Plum after long decanting.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Pale yellow color, green apple, gooseberry, medium aftertaste with hint of crushed gravel. 3.7.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "I loved this wine: discrete and elegant and not acid at all with a completely dry body but with aromas if honey and yellow flowers that were long and elegant. Amazing !", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Excellent with tiramisu", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Lovely citrus notes. Crisp and refreshing.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Dry white burgundy", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Never tried a Mascota before, but will buy again. Great price, great taste and crowd pleaser.", "intent": "product_recommendation", "tone": "cheerful", "entities": []}
+{"text": "Fruity, dry and good value!\nGoes well with red meats!", "intent": "pairing_suggestion", "tone": "cheerful", "entities": []}
+{"text": "Varietal, long after taste, to be tasted with patience.\nDark plums, cherries and spices.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Fine, but I have had better wine at this price range.", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "Fruity with plum undertones", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Super tasty rose. Off dry for sure with melon and peach flavours.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Best Riesling white I\u2019ve had", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Sturdy, woody, acid. Very good.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Cucumber, green apples, minerals, citrus", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Dry, smoky and earthy", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "80% Carinyena, 20% garnatxa", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Refrescante, burbujas muy abundantes, se suavizan al final. C\u00edtrica en boca, madera, y mineral.\n\nRefreshing, very abundant bubbles, they soften at the end. Citrus on the palate, wood, and mineral.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Slick but with depth. Open, leave, drink slowly and enjoy", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Really good nose, and a deep flavour profile", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Who said Quebec wines cannot be enjoyed ?", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Very great refreshing white wine that goes great with sardines. Makes me feel like I'm in the Mediterranean", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Beautiful ruby color. Overly barnyard scent (very off-putting), light tight simple taste", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Delicious clean wine", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "A third of the bottle kept uncorked in the kitchen counter since last dinner (24H, see TN).\nAromas are more marked and an herbaceous background has appeared.\nTannins seems rounder.\nNo other change.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Easy drinking, smooth, full bodied and delightful partner for paella \ud83e\udd70", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Dry and little sweet.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Smooth start of cherries and hint of prunes. Malbec! Good body and  tender acidity. Good length. Fruity and delightful!\nWe had it at hotel Indigo Durham Uk", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "I, personally, think this wine is rated higher than it is. Hot take, I know. It\u2019s a good cab. Tannic. Smidge dry. Memorable(ish). Perhaps I need to expand my palate, but a B+ type of wine.", "intent": "quality_judgment", "tone": "negative", "entities": []}
+{"text": "Black currant and chalky minerality. Low acidity with soft tannins.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Apple and Citrus top notes with a honey and toasted bread finish", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "4.0\n60% Grenache e 40% Cinsault per questo ros\u00e9 che merita attenzione.\nColore rosa pallido abbastanza profumato con cenni di frutti rossi e lampone. Esprime tantissimo in bocca per\u00f2, forte e deciso sapore di frutta matura come fragole, melone e pesca gialla. Ottima acidit\u00e0 e tannini decisi, convogliano in un finale lungo e abboccato. \ud83d\udc4f\ud83c\udffb\ud83d\udc4f\ud83c\udffb\ud83c\udf77\ud83c\udf77", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "From aragonez and touriga nacional, a good selection from the interior region of Portugal \ud83d\udc4c", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Full body with a curious flavour", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Smooth! 22 years old!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Slight tawny tinge to the ruby colour. Plum, black cherries and oak on the nose. Fruit and very nicely balanced tannins. Cracking wine.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Bold. Intense. Both in flavor and taste", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Just like it.  It is brut indeed.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Wunderbar, trinkfertig", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Beautiful ruby red color, dark but transparent, not too dense. Nose shows red fruits, a bit blunt, not very elegant. But great freshness on the palate, due to minerality, really smells and tastes stones. Good fruit, smooth tannins, and length.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "A good brunello, tannins, full-bodied. Not as dynamic in flavor, finish could be more flavorful. Still worth it though!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Dry, acidic, peach, \nStuffed shells with sausage, ricotta and swisschard with tomato sauce", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Would drink again for under $20", "intent": "price_comment", "tone": "polite", "entities": []}
+{"text": "Great!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Muito bom Cabernet Sauvignon brasileiro. Equilibrado e estrurado, com destaque para frutas vermelhas maduras, especiarias picantes e couro. \u00c1lcool inserido e taninos macios. Final de boa persist\u00eancia. Excelente custo e benef\u00edcio.", "intent": "product_recommendation", "tone": "positive", "entities": []}
+{"text": "Acidic", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Lemony citrus", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Nice fruity modern Bordeaux. Great quality for price, nice every day kind of Sunday roast wine with family.", "intent": "pairing_suggestion", "tone": "cheerful", "entities": []}
+{"text": "Remarkable Po\u0161ip from island of Kor\u010dula. Golden yellow in the glass. Dry, nice minerality, medium plus body, medium plus acidity, citruses, ripe yellow fruits, rich, balanced. Very long finish.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Fantastic flavour, well ballanced and rich in the same time. Excellent Trntino by Endrizzi.it drunk with my Wife last skiing day in Madonna di Campiglio", "intent": "product_recommendation", "tone": "cheerful", "entities": []}
+{"text": "Like the taste, quite dry and sweet at the same time", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Soft and fruity with low acidity", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "If you are looking for a good Kosher Wine that is Dry and easy going, this one is for you. For my palate and taste profile, this one just doesn\u2019t do it for me.. Cranberry and Black Pepper come up on the nose but the flavors are very basic and predictable. Too boring for me...\n\n2.4 out of 5.0 Rating", "intent": "quality_judgment", "tone": "negative", "entities": []}
+{"text": "great value wine, dry with notes of berry.", "intent": "quality_judgment", "tone": "positive", "entities": [{"start": 0, "end": 16, "label": "style"}, {"start": 11, "end": 12, "label": "style"}, {"start": 17, "end": 18, "label": "style"}, {"start": 0, "end": 16, "label": "style"}]}
+{"text": "Oakey black berry and pretty smooth", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Dul\u00e7or leve, acidez e \u00e1lcool entre leve e moderado. Corpo leve. Vinho muito refrescante. Boa op\u00e7\u00e3o para dias quentes.\n\nLight sweetness, acidity and alcohol between mild and moderate. Light body. Very refreshing wine. Good option for hot days.", "intent": "product_recommendation", "tone": "positive", "entities": [{"start": 217, "end": 242, "label": "style"}]}
+{"text": "Eminently drinkable. Light acid. Lighter tannins.  Smooth. Just sweet enough. Red currant. Cherry. $19 KL. Will get more.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Very good wine", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "toast citrus apple pear peach apricot white peach", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Pleasant enough but could do with a couple of years set aside to mellow out the tannins.   Good vanilla, dark chocolate, blackberry and cherry.  Had with venison which didn\u2019t quite match as the meat was too strong a flavour.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Mild attack, perfume, spicy, dry and easy drinking", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "It opens up fairly nicely after about 30 minutes has some dark fruits but no heavy decent balance, doable for the price. Had it in 19 from Gianni", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Very good,\nquite cheep wine. Great with cheesess", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Chardonnay 100%,  envelhecido em carvalho franc\u00eas. Cor amarelo ouro claro brilhante e l\u00edmpido. Aromas de frutas brancas; p\u00eassegos; mel\u00e3o maduro; notas c\u00edtricas; abacaxi amarelo; notas florais; mel; am\u00eandoas; mineral. Acidez agrad\u00e1vel. \u00c1lcool 13%. M\u00e9dio corpo. Em boca, amplo; frutado; seco; boa cremosidade. Final de bom frescor e persist\u00eancia.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Another delicious offering from Beyra. This Sauvignon Blanc is dry with notes of green apple, pear, grass and a well represented finish. It will be excellent with fish, white game meats, fowl and hearty cheeses and fruits.", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Cassis and cherry with smoky notes of capsicum. Elegant, medium bodied, naturalistic wine.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "A warm woody Pinot, southern style. Not bad ... but far from a burgundy one!", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "For the price you would think this bottle would not surprise you but the dryer; the better. Love the smell of the plum, dark berries and oak. Strong in tannins and dark in color.", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "A little acidic but I like it.", "intent": "taste_profile", "tone": "polite", "entities": []}
+{"text": "Great dessert wine.  Sparkly", "intent": "pairing_suggestion", "tone": "positive", "entities": []}
+{"text": "Grass, gooseberry, citrus", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Funky and gorgeous. A must try!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Easy to drink. Lighter than expected", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "\u041c\u043d\u0435 \u043d\u0435 \u043f\u043e\u043d\u0440\u0430\u0432\u0438\u043b\u043e\u0441\u044c. \u0412\u043a\u0443\u0441 \u043a\u0438\u0441\u043b\u044b\u0439, \u043d\u043e \u043f\u0440\u0438\u044f\u0442\u043d\u044b\u0439, \u043d\u043e \u043f\u043e\u0441\u043b\u0435\u0432\u043a\u0443\u0441\u0438\u0435 \u0441\u0438\u043b\u044c\u043d\u043e \u0441\u043f\u0438\u0440\u0442\u043d\u043e\u0435, \u0432\u043e\u0437\u043c\u043e\u0436\u043d\u043e \u044f \u043d\u0430\u0440\u0432\u0430\u043b\u0430\u0441\u044c \u043d\u0430 \u043f\u043e\u0434\u0434\u0435\u043b\u043a\u0443. \u041f\u043e\u043a\u0443\u043f\u0430\u043b\u0430 \u0432 \u041c\u0435\u0442\u0440\u043e \u043f\u043e \u0430\u043a\u0446\u0438\u0438", "intent": "quality_judgment", "tone": "frustrated", "entities": []}
+{"text": "\u60aa\u304f\u306a\u3044\u3002\u30b3\u30b9\u30d1\u3044\u3044\u3002\u3082\u3046\u5c11\u3057\u9ad8\u3044\u304b\u3068\u304a\u3082\u3063\u305f", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "\ubb34\ub09c\ud55c \ub808\ub4dc\uc640\uc778. \ubb34\ub09c\ud55c \uae4c\ubca0\ub974\ub124 \uc1fc\ube44\ub1fd", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "\u0421\u0442\u043e\u043b\u043e\u0432\u043e\u0435 \u0434\u043e\u043b\u044c\u0447\u0435\u0442\u0442\u043e, \u043a\u0430\u043a \u0431\u0443\u0434\u0442\u043e \u043e\u043d\u043e \u0438 \u043d\u0435 \u043f\u0440\u043e\u043b\u0435\u0436\u0430\u043b\u043e 42 \u0433\u043e\u0434\u0430. \u041f\u0438\u0442\u043a\u043e, \u0433\u0430\u0441\u0442\u0440\u043e\u043d\u043e\u043c\u0438\u0447\u043d\u043e, \u043d\u0435 \u043e\u0442\u0431\u0438\u0432\u0430\u044e\u0449\u0435\u0435 \u0432\u043a\u0443\u0441 \u0435\u0434\u044b. \u041a\u043e\u043d\u0435\u0447\u043d\u043e \u043d\u0435\u0442 \u0432\u043e\u043e\u0431\u0449\u0435 \u043d\u0438\u043a\u0430\u043a\u0438\u0445 \u0438\u0437\u044b\u0441\u043a\u043e\u0432, \u043d\u043e \u0438 \u043d\u0435 \u0436\u0434\u0430\u043b\u0438 \u043c\u044b \u043e\u0442 \u043d\u0435\u0433\u043e. 3.7", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "\u9178\u5ea6\u7a81\u51fa \u5fae\u6c27\u5316\u98ce", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "My first encounter with this excellent white wine. Interesting blend, complex bouquet, well balanced, age worthy. Impressive!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Pronounced aromas of Vanilla, oak, meat, white pepper, floral, slight almond, blackberry. Very dry, fine tannins, full bodied, high acidity, medium to long finish, a lot going on in this wine!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Vinho agrad\u00e1vel. Fruta vermelha em predomin\u00e2ncia mirtilo cereja , taninos leves. Boa compra", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "\u0414\u0440\u0435\u0432\u0435\u0441\u043d\u044b\u0439 \u0442\u043e\u043f\u0447\u0438\u043a", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Decent enough, recognisable Marlborough in style, not as expressive as some.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "\u9178\uff0c\u6c14\u5473\u4e5f\u5947\u602a", "intent": "taste_profile", "tone": "frustrated", "entities": []}
+{"text": "Citrus and strawberries", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Hm, right up my alley. Lemon confit, pineapple confit, lime, the acidity just goes to complement the rest in this case. Very very good", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "$12.95 nice quiet rich and smooth", "intent": "price_comment", "tone": "positive", "entities": []}
+{"text": "An average wine. Great everyday drinker", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Wonderful, robust, amazing!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "The first decent Czech red wine I\u2019ve had", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Very dry taste with medium bubbles, acidity is very well balanced including light tones of green apple. The taste is creamy though.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Crisp with tropical fruit and nice minerality. Great wine with seafood", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "A grower! Fruit forward with strawberry and watermelon and then a lovely little tangy tartiness that zips through.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Not a good year for Burgundy", "intent": "quality_judgment", "tone": "frustrated", "entities": []}
+{"text": "Havde helt glemt hvor dejligt den smager... \u00e6rgerligt det var den sidste p\u00e5 hylden. Syre, m\u00f8rke b\u00e6r, men alligevel dejlig rund i smagen.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Nice if u like coffee. Good body and dark red", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Ottimo con maiale nero dei nebrodi e funghi, davvero delizioso!", "intent": "pairing_suggestion", "tone": "cheerful", "entities": []}
+{"text": "Prowein 2019 #247\n\nIntense interesting raspberry banana with vanilla and an amarena soup\n\nMouth is silky smooth with a really lovely mouthfeel with a great flavour persistence syroup amarenas with a great exit and aftertaste\n\nLight elegant and powerful\n\n4.25", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Nice sweetness and acidity.... but sweetness took over and I hoped the opposite \ud83e\udd37\ud83c\udffd\u200d\u2642\ufe0f", "intent": "taste_profile", "tone": "frustrated", "entities": []}
+{"text": "Dark salmon-pink color, elegant, fine bubbles. Stawberry, raspberry, vanilla, yeasty fragance on the nose. Complex, ripe taste, berries and yeast on the palate. 55% Pinot Noir, 45% Chardonnay. Dosage: 8 g/l.", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "A nice Carmenere with aromas of cherries and black pepper", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Crisp banana melon peach \nExcellent balance between acidity and alcohol", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "Sehr sch\u00f6n! Feinfruchtig, w\u00fcrzig, mit R\u00f6staromen und Vanille\u2026 Top PLV. Detaillierte Bewertung siehe 30. April 2021. Heute getreu dem Motto: eine gute (Wildschwein\u2013) So\u00dfe ben\u00f6tigt einen guten Wein \ud83c\udf47\ud83c\udf77\ud83c\uddeb\ud83c\uddf7", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "average local Swiss wine. Priced fairly.", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "Absolutely lovely champagne!", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Dry. Easily one of my favorite Pinots out there. Delicious.", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Brent\u2019s favourite brant. Ate with cavier April 2019. Expected taste for price. Prefer over verve.", "intent": "price_comment", "tone": "polite", "entities": []}
+{"text": "\u0422\u043e\u043d\u043a\u0438\u0435 \u043d\u043e\u0442\u043a\u0438 \u044d\u0442\u0438\u043b\u0430. \u0412\u043e\u0437\u044c\u043c\u0438\u0442\u0435, \u0447\u0442\u043e \u0443\u0433\u043e\u0434\u043d\u043e \u0434\u0440\u0443\u0433\u043e\u0435 \u0438\u0437 \u044d\u0442\u043e\u0439 \u0446\u0435\u043d\u043e\u0432\u043e\u0439 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u0438 \u0438 \u043d\u0435 \u043f\u0440\u043e\u0433\u0430\u0434\u0430\u0435\u0442\u0435. \u0422\u043e\u043b\u044c\u043a\u043e \u043f\u0440\u0438\u0433\u0443\u0431\u0438\u043b\u0438 \u0438 \u0443\u0431\u0440\u0430\u043b\u0438 \u043d\u0430 \u0447\u0435\u0440\u043d\u044b\u0439 \u0434\u0435\u043d\u044c \u043f\u043e\u0434\u0430\u043b\u044c\u0448\u0435.", "intent": "price_comment", "tone": "frustrated", "entities": []}
+{"text": "Smokey to start with a plum finish. Good wine for the price!", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "Suprisingly good. Dried fruit and some minerals.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Smooth Simi dry, Berry delight, I like the light wood notes being aged in French and American oak barrels.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "\u042f \u043f\u043e\u0434 \u043a\u0430\u0439\u0444\u043e\u043c \ud83e\udd74 \n\u041e\u0433\u043e\u043d\u044c \ud83d\udd25 \u0421\u043e\u0432\u0438\u043d\u044c\u043e\u043d", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "It was good for the price", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "\u30bf\u30f3\u30cb\u30f3\u304c\u5f37\u304f\u7f8e\u5473\u3057\u304b\u3063\u305f\u3067\u3059\u3002", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Frutado, acidez leve e taninos macios. \n\n\u00d3timo custo benef\u00edcio! Agradou a todos por aqui", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "Toasted almond note with grapefruit and green apple acidity on the palate.  Rich mouthfeel with a long and elegant finish", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Sur le fruit, l\u00e9ger mais int\u00e9ressant. Petit go\u00fbt menthol/poivre \u00e0 la mise en bouche. Un vin sympa \ud83d\udc4d", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Bl\u00e5b\u00e4rssylt, ek, sm\u00f6rkola i finishen.\nGott!\n\nLudvigs f\u00f6delsedag", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Simple, crisp and perfect for summer. Every flavor is light - mineral and citrus. Lovely, lovely bottle. It\u2019s simple but highly drinkable.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "\u96d6\u7136\u4e0d\u8cb4 \u4f46\u76f8\u5c0dDOCG \u7b49\u7d1a\u5c11\u4e8c\u500b\u5c64\u6b21", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Vino para tomar con gaseosa, a\u00fan as\u00ed a\u00fan se puede beber un poco pero poco", "intent": "quality_judgment", "tone": "frustrated", "entities": []}
+{"text": "Impossible de finir la bouteille. Trop de sucre r\u00e9siduels? Au d\u00e9but c est plaisant ensuite ca sature. D\u00e9cevant.", "intent": "quality_judgment", "tone": "frustrated", "entities": []}
+{"text": "Full bodied great match with braised beef short rib", "intent": "pairing_suggestion", "tone": "neutral", "entities": []}
+{"text": "Lovely drop, good drinking. Comes on strong for a pinot.", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Gott och fruktigt med inslag av p\u00e4ron.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Maybe it was good?  Couldn\u2019t taste anything after contracting Covid but the mouthfeel was quite nice. \ud83d\ude05", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Complex, many flavors, bold body, heavy fruit, dark, thick", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "This is an excellent wine. Entry level by Domain A out of Tasmania. Red berries, a touch of sweetness and some earthy tannin in the finish. Really enjoyed this one!", "intent": "restaurant_lookup", "tone": "cheerful", "entities": []}
+{"text": "\u041e\u0442\u043b\u0438\u0447\u043d\u043e\u0435 \u043a\u0440\u0430\u0441\u043d\u043e\u0435 \u0441\u0443\u0445\u043e\u0435 \u0432\u0438\u043d\u043e. \u041c\u044f\u0433\u043a\u0438\u0439 \u0432\u043a\u0443\u0441, \u043f\u0440\u0438\u044f\u0442\u043d\u044b\u0439 \u0437\u0430\u043f\u0430\u0445 \u0432\u0438\u043d\u043e\u0433\u0440\u0430\u0434\u0430", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Strawberry, cherry. Light and refreshing. Great value.", "intent": "price_comment", "tone": "cheerful", "entities": []}
+{"text": "Very fruity, hints of blackberry and raspberry. Not tannic. Not overly acidic or sweet. Very strong, forward flavor. Not my style, but for lovers of fruity wines I imagine this is pretty good.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Full, round, halfdry-ish red wine with notes of vanilla, oak and blackberries. Excellent wine to drink by itself and also enjoyable with food :)", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Tannic. Spicy. Oak", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Cool, weisser PM. Beerig, frisch, breit!", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Deep ruby, just starting to fade at the rim.  Nose of blackberry jam and tobacco, black cherry, kirsch, chocolate.  Smells good!  The palate adds a load of spice and is quite bitter.  Tobacco prominent on the palate, wet leaves.  Still very high tannins.  High(-) acidity.  I found the palate a bit challenging, although Aglianco is a style I usually really like.  I'd try it again, with a really long decant.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Really interesting, really sweet. Some earthy notes to it as well. Went well with the sticky toffee pudding.", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "An amazing cava, I strongly recommend it", "intent": "quality_judgment", "tone": "positive", "entities": []}
+{"text": "Delicious Pepper, cherry, and leather flavor", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "3.75 \ud83d\udcab\ud83c\udf77 \ud83c\uddee\ud83c\uddf9 \nCabernet de la Toscana.\n\nDe un p\u00farpura vivo y capa media a baja; va dejando finas l\u00e1grimas.\nAromas frutales y florales. Cereza, ciruela, mermelada de frutos rojos, algo de chocolate y tabaco.\nEn boca es ligero y fresco. Suaves frutas envueltas de los taninos y una buena acidez. Dejando un final algo especiado de persistencia media.\n\nLa relaci\u00f3n precio calidad me parece muy buena. Acompa\u00f1a muy bien estos d\u00edas soleados con piqueos o alguna pasta.\nF\u00e1cil de beber.\n\u270d\ud83c\udffc\ud83e\uddd4\ud83c\udffb\ud83c\udf77", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "super smooth, blackberry and brown sugar, not super bold and just a bit dry", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "Had better but easy to drink.  Aromas if red fruit, spices and herbs. Shares the real history of Chilean wine. Pipeno.", "intent": "quality_judgment", "tone": "neutral", "entities": []}
+{"text": "Some apple, peach hints & lots of bubbles \ud83d\ude09\ud83d\udc4c", "intent": "taste_profile", "tone": "neutral", "entities": []}
+{"text": "The Heitz Cellar Trailside Vineyard has a dark elegance. The nose offers you dark fruit, with leather & vanilla. Leathery, tobacco, & dark chocolate on the palate, but also so much raspberry, black cherry, & blackberry. Full bodied & incredibly well balanced mouthfeel. The tannins are quite smooth & not too intense. While this cabernet has a multitude of dark fruit flavors, it is lighter than the typical Napa Cabernets. As delicious as this wine was now, it\u2019s still young. \n$125\n\u2728", "intent": "taste_profile", "tone": "positive", "entities": []}
+{"text": "This wine tastes juicy and smooth!84%Cabernet Sauvignon and 16% Merlot from Horse Heaven Hills Vineyards, Columbia Valley, Washington. The wine spent 9 months in 48% new/52% used French and American oak barrels.", "intent": "taste_profile", "tone": "cheerful", "entities": []}
+{"text": "Crispy and citrus nose.  Clean crisp and easy to drink!  Skip the Champagne once and try this Cava.  Great wine for the price.", "intent": "quality_judgment", "tone": "cheerful", "entities": []}
+{"text": "Super value.  Needs to be open and served at room temperature and you have a wonderfully smooth, black berries slightly spiced.   d ca", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "Nice Pinot noir, reasonably priced", "intent": "price_comment", "tone": "neutral", "entities": []}
+{"text": "Very interesting wine - light ruby color, high acidity, pleasant finish with slight bitterness... nothing common with typical Garnacha from Navarra..", "intent": "taste_profile", "tone": "neutral", "entities": []}

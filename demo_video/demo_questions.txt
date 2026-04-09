@@ -1,0 +1,55 @@
+🎯 Exact Order for Your Demo:
+
+Click to start:
+
+Auto 1: "How many bottles of 2021 Meursault do I have left?"
+Auto 2: "Price check: 2015 Gran Reserva 904?"
+Auto 3: "Email Robert Kingston a follow-up."
+	Aimee: Say 'send email' to send now
+	"Send email"
+	Aimee: Email sent successfully
+Auto 4: "Who bought Barolo in the last 10 days?"
+Auto 5: "What do I need to follow up on this week?"
+Auto 6: "Show current inventory by region"
+Auto 7: "What did Robert Kingston ask about last time?"
+Auto 8: "Log that I called Ridge Vineyards."
+Auto 9: "Remind me to follow up about Tempier Rosé on Friday."
+Auto 10: "Who haven't I followed up with in the last 2 weeks?"
+Auto 11: "Summarize this week's top-selling wines."
+back to Auto 1: Loops back to question 1
+
+🍷 Aimee's Responses (In Order):
+
+"How many bottles of 2021 Meursault do I have left?"
+→ "You have 12 bottles of the 2021 Meursault left. Mostly allocated to somm-driven accounts."
+"Price check: 2015 Gran Reserva 904?"
+→ "It's listed at $42 dollars. Long lead time, high demand."
+"Email Robert Kingston a follow-up."
+→ "Email ready: 'Hi Robert—We've just restocked the 2015 Gran Reserva 904. Shall I reserve a case for you?'"
+"Who bought Barolo in the last 10 days?"
+→ "Top buyers: Osteria del Campo, Hudson Wine Co., and Chef Marco."
+"What do I need to follow up on this week?"
+→ "You have 5 pending follow-ups. Would you like me to list them?"
+"Show current inventory by region"
+→ "Showing inventory by region: Burgundy, Rioja, Piedmont, California."
+"What did Robert Kingston ask about last time?"
+→ "Last time, Robert asked about the 2020 Pinot allocation and Bordeaux futures."
+"Log that I called Ridge Vineyards."
+→ "Noted. Call with Ridge Vineyards logged for today."
+"Remind me to follow up about Tempier Rosé on Friday."
+→ "Reminder set: Follow up about Tempier Rosé this Friday."
+"Who haven't I followed up with in the last 2 weeks?"
+→ "There are 3 clients with no follow-up: Urban Cellars, Louvino, and Bastien Imports."
+"Summarize this week's top-selling wines."
+→ "Top sellers: Ridge Monte Bello, Bandol Rosé, and Gran Reserva 904."
+
+🎯 Clean Automated Demo:
+
+Page loads → 3 second delay
+Auto-starts → Mic turns red and pulses (5 seconds)
+Thinking → Bouncing dots (2 seconds)
+Response → Shows answer (1.5 seconds)
+Pause → 3 seconds before next question
+Loops → All 11 questions continuously
+
+Manual control: Click the mic anytime to override.

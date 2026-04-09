@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍷 Aimee Voice Intelligence - Sales Assistant</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+
+        .voice-controls {
+            margin: 2rem 0;
+        }
+
+        .record-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+        }
+
+        .record-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .record-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin: 1rem 0;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .text-input:focus {
+            border-color: #667eea;
+        }
+
+        .submit-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #5a67d8;
+        }
+
+        .response-area {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            min-height: 100px;
+            text-align: left;
+        }
+
+        .response-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 1rem;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-top: 1rem;
+        }
+
+        .status {
+            margin: 1rem 0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .status.processing {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .status.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .debug-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e9ecef;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .commands {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .commands h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+
+        .commands ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .commands li {
+            background: #f8f9fa;
+            margin: 0.5rem 0;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .commands li:hover {
+            background: #e9ecef;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+                margin: 1rem;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍷 Aimee</h1>
+            <p>Your AI Sales Intelligence Assistant</p>
+            <p><strong>Connecticut Wine Market Specialist</strong></p>
+        </div>
+
+        <div class="voice-controls">
+            <button id="recordBtn" class="record-btn">🎤 Start Recording</button>
+            <button id="stopBtn" class="record-btn" disabled>⏹️ Stop Recording</button>
+        </div>
+
+        <div class="text-alternative">
+            <h4>Or type your command:</h4>
+            <input type="text" id="textInput" class="text-input" placeholder="Try: 'What should I focus on today?' or 'Brief me on Barcelona Wine Bar'">
+            <button id="submitText" class="submit-btn">Send</button>
+        </div>
+
+        <div id="status" class="status" style="display: none;"></div>
+
+        <div class="response-area">
+            <div id="responseText" class="response-text">
+                Welcome to Aimee! Try asking:
+                <ul style="margin-top: 0.5rem;">
+                    <li>"What should I focus on today?"</li>
+                    <li>"Brief me on Barcelona Wine Bar"</li>
+                    <li>"What's missing from Bin 100's wine list?"</li>
+                </ul>
+            </div>
+            <audio id="responseAudio" class="audio-player" controls style="display: none;"></audio>
+        </div>
+
+        <div class="commands">
+            <h3>🎯 Available Commands:</h3>
+            <ul>
+                <li onclick="sendCommand('What should I focus on today?')">📅 "What should I focus on today?"</li>
+                <li onclick="sendCommand('Brief me on Barcelona Wine Bar')">🍷 "Brief me on Barcelona Wine Bar"</li>
+                <li onclick="sendCommand('Tell me about Bin 100 Restaurant')">🏪 "Tell me about Bin 100 Restaurant"</li>
+                <li onclick="sendCommand('What should I know about Spiga?')">🍝 "What should I know about Spiga?"</li>
+                <li onclick="sendCommand('What is missing from Bin 100 wine list?')">📊 "What's missing from Bin 100's wine list?"</li>
+                <li onclick="sendCommand('Give me talking points for my Spiga meeting')">📝 "Give me talking points for my Spiga meeting"</li>
+                <li onclick="sendCommand('Tell me about Connecticut Distributors')">🚛 "Tell me about Connecticut Distributors"</li>
+            </ul>
+        </div>
+
+        <div id="debugInfo" class="debug-info" style="display: none;"></div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        
+        const recordBtn = document.getElementById('recordBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const textInput = document.getElementById('textInput');
+        const submitText = document.getElementById('submitText');
+        const status = document.getElementById('status');
+        const responseText = document.getElementById('responseText');
+        const responseAudio = document.getElementById('responseAudio');
+        const debugInfo = document.getElementById('debugInfo');
+
+        // Initialize audio recording
+        async function initRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                
+                mediaRecorder.ondataavailable = (event) => {
+                    audioChunks.push(event.data);
+                };
+                
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    await uploadAudio(audioBlob);
+                };
+                
+            } catch (error) {
+                showStatus('Microphone access denied. Please use text input.', 'error');
+            }
+        }
+
+        recordBtn.addEventListener('click', async () => {
+            if (!mediaRecorder) {
+                await initRecording();
+            }
+            
+            if (mediaRecorder && mediaRecorder.state === 'inactive') {
+                audioChunks = [];
+                mediaRecorder.start();
+                recordBtn.disabled = true;
+                stopBtn.disabled = false;
+                showStatus('🎤 Recording... Speak now!', 'processing');
+            }
+        });
+
+        stopBtn.addEventListener('click', () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                mediaRecorder.stop();
+                recordBtn.disabled = false;
+                stopBtn.disabled = true;
+                showStatus('⏳ Processing audio...', 'processing');
+            }
+        });
+
+        submitText.addEventListener('click', () => {
+            const text = textInput.value.trim();
+            if (text) {
+                sendTextRequest(text);
+            }
+        });
+
+        textInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitText.click();
+            }
+        });
+
+        function sendCommand(command) {
+            textInput.value = command;
+            sendTextRequest(command);
+        }
+
+        async function uploadAudio(audioBlob) {
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.wav');
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                handleResponse(result);
+                
+            } catch (error) {
+                showStatus('❌ Error processing audio: ' + error.message, 'error');
+            }
+        }
+
+        async function sendTextRequest(text) {
+            showStatus('⏳ Processing...', 'processing');
+            
+            try {
+                const response = await fetch('/process-text', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const result = await response.json();
+                handleResponse(result);
+                textInput.value = '';
+                
+            } catch (error) {
+                showStatus('❌ Error: ' + error.message, 'error');
+            }
+        }
+
+        function handleResponse(result) {
+            if (result.error) {
+                showStatus('❌ Error: ' + result.error, 'error');
+                return;
+            }
+            
+            showStatus('✅ Response generated successfully!', 'success');
+            
+            // Display transcript if available
+            let displayText = '';
+            if (result.transcript) {
+                displayText += `🎤 <strong>You said:</strong> "${result.transcript}"<br><br>`;
+            }
+            
+            // Display response
+            displayText += `🤖 <strong>Aimee:</strong> ${result.response_text}`;
+            responseText.innerHTML = displayText;
+            
+            // Play audio response if available
+            if (result.audio_file) {
+                responseAudio.src = `/uploads/${result.audio_file.split('/').pop()}`;
+                responseAudio.style.display = 'block';
+                responseAudio.play().catch(e => console.log('Audio play failed:', e));
+            }
+            
+            // Show debug info
+            const debugData = {
+                'Intent': result.intent,
+                'Confidence': (result.score * 100).toFixed(1) + '%',
+                'Processing Time': result.processing_time + 's',
+                'Model Used': result.model_used || 'text_input'
+            };
+            
+            let debugHtml = '<strong>Debug Info:</strong><br>';
+            Object.entries(debugData).forEach(([key, value]) => {
+                debugHtml += `${key}: ${value}<br>`;
+            });
+            
+            debugInfo.innerHTML = debugHtml;
+            debugInfo.style.display = 'block';
+        }
+
+        function showStatus(message, type) {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showStatus('🎤 Click "Start Recording" to begin or type a command below', 'processing');
+        });
+    </script>
+</body>
+</html>

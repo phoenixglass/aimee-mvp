@@ -1,0 +1,40 @@
+{
+  "version": "ultra_v1.0",
+  "timestamp": "20250609_061544",
+  "dataset_info": {
+    "size": 301,
+    "intent_counts": {
+      "check_shipment_status": 2,
+      "quality_judgment": 73,
+      "send_email": 3,
+      "set_reminder": 3,
+      "product_recommendation": 8,
+      "sample_request": 2,
+      "gift_request": 3,
+      "pairing_suggestion": 29,
+      "taste_profile": 141,
+      "restaurant_lookup": 4,
+      "correct_order": 3,
+      "taste_description": 2,
+      "price_comment": 25,
+      "misc": 3
+    },
+    "tone_counts": {
+      "curious": 9,
+      "neutral": 127,
+      "polite": 4,
+      "urgent": 1,
+      "positive": 87,
+      "cheerful": 60,
+      "negative": 4,
+      "frustrated": 9
+    }
+  },
+  "files": {
+    "intent_model": "phoenix_intent_ultra_v1.0_20250609_061544.pkl",
+    "tone_model": "phoenix_tone_ultra_v1.0_20250609_061544.pkl",
+    "intent_vectorizer": "phoenix_intent_vec_ultra_v1.0_20250609_061544.pkl",
+    "tone_vectorizer": "phoenix_tone_vec_ultra_v1.0_20250609_061544.pkl",
+    "metadata": "phoenix_metadata_ultra_v1.0_20250609_061544.json"
+  }
+}

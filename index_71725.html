@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aimee">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#2c2c2c">
+  
+  <!-- App Icons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="aimee-icon-180.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="aimee-icon-152.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="aimee-icon-120.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="aimee-icon-76.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="aimee-icon-192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="aimee-icon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="aimee-icon-16.png">
+  <link rel="shortcut icon" href="aimee-icon-32.png">
+  <title>Aimee – Voice-Powered Wine & Spirits Sales Assistant</title>
+  <style>
+    /* Reset default styles for fullscreen */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #2c2c2c;
+      color: #f1e9e2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      min-height: 100dvh; /* Dynamic viewport height for mobile */
+      padding: 0;
+      box-sizing: border-box;
+      overflow: hidden; /* Prevent scrolling */
+      /* Fullscreen styles */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 0;
+        height: 100vh;
+        height: 100dvh;
+        /* Hide browser UI elements */
+        -webkit-user-select: none;
+        -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent;
+      }
+    }
+
+    .container {
+      background-color: #1f1f1f;
+      border-radius: 0;
+      padding: 40px 20px;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      box-shadow: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    @media (min-width: 769px) {
+      .container {
+        border-radius: 24px;
+        max-width: 640px;
+        height: auto;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        padding: 40px;
+      }
+    }
+
+    .logo {
+      max-width: 280px;
+      margin-bottom: 40px;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .logo {
+        max-width: 250px;
+        margin-bottom: 60px;
+      }
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin: 0 0 10px;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: #d6cec7;
+      margin-bottom: 30px;
+    }
+
+    .mic-button {
+      background-color: #f1e9e2;
+      color: #2c2c2c;
+      border: none;
+      padding: 16px;
+      font-size: 1.2rem;
+      border-radius: 50%;
+      width: 70px;
+      height: 70px;
+      cursor: pointer;
+      outline: none;
+      margin: 0 auto;
+      display: block;
+      transition: all 0.3s ease;
+    }
+
+    .mic-button.listening {
+      background-color: #ff6b6b;
+      color: white;
+      animation: micPulse 1.5s infinite;
+    }
+
+    @keyframes micPulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7);
+        transform: scale(1);
+      }
+      50% {
+        box-shadow: 0 0 0 15px rgba(255, 107, 107, 0);
+        transform: scale(1.05);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+        transform: scale(1);
+      }
+    }
+
+    .status {
+      margin-top: 16px;
+      font-size: 0.95rem;
+      color: #cbbfb9;
+    }
+
+    .answer {
+      margin-top: 20px;
+      padding: 16px;
+      background-color: #2a2a2a;
+      border-radius: 12px;
+      font-size: 1rem;
+      line-height: 1.5;
+      min-height: 50px;
+    }
+
+    .browser-notice {
+      background-color: #3a3a3a;
+      padding: 16px;
+      border-radius: 12px;
+      margin-top: 24px;
+      font-size: 0.95rem;
+      color: #e0d9d2;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+      .browser-notice {
+        display: none; /* Hide on mobile for cleaner app look */
+      }
+    }
+
+    .tooltip {
+      font-size: 0.9rem;
+      color: #bfb7b1;
+      margin-top: 6px;
+    }
+
+    .thinking-loader {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .thinking-loader span {
+      width: 12px;
+      height: 12px;
+      background-color: #f1e9e2;
+      border-radius: 50%;
+      animation: pulseBounce 1.2s infinite ease-in-out;
+    }
+
+    .thinking-loader span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .thinking-loader span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .thinking-loader span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes pulseBounce {
+      0%, 80%, 100% {
+        transform: scale(0.6);
+        opacity: 0.5;
+      }
+      40% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .question-display {
+      background: #3a3a3a;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      font-style: italic;
+      color: #d6cec7;
+      border-left: 3px solid #f1e9e2;
+    }
+
+    .response-text {
+      color: #f1e9e2;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img class="logo" src="aimee-logo.svg" alt="Aimee Logo" onerror="this.style.display='none'">
+    <button class="mic-button" id="micButton" title="Tap to speak">🎤</button>
+    <div class="status" id="status">👋 Aimee is listening.</div>
+    <div id="answer" class="answer"></div>
+    
+    <div class="browser-notice">
+      <strong>ℹ️ How to Use:</strong> Just speak naturally—Aimee responds to her name and listens for your question.<br />
+      <div class="tooltip">Try: "Aimee, show me our Barolo stock."</div>
+    </div>
+  </div>
+
+  <script>
+    // All responses
+    const responses = {
+      "How many bottles of 2021 Meursault do I have left?": "You have 12 bottles left of the 2021 Meursault. Mostly allocated to somm-driven accounts.",
+      "Price check: 2015 Gran Reserva 904?": "It's listed at $42 dollars. Long lead time, high demand.",
+      "Email Robert Kingston a follow-up.": "Email ready: 'Hi Robert—We've just restocked the 2015 Gran Reserva 904. Shall I reserve a case for you?'",
+      "Who bought Barolo in the last 10 days?": "Top buyers: Osteria del Campo, Hudson Wine Co., and Chef Marco.",
+      "What do I need to follow up on this week?": "You have 5 pending follow-ups. Would you like me to list them?",
+      "Show current inventory by region": "Showing inventory by region: Burgundy, Rioja, Piedmont, California.",
+      "What did Robert Kingston ask about last time?": "Last time, Robert asked about the 2020 Pinot allocation and Bordeaux futures.",
+      "Log that I called Ridge Vineyards.": "Noted. Call with Ridge Vineyards logged for today.",
+      "Remind me to follow up about Tempier Rosé on Friday.": "Reminder set: Follow up about Tempier Rosé this Friday.",
+      "Who haven't I followed up with in the last 2 weeks?": "There are 3 clients with no follow-up: Urban Cellars, Louvino, and Bastien Imports.",
+      "Summarize this week's top-selling wines.": "Top sellers: Ridge Monte Bello, Bandol Rosé, and Gran Reserva 904."
+    };
+
+    // All questions in order
+    const questions = [
+      "How many bottles of 2021 Meursault do I have left?",
+      "Price check: 2015 Gran Reserva 904?",
+      "Email Robert Kingston a follow-up.",
+      "Who bought Barolo in the last 10 days?",
+      "What do I need to follow up on this week?",
+      "Show current inventory by region",
+      "What did Robert Kingston ask about last time?",
+      "Log that I called Ridge Vineyards.",
+      "Remind me to follow up about Tempier Rosé on Friday.",
+      "Who haven't I followed up with in the last 2 weeks?",
+      "Summarize this week's top-selling wines."
+    ];
+
+    // Get elements
+    const micButton = document.getElementById("micButton");
+    const status = document.getElementById("status");
+    const answer = document.getElementById("answer");
+
+    // State variables
+    let questionIndex = 0;
+    let isAutoMode = false;
+    let isListening = false;
+    let audioContext = null;
+    let isWarmedUp = false;
+    let isAwaitingEmailConfirmation = false; // Track if we've done the initial warmup click
+
+    // Initialize audio context on first user interaction
+    function initAudio() {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        console.log('Audio context initialized');
+      }
+    }
+
+    // Update status text
+    function updateStatus(text) {
+      status.textContent = text;
+    }
+
+    // Start listening phase
+    function startListening(question) {
+      isListening = true;
+      micButton.classList.add("listening");
+      micButton.textContent = "🔴";
+      updateStatus("🎤 Listening... speak now!");
+      answer.innerHTML = "";
+
+      // Auto proceed to thinking after 3 seconds
+      setTimeout(() => {
+        startThinking(question);
+      }, 5000);
+    }
+
+    // Start thinking phase
+    function startThinking(question) {
+      isListening = false;
+      micButton.classList.remove("listening");
+      micButton.textContent = "🎤";
+      updateStatus("🧠 Aimee is thinking...");
+      
+      answer.innerHTML = `
+        <div class="question-display">You asked: "${question}"</div>
+        <div class="thinking-loader">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      `;
+
+      // Show response after 1 second
+      setTimeout(() => {
+        showResponse(question);
+      }, 2000);
+    }
+
+    // Test audio file accessibility
+    async function testAudioFile(filename) {
+      try {
+        const response = await fetch(filename);
+        if (response.ok) {
+          console.log('✅ File accessible:', filename);
+          return true;
+        } else {
+          console.log('❌ File not found:', filename, response.status);
+          return false;
+        }
+      } catch (error) {
+        console.log('❌ Fetch error:', filename, error);
+        return false;
+      }
+    }
+
+    // Show response
+    async function showResponse(question) {
+      updateStatus("✅ Response ready");
+      const response = responses[question] || "Response not found.";
+      
+      answer.innerHTML = `
+        <div class="question-display">You asked: "${question}"</div>
+        <div class="response-text">${response}</div>
+      `;
+
+      // Play corresponding audio file
+      const audioIndex = questions.indexOf(question) + 1;
+      const audioFile = `aimee-response-${audioIndex}.mp3`;
+      
+      console.log('Testing audio file:', audioFile);
+      
+      // Test if file exists first
+      const fileExists = await testAudioFile(audioFile);
+      
+      if (fileExists) {
+        const audio = new Audio(audioFile);
+        audio.volume = 0.8;
+        
+        audio.addEventListener('loadstart', () => {
+          console.log('Audio load started:', audioFile);
+        });
+        
+        audio.addEventListener('loadeddata', () => {
+          console.log('Audio data loaded:', audioFile);
+        });
+        
+        audio.addEventListener('error', (e) => {
+          console.error('Audio error event:', e);
+        });
+        
+        // Wait for audio to finish before continuing
+        audio.addEventListener('ended', () => {
+          console.log('Audio finished playing:', audioFile);
+          returnToReady();
+        });
+        
+        try {
+          await audio.play();
+          console.log('✅ Audio playing successfully:', audioFile);
+        } catch (err) {
+          console.error('❌ Audio play failed:', audioFile, err);
+          // If audio fails, still continue after normal delay
+          setTimeout(returnToReady, 2000);
+        }
+      } else {
+        console.error('❌ Audio file not accessible:', audioFile);
+        // If no audio file, continue after normal delay
+        setTimeout(returnToReady, 2000);
+      }
+    }
+
+    // Return to ready state (separated into its own function)
+    function returnToReady() {
+      setTimeout(() => {
+        // Check if this was the email question (index 2, which is question 3)
+        if ((questionIndex - 1 + questions.length) % questions.length === 2) {
+          // This was the email question - show email confirmation
+          isAwaitingEmailConfirmation = true;
+          showEmailConfirmation();
+        } else {
+          // Normal flow
+          updateStatus("👋 Aimee is listening.");
+          
+          // If auto mode, start next question after audio finishes
+          if (isAutoMode) {
+            setTimeout(() => {
+              nextQuestion();
+            }, 2000);
+          }
+        }
+      }, 1000);
+    }
+
+    // Show email confirmation prompt
+    function showEmailConfirmation() {
+      updateStatus("📧 Email ready");
+      answer.innerHTML = `
+        <div class="question-display">You asked: "Email Robert Kingston a follow-up."</div>
+        <div class="response-text">Email ready: 'Hi Robert—We've just restocked the 2015 Gran Reserva 904. Shall I reserve a case for you?'</div>
+        <div style="margin-top: 15px; padding: 12px; background: #3a3a1f; border-radius: 8px; color: #ffa500;">
+          💬 Say "send email" to send now
+        </div>
+      `;
+
+      // Play the confirmation audio
+      playEmailConfirmationAudio();
+    }
+
+    // Play "say send email to send now" audio
+    async function playEmailConfirmationAudio() {
+      const confirmationAudio = new Audio('email-confirmation.mp3');
+      
+      confirmationAudio.addEventListener('ended', () => {
+        console.log('Email confirmation audio finished');
+        startEmailListening();
+      });
+
+      confirmationAudio.addEventListener('error', () => {
+        console.log('Email confirmation audio not found, proceeding without audio');
+        // If no audio file, still proceed to listening
+        setTimeout(() => {
+          startEmailListening();
+        }, 2000);
+      });
+
+      try {
+        await confirmationAudio.play();
+        console.log('Playing email confirmation audio');
+      } catch (err) {
+        console.log('Email confirmation audio failed, continuing...');
+        // Continue after delay if audio fails
+        setTimeout(() => {
+          startEmailListening();
+        }, 2000);
+      }
+    }
+
+    // Start listening for "send email" command
+    function startEmailListening() {
+      isListening = true;
+      micButton.classList.add("listening");
+      micButton.textContent = "🔴";
+      updateStatus("🎤 Listening for confirmation...");
+
+      // Shorter timeout for email confirmation (3 seconds instead of 5)
+      setTimeout(() => {
+        // Simulate user saying "send email"
+        handleEmailConfirmation();
+      }, 3000);
+    }
+
+    // Handle email confirmation response
+    function handleEmailConfirmation() {
+      isListening = false;
+      isAwaitingEmailConfirmation = false;
+      micButton.classList.remove("listening");
+      micButton.textContent = "🎤";
+      updateStatus("✅ Sending email...");
+
+      // Show "Email sent successfully" response
+      answer.innerHTML = `
+        <div class="question-display">You said: "Send email"</div>
+        <div class="response-text">✅ Email sent successfully!</div>
+      `;
+
+      // Play email success audio (you can record this)
+      playEmailSuccessAudio();
+    }
+
+    // Play "email sent successfully" audio
+    async function playEmailSuccessAudio() {
+      // You can add an audio file for this response
+      const successAudio = new Audio('email-sent-success.mp3');
+      
+      successAudio.addEventListener('ended', () => {
+        // Continue with normal demo flow
+        setTimeout(() => {
+          updateStatus("👋 Aimee is listening.");
+          
+          if (isAutoMode) {
+            setTimeout(() => {
+              nextQuestion();
+            }, 2000);
+          }
+        }, 1000);
+      });
+
+      successAudio.addEventListener('error', () => {
+        // If no audio file, continue after delay
+        setTimeout(() => {
+          updateStatus("👋 Aimee is listening.");
+          
+          if (isAutoMode) {
+            setTimeout(() => {
+              nextQuestion();
+            }, 2000);
+          }
+        }, 2000);
+      });
+
+      try {
+        await successAudio.play();
+        console.log('Playing email success audio');
+      } catch (err) {
+        console.log('Email success audio not found, continuing...');
+        // Continue after delay if no audio
+        setTimeout(() => {
+          updateStatus("👋 Aimee is listening.");
+          
+          if (isAutoMode) {
+            setTimeout(() => {
+              nextQuestion();
+            }, 2000);
+          }
+        }, 2000);
+      }
+    }
+
+    // Move to next question
+    function nextQuestion() {
+      if (isAutoMode && !isListening) {
+        const question = questions[questionIndex];
+        startListening(question);
+        questionIndex = (questionIndex + 1) % questions.length;
+      }
+    }
+
+    // Start auto demo
+    function startAutoDemo() {
+      isAutoMode = true;
+      nextQuestion();
+    }
+
+    // Stop auto demo
+    function stopAutoDemo() {
+      isAutoMode = false;
+    }
+
+    // Add fullscreen functionality
+    function enterFullscreen() {
+      const elem = document.documentElement;
+      if (elem.requestFullscreen) {
+        elem.requestFullscreen();
+      } else if (elem.webkitRequestFullscreen) {
+        elem.webkitRequestFullscreen();
+      } else if (elem.msRequestFullscreen) {
+        elem.msRequestFullscreen();
+      }
+    }
+
+    // Auto-enter fullscreen on mobile when user interacts
+    function handleFirstInteraction() {
+      if (window.innerWidth <= 768) {
+        // Try to enter fullscreen on mobile
+        enterFullscreen();
+      }
+    }
+
+    // Manual mic click
+    micButton.addEventListener("click", () => {
+      // Initialize audio on first click
+      initAudio();
+      
+      // Try fullscreen on first mobile interaction
+      handleFirstInteraction();
+      
+      // First click is just for warmup - doesn't trigger demo
+      if (!isWarmedUp) {
+        isWarmedUp = true;
+        console.log('🔥 Audio warmed up - ready for demo!');
+        updateStatus("👋 Audio initialized. Ready for demo!");
+        
+        // Visual feedback that warmup is complete
+        micButton.style.boxShadow = "0 0 0 2px #4caf50";
+        setTimeout(() => {
+          micButton.style.boxShadow = "";
+          updateStatus("👋 Aimee is listening.");
+        }, 2000);
+        
+        return; // Don't start demo yet
+      }
+      
+      if (isListening) {
+        // If listening, skip to thinking
+        if (isAwaitingEmailConfirmation) {
+          // Handle email confirmation
+          handleEmailConfirmation();
+        } else {
+          // Normal question flow
+          const question = questions[questionIndex];
+          startThinking(question);
+          questionIndex = (questionIndex + 1) % questions.length;
+        }
+      } else {
+        // Stop auto mode and start manual question
+        stopAutoDemo();
+        const question = questions[questionIndex];
+        startListening(question);
+        questionIndex = (questionIndex + 1) % questions.length;
+      }
+    });
+
+    // Start auto demo after 3 seconds, but only if warmed up
+    let hasUserInteracted = false;
+    
+    document.addEventListener('click', () => {
+      if (!hasUserInteracted) {
+        hasUserInteracted = true;
+        initAudio();
+      }
+    });
+
+    setTimeout(() => {
+      if (hasUserInteracted && isWarmedUp) {
+        startAutoDemo();
+      } else {
+        // Wait for warmup, then auto-start
+        console.log('Waiting for audio warmup...');
+        const checkWarmup = setInterval(() => {
+          if (isWarmedUp) {
+            clearInterval(checkWarmup);
+            setTimeout(() => {
+              console.log('🚀 Auto-starting demo after warmup and fullscreen delay');
+              startAutoDemo();
+            }, 5000); // 5 seconds after warmup to let fullscreen notification disappear
+          }
+        }, 500);
+      }
+    }, 3000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aimee - AI Sales Intelligence</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b9d, #c44569);
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .specialist {
+            color: #8e44ad;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .recording-section {
+            margin: 30px 0;
+        }
+
+        .record-btn, .stop-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .record-btn:hover, .stop-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .stop-btn {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        }
+
+        .stop-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .text-input-section {
+            margin: 30px 0;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
+
+        .command-label {
+            color: #666;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .command-input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .command-input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 40px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .status {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+
+        .status.processing {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+        }
+
+        .status.success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .response-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            text-align: left;
+        }
+
+        .response-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .audio-player {
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .debug-info {
+            margin-top: 15px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .examples {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: #888;
+            font-style: italic;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🍷</div>
+        <h1>Aimee</h1>
+        <div class="subtitle">Your AI Sales Intelligence Assistant</div>
+        <div class="specialist">Connecticut Wine Market Specialist</div>
+
+        <!-- Voice Recording Section -->
+        <div class="recording-section">
+            <button id="startRecord" class="record-btn">🎤 Start Recording</button>
+            <button id="stopRecord" class="stop-btn" disabled>⏹️ Stop Recording</button>
+        </div>
+
+        <!-- Text Input Section -->
+        <div class="text-input-section">
+            <div class="command-label">Or type your command:</div>
+            <input type="text" id="commandInput" class="command-input" 
+                   placeholder="Try: 'What should I focus on today?' or 'Brief me on Barcelona Wine Bar'">
+            <br>
+            <button id="sendCommand" class="send-btn">Send</button>
+        </div>
+
+        <!-- Status Display -->
+        <div id="status" class="status" style="display: none;"></div>
+
+        <!-- Response Section -->
+        <div id="responseSection" class="response-section" style="display: none;">
+            <div id="responseText" class="response-text"></div>
+            <audio id="audioPlayer" class="audio-player" controls style="display: none;"></audio>
+            <div id="debugInfo" class="debug-info" style="display: none;"></div>
+        </div>
+
+        <!-- Examples -->
+        <div class="examples">
+            Examples: "Brief me on Barcelona Wine Bar" • "What distributors are in Connecticut?" • "What should I focus on today?"
+        </div>
+    </div>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+
+        // DOM elements
+        const startBtn = document.getElementById('startRecord');
+        const stopBtn = document.getElementById('stopRecord');
+        const commandInput = document.getElementById('commandInput');
+        const sendBtn = document.getElementById('sendCommand');
+        const status = document.getElementById('status');
+        const responseSection = document.getElementById('responseSection');
+        const responseText = document.getElementById('responseText');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const debugInfo = document.getElementById('debugInfo');
+
+        // Voice recording functionality
+        startBtn.addEventListener('click', startRecording);
+        stopBtn.addEventListener('click', stopRecording);
+        sendBtn.addEventListener('click', sendTextCommand);
+        
+        // Enter key support for text input
+        commandInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendTextCommand();
+            }
+        });
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    await uploadAudio(audioBlob);
+                };
+
+                mediaRecorder.start();
+                isRecording = true;
+                
+                startBtn.disabled = true;
+                stopBtn.disabled = false;
+                showStatus('Recording... Click stop when finished', 'processing');
+
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                showStatus('Error accessing microphone. Please check permissions.', 'error');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                mediaRecorder.stream.getTracks().forEach(track => track.stop());
+                isRecording = false;
+                
+                startBtn.disabled = false;
+                stopBtn.disabled = true;
+                showStatus('Processing audio...', 'processing');
+            }
+        }
+
+        async function uploadAudio(audioBlob) {
+            const formData = new FormData();
+            formData.append('audio', audioBlob, 'recording.wav');
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResponse(data);
+                } else {
+                    showStatus('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showStatus('Upload failed. Please try again.', 'error');
+            }
+        }
+
+        async function sendTextCommand() {
+            const command = commandInput.value.trim();
+            if (!command) return;
+
+            showStatus('Processing command...', 'processing');
+
+            try {
+                const formData = new FormData();
+                formData.append('transcript_override', command);
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResponse(data);
+                    commandInput.value = ''; // Clear input
+                } else {
+                    showStatus('Error: ' + data.error, 'error');
+                }
+            } catch (error) {
+                console.error('Command error:', error);
+                showStatus('Command failed. Please try again.', 'error');
+            }
+        }
+
+        function displayResponse(data) {
+            showStatus('✅ Response ready', 'success');
+            
+            // Show response section
+            responseSection.style.display = 'block';
+            
+            // Display transcript and response
+            let responseHtml = '';
+            if (data.transcript) {
+                responseHtml += `<strong>You said:</strong> "${data.transcript}"<br><br>`;
+            }
+            if (data.response_text) {
+                responseHtml += `<strong>Aimee:</strong> ${data.response_text}`;
+            }
+            responseText.innerHTML = responseHtml;
+
+            // Play audio if available
+            if (data.response_audio) {
+                audioPlayer.src = data.response_audio;
+                audioPlayer.style.display = 'block';
+                // Auto-play the response
+                audioPlayer.play().catch(e => console.log('Auto-play prevented'));
+            } else {
+                audioPlayer.style.display = 'none';
+            }
+
+            // Show debug info
+            if (data.intent || data.score) {
+                debugInfo.innerHTML = `
+                    Intent: ${data.intent || 'unknown'} | 
+                    Confidence: ${data.score ? (data.score * 100).toFixed(1) + '%' : 'N/A'} | 
+                    Tone: ${data.tone || 'unknown'} |
+                    Processing: ${data.processing_time || 'N/A'}s
+                `;
+                debugInfo.style.display = 'block';
+            }
+        }
+
+        function showStatus(message, type = '') {
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+            
+            // Auto-hide success messages after 3 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    status.style.display = 'none';
+                }, 3000);
+            }
+        }
+
+        // Health check on page load
+        window.addEventListener('load', async () => {
+            try {
+                const response = await fetch('/health');
+                const health = await response.json();
+                console.log('Aimee Health Check:', health);
+                
+                if (health.enhanced_wine_intelligence) {
+                    console.log('Enhanced Wine Intelligence Active:', health.wine_data_stats);
+                }
+            } catch (error) {
+                console.log('Health check failed:', error);
+            }
+        });
+    </script>
+</body>
+</html>

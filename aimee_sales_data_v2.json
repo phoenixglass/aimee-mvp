@@ -1,0 +1,353 @@
+{
+  "customers": [
+    {
+      "id": "CUST001",
+      "name": "LeBella's Fine Wine",
+      "type": "Wine Shop",
+      "location": "Downtown Business District",
+      "annual_volume": 2300000,
+      "margin_percent": 20,
+      "payment_terms": "Net 30",
+      "decision_maker": {
+        "name": "Sofia LeBella",
+        "title": "Owner",
+        "phone": "(555) 123-4567",
+        "email": "sofia@labellas.com",
+        "personality": "relationship-focused, quality-driven"
+      },
+      "ordering_pattern": {
+        "frequency": "Every 21 days",
+        "average_order": 48000,
+        "seasonal_boost": "November-December (+40%)"
+      },
+      "competitive_threats": [
+        {
+          "competitor": "Wine Warehouse Direct",
+          "threat_level": "High",
+          "strategy": "Price competition",
+          "counter_strategy": "Emphasize exclusive allocations and service"
+        },
+        {
+          "competitor": "Costco Business",
+          "threat_level": "Medium",
+          "strategy": "Volume pricing",
+          "counter_strategy": "Focus on curation and expertise"
+        }
+      ],
+      "opportunities": [
+        {
+          "type": "Bordeaux Collection",
+          "value": 25000,
+          "probability": 0.94,
+          "timeline": "Next 2 weeks",
+          "urgency": "Competitor circling"
+        }
+      ],
+      "preferences": {
+        "wine_types": ["Premium Bordeaux", "Italian Super Tuscans", "Napa Cabernet"],
+        "price_points": "$50-200 bottles",
+        "meeting_style": "Relationship-focused, long conversations"
+      }
+    },
+    {
+      "id": "CUST002", 
+      "name": "Barcelona Wine Bar",
+      "type": "Restaurant - Wine Bar",
+      "location": "4180 Black Rock Turnpike, Fairfield, CT 06824",
+      "phone": "(203) 255-0800",
+      "annual_volume": 1000000,
+      "margin_percent": 25,
+      "payment_terms": "Net 15",
+      "decision_maker": {
+        "name": "Wine Director",
+        "title": "Beverage Director/Sommelier",
+        "personality": "expertise-focused, Spanish wine specialist"
+      },
+      "wine_program": {
+        "specialty": "Spanish wines - largest Spanish program in US",
+        "total_wines": 400,
+        "focus_regions": ["Spain", "South America", "Mediterranean"],
+        "style": "Award-winning selection, tapas pairing focused"
+      },
+      "ordering_pattern": {
+        "frequency": "Monthly",
+        "average_order": 85000,
+        "seasonal_pattern": "Spanish releases priority",
+        "reorder_probability": 0.92
+      },
+      "competitive_advantages": [
+        "Exclusive Spanish wine positioning",
+        "High wine-per-table ratio (tapas culture)", 
+        "Sophisticated wine education program",
+        "Premium price acceptance"
+      ],
+      "opportunities": [
+        {
+          "type": "Portuguese Wine Expansion",
+          "value": 15000,
+          "probability": 0.85,
+          "timeline": "Next month",
+          "rationale": "Natural expansion from Spanish focus"
+        },
+        {
+          "type": "Spanish Winemaker Dinner",
+          "value": 30000,
+          "probability": 0.78,
+          "timeline": "Spring season",
+          "rationale": "Perfect fit for existing program"
+        }
+      ],
+      "preferences": {
+        "wine_types": ["Spanish varietals", "Portuguese wines", "South American premium"],
+        "price_points": "$40-150 bottles",
+        "meeting_style": "Educational, wine-focused discussions"
+      },
+      "competitive_threats": [
+        {
+          "competitor": "Local Spanish restaurants",
+          "threat_level": "Medium",
+          "strategy": "Similar wine programs",
+          "counter_strategy": "Emphasize exclusive allocations and authenticity"
+        }
+      ]
+    },
+    {
+      "id": "CUST003",
+      "name": "Bin 100 Restaurant", 
+      "type": "Restaurant - Italian",
+      "location": "100 Lansdale Avenue, Milford, CT 06460",
+      "phone": "(203) 701-8970",
+      "annual_volume": 400000,
+      "margin_percent": 22,
+      "payment_terms": "Net 21",
+      "decision_maker": {
+        "name": "Restaurant Manager",
+        "title": "Beverage Manager/Owner",
+        "personality": "volume-focused, traditional Italian preferences"
+      },
+      "wine_program": {
+        "specialty": "Italian/Mediterranean wines",
+        "structure": "Organized by style - Sparklers, Crisp Whites, Rich Whites, Fruity Reds, Smooth Reds, Dense Reds",
+        "awards": "Connecticut Magazine 2015 Best Italian, Award-winning wine list",
+        "price_range": "$35-120+ bottles"
+      },
+      "ordering_pattern": {
+        "frequency": "Quarterly rotations for mid-tier",
+        "average_order": 33000,
+        "stable_premium": "High-end selections remain consistent",
+        "reorder_probability": 0.88
+      },
+      "wine_list_analysis": {
+        "strengths": "Well-organized by style, good Italian/French selection",
+        "gaps": ["Limited natural/organic wines", "Sparse New World outside California", "Few Spanish wines beyond basic Rioja"],
+        "opportunities": ["Boutique Italian producers", "Spanish wine expansion", "Premium upsell categories"]
+      },
+      "opportunities": [
+        {
+          "type": "Boutique Italian Expansion",
+          "value": 12000,
+          "probability": 0.82,
+          "timeline": "Next quarter",
+          "rationale": "Fits existing Italian focus, higher margins"
+        },
+        {
+          "type": "Premium Barolo Selection",
+          "value": 8000,
+          "probability": 0.75,
+          "timeline": "Wine dinner event",
+          "rationale": "Upsell existing Barolo presence"
+        }
+      ],
+      "preferences": {
+        "wine_types": ["Italian varietals", "Traditional French", "Premium Barolos"],
+        "price_points": "$35-120 bottles",
+        "meeting_style": "Practical, volume and margin focused"
+      },
+      "competitive_threats": [
+        {
+          "competitor": "Chain Italian restaurants",
+          "threat_level": "Medium", 
+          "strategy": "Lower wine pricing",
+          "counter_strategy": "Emphasize quality and authenticity over price"
+        }
+      ]
+    },
+    {
+      "id": "CUST004",
+      "name": "Spiga Wine Bar & Salumeria",
+      "type": "Restaurant - Italian Wine Bar", 
+      "location": "136 Main Street, New Canaan, CT 06840",
+      "phone": "(203) 920-1351",
+      "annual_volume": 550000,
+      "margin_percent": 28,
+      "payment_terms": "Net 15",
+      "decision_maker": {
+        "name": "Dan Camporeale",
+        "title": "Owner",
+        "personality": "quality-focused, premium positioning"
+      },
+      "demographics": {
+        "market": "Ultra-wealthy New Canaan clientele",
+        "avg_household_income": "$200K+",
+        "wine_sophistication": "High",
+        "price_sensitivity": "Low"
+      },
+      "wine_program": {
+        "specialty": "Handmade pasta pairings, Italian focus with varietals from Italy and beyond",
+        "style": "Extensive wine by the glass + comprehensive reserve bottle list",
+        "positioning": "Modern trattoria with premium wine focus",
+        "custom_features": "Vast custom zinc bar centerpiece"
+      },
+      "ordering_pattern": {
+        "frequency": "Bi-weekly for premium selections",
+        "average_order": 42000,
+        "premium_focus": "High per-bottle prices accepted",
+        "reorder_probability": 0.91
+      },
+      "market_intelligence": {
+        "location_history": "Third restaurant attempt (previous: Tuscan, Barolo failed)",
+        "recent_changes": "Addressed noise issues, menu refinement in progress",
+        "competitive_advantage": "New Canaan wealth demographics"
+      },
+      "opportunities": [
+        {
+          "type": "Super-Premium Italian Wines",
+          "value": 25000,
+          "probability": 0.89,
+          "timeline": "Immediate",
+          "rationale": "$150+ bottles accepted by wealthy clientele"
+        },
+        {
+          "type": "Exclusive Small-Producer Allocations",
+          "value": 18000,
+          "probability": 0.84,
+          "timeline": "Monthly additions",
+          "rationale": "Hidden gem positioning appeals to sophisticated customers"
+        },
+        {
+          "type": "Private Wine Cellar Consultations",
+          "value": 35000,
+          "probability": 0.76,
+          "timeline": "Ongoing program",
+          "rationale": "Wealthy customers want personal wine advice"
+        }
+      ],
+      "preferences": {
+        "wine_types": ["Super-premium Italian", "Exclusive small producers", "Rare allocations"],
+        "price_points": "$80-300+ bottles",
+        "meeting_style": "Sophisticated, focused on exclusivity and quality"
+      },
+      "competitive_threats": [
+        {
+          "competitor": "NYC Italian restaurants",
+          "threat_level": "Low",
+          "strategy": "Proximity advantage",
+          "counter_strategy": "Emphasize local convenience and personal service"
+        }
+      ]
+    },
+    {
+      "id": "CUST005",
+      "name": "Meridian Restaurant Group",
+      "type": "Restaurant Chain",
+      "location": "Regional Multi-Location",
+      "annual_volume": 1800000,
+      "margin_percent": 18,
+      "payment_terms": "Net 45",
+      "decision_maker": {
+        "name": "Marcus Chen",
+        "title": "Regional Beverage Director", 
+        "phone": "(555) 234-5678",
+        "email": "mchen@meridiangroup.com",
+        "personality": "data-driven, efficiency-focused"
+      },
+      "ordering_pattern": {
+        "frequency": "Bi-weekly",
+        "average_order": 72000,
+        "seasonal_variation": "Summer (+25%)"
+      },
+      "competitive_threats": [
+        {
+          "competitor": "National Beverage Corp",
+          "threat_level": "High",
+          "strategy": "Volume discounting",
+          "counter_strategy": "Focus on local service and flexibility"
+        }
+      ],
+      "opportunities": [
+        {
+          "type": "Summer Wine Program",
+          "value": 85000,
+          "probability": 0.71,
+          "timeline": "April planning",
+          "urgency": "Seasonal deadline approaching"
+        }
+      ],
+      "preferences": {
+        "wine_types": ["Versatile food wines", "Popular varietals", "Value positioning"],
+        "price_points": "$25-60 bottles",
+        "meeting_style": "Efficient, numbers-focused"
+      }
+    }
+  ],
+  "distributors": [
+    {
+      "name": "Connecticut Distributors Inc. (CDI) - Breakthru Beverage",
+      "type": "Primary Target",
+      "profile": "Largest distributor in state, handles 3,000+ on-premise accounts, 300+ associates",
+      "key_contacts": [
+        {
+          "name": "Jon Fredyna", 
+          "title": "VP Marketing",
+          "focus": "Supplier relationships and business managers"
+        }
+      ],
+      "customers_served": ["Barcelona Wine Bar", "Bin 100", "Spiga Wine Bar"],
+      "sales_approach": "Enterprise-level intelligence platform positioning"
+    },
+    {
+      "name": "Martignetti Companies",
+      "type": "Primary Target", 
+      "profile": "Third largest in Connecticut, 1.5M+ cases annually, 6,000+ wine/spirits brands",
+      "location": "Stratford, CT",
+      "customers_served": ["Barcelona Wine Bar", "Spiga Wine Bar"],
+      "sales_approach": "Value-added services positioning for premium wines"
+    },
+    {
+      "name": "Murphy Distributors",
+      "type": "Pilot Target",
+      "profile": "Known for professionalism and customer service, versatile book",
+      "customers_served": ["Bin 100"],
+      "sales_approach": "Competitive advantage against larger distributors"
+    },
+    {
+      "name": "Missing Link Wine Company",
+      "type": "Boutique Opportunity",
+      "profile": "Artisan-focused, small producer specialist, serves Fairfield County Tue/Fri",
+      "key_contacts": [
+        {
+          "name": "Doug Rankin",
+          "title": "Owner",
+          "phone": "(203) 807-1199"
+        },
+        {
+          "name": "Ann Reynolds", 
+          "title": "Owner"
+        }
+      ],
+      "customers_served": ["Spiga Wine Bar", "Barcelona Wine Bar"],
+      "sales_approach": "Small producer intelligence advantage"
+    }
+  ],
+  "market_intelligence": {
+    "total_addressable_market": 1950000,
+    "pilot_revenue_potential": 4700,
+    "key_regions": ["Fairfield County", "New Haven County", "Litchfield County"],
+    "market_trends": [
+      "Spanish wine programs expanding",
+      "Boutique Italian producers in demand", 
+      "Premium pricing accepted in wealthy areas",
+      "Organic/natural wines growing category"
+    ]
+  }
+}

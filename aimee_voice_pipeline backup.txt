@@ -1,0 +1,1040 @@
+from elevenlabs.client import ElevenLabs
+from flask import send_from_directory
+import os
+import tempfile
+import uuid
+import json
+import hashlib
+import asyncio
+import threading
+import re
+from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
+import time
+from typing import Dict, Any, Optional
+from aimee_wine_intelligence import AimeeWineIntelligence, handle_taste_query, handle_pairing_query
+from aimee_fairfield_integration import integrate_fairfield_intelligence
+
+# Multiple import styles - keeping your original structure
+try:
+    import whisper
+    WHISPER_AVAILABLE = True
+except ImportError:
+    WHISPER_AVAILABLE = False
+    print("Whisper not available")
+
+from flask import Flask, request, render_template, jsonify, send_from_directory
+from werkzeug.utils import secure_filename
+from aimee_classifier import AimeeClassifier
+from gtts import gTTS
+from datetime import datetime
+import csv
+
+# Initialize Flask app
+app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+
+# Create upload directory
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+# Initialize Fairfield County intelligence
+fairfield_handlers = integrate_fairfield_intelligence()
+
+# ElevenLabs setup
+elevenlabs_client = None
+try:
+    ELEVENLABS_API_KEY = os.getenv('ELEVENLABS_API_KEY')
+    if ELEVENLABS_API_KEY:
+        elevenlabs_client = ElevenLabs(api_key=ELEVENLABS_API_KEY)
+        print("ElevenLabs client initialized successfully")
+    else:
+        print("ElevenLabs API key not found in environment variables")
+except Exception as e:
+    print(f"Failed to initialize ElevenLabs client: {e}")
+
+# Global cache for transcriptions
+transcription_cache = {}
+verification_results = {}
+
+def save_cache():
+    """Save transcription cache to disk"""
+    try:
+        with open('transcription_cache.json', 'w') as f:
+            json.dump(transcription_cache, f)
+    except Exception as e:
+        print(f"Error saving cache: {e}")
+
+def hash_file(path: str) -> str:
+    """Generate hash for file content"""
+    hasher = hashlib.md5()
+    with open(path, 'rb') as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+def preprocess_wine_terminology(text: str) -> str:
+    """Convert wine industry shorthand to full terms for better classification"""
+    
+    # Wine terminology mappings
+    wine_mappings = {
+        # Common abbreviations
+        'bubbles': 'sparkling wine',
+        'bubbly': 'sparkling wine',
+        'na': 'non-alcoholic',
+        'n/a': 'non-alcoholic',
+        'rtd': 'ready to drink',
+        'ready-to-drink': 'ready to drink',
+        
+        # Regional shortcuts
+        'napa': 'napa valley',
+        'sonoma': 'sonoma county',
+        'paso': 'paso robles',
+        'willamette': 'willamette valley',
+        
+        # Variety shortcuts
+        'cab': 'cabernet sauvignon',
+        'cab sauv': 'cabernet sauvignon',
+        'chard': 'chardonnay',
+        'sauv blanc': 'sauvignon blanc',
+        'pinot': 'pinot noir',
+        'temp': 'tempranillo',
+        
+        # Quality terms
+        'top shelf': 'premium',
+        'high end': 'premium',
+        'budget': 'affordable',
+        'cheap': 'affordable',
+        
+        # Bottle sizes
+        'mag': 'magnum',
+        'half bottle': 'half-bottle',
+        '375ml': 'half-bottle',
+        '750ml': 'standard bottle',
+        '1.5l': 'magnum',
+        
+        # Business terms
+        'eta': 'estimated delivery',
+        'asap': 'as soon as possible',
+        'rush': 'urgent delivery',
+        'stat': 'immediately'
+    }
+    
+    # Apply mappings (case insensitive)
+    processed_text = text.lower()
+    for short, full in wine_mappings.items():
+        processed_text = processed_text.replace(short, full)
+    
+    return processed_text
+
+def detect_special_responses(transcript: str) -> str:
+    """Detect special response scenarios that override normal classification"""
+    
+    transcript_lower = transcript.lower()
+    
+    # Greeting detection
+    greeting_patterns = [
+        r'\b(hi|hello|hey)\s+(aimee|amy)\b',
+        r'^(hi|hello|hey)\s*$',
+        r'\b(good\s+(morning|afternoon|evening))\b'
+    ]
+    
+    for pattern in greeting_patterns:
+        if re.search(pattern, transcript_lower):
+            return "Hello! I'm Aimee, your wine industry assistant. How can I help you today?"
+    
+    # Gratitude detection
+    if any(phrase in transcript_lower for phrase in ['thank you', 'thanks', 'appreciate']):
+        return "You're very welcome! Happy to help with your wine needs."
+    
+    # Confusion/unclear detection
+    confusion_indicators = ['what', 'huh', 'unclear', 'didn\'t catch', 'repeat']
+    if any(indicator in transcript_lower for indicator in confusion_indicators):
+        return "I'm sorry, could you please repeat that? I want to make sure I help you correctly."
+    
+    return ""  # No special response needed
+
+def extract_key_details(transcript: str, intent: str, entities: dict = None) -> str:
+    """Extract key details and create summary with wine intelligence"""
+    
+   # WINE KEYWORD DETECTION - Only for specific wine intents
+    text_lower = transcript.lower()
+    wine_keywords = ['wine', 'pairing', 'seafood', 'celebration', 'fruity', 'crisp', 'bold', 'light', 'chardonnay', 'cabernet', 'champagne', 'pinot',   'merlot']
+
+   # Check for wine-related keywords ONLY if not a Fairfield County intent
+    fairfield_intents = ['customer_intelligence', 'daily_briefing', 'daily_priorities', 'opportunity_analysis', 'gap_analysis', 'competitive_strategy',   'meeting_preparation', 'distributor_intelligence']
+
+    if intent not in fairfield_intents and any(keyword in text_lower for keyword in wine_keywords):
+        # Force wine processing regardless of classification
+        if any(food in text_lower for food in ['seafood', 'salmon', 'fish']):
+            response = handle_pairing_query('seafood', wine_intelligence)
+            return f"I heard: {transcript}. {response}"
+        elif any(celebration in text_lower for celebration in ['celebration', 'wedding', 'champagne']):
+            response = handle_pairing_query('celebration', wine_intelligence)
+            return f"I heard: {transcript}. {response}"
+        elif any(taste in text_lower for taste in ['fruity', 'light', 'crisp', 'bold']):
+            # Smart taste mapping
+            taste_descriptors = []
+            if 'fruity' in text_lower:
+                taste_descriptors.extend(['blackberry', 'apple', 'citrus'])
+            if 'bold' in text_lower:
+                taste_descriptors.extend(['cedar', 'vanilla'])  # Bold wine flavors
+            if 'light' in text_lower:
+                taste_descriptors.extend(['citrus', 'apple'])
+            if 'crisp' in text_lower:
+                taste_descriptors.extend(['citrus', 'apple'])
+            
+            response = handle_taste_query(taste_descriptors, wine_intelligence)
+            return f"I heard: {transcript}. {response}"
+    
+    # Preprocess wine terminology
+    text = preprocess_wine_terminology(transcript)
+    
+    # Initialize extraction variables
+    customer = None
+    wine = None
+    quantity = None
+    size = None
+    delivery = None
+    
+    # Customer name extraction (improved patterns)
+    customer_patterns = [
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*?)(?:\s+(?:needs|wants|requires|ordered))',
+        r'\b([A-Z][a-z]+(?:\'s)?)(?:\s+(?:fine\s+wine|wine|vineyard|winery|cellar))',
+        r'\bfor\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)',
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*?)\s+(?:is\s+)?(?:looking|asking)',
+    ]
+    
+    for pattern in customer_patterns:
+        match = re.search(pattern, transcript)
+        if match:
+            potential_customer = match.group(1).strip()
+            # Filter out common wine terms that might be capitalized
+            wine_terms = ['Chardonnay', 'Cabernet', 'Merlot', 'Pinot', 'Sauvignon', 'Wine', 'Vineyard', 'Cellar', 'Valley', 'Estate']
+            if not any(term in potential_customer for term in wine_terms):
+                customer = potential_customer
+                break
+
+    # Wine extraction (enhanced patterns)
+    wine_patterns = [
+        r'\b((?:[A-Z][a-z]+\s+)*(?:Chardonnay|Cabernet Sauvignon|Cabernet|Merlot|Pinot Noir|Pinot Grigio|Sauvignon Blanc|Riesling|Syrah|Shiraz|Malbec|Tempranillo|Sangiovese|Chianti|Bordeaux|Burgundy|Champagne|Prosecco|Moscato))\b',
+        r'\b([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*?)\s+(?:wine|vintage|bottle)',
+        r'\bthe\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*?)\b',
+        r'\b((?:[0-9]{4}\s+)?[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*?)\s+(?:from|by)',
+    ]
+    
+    for pattern in wine_patterns:
+        match = re.search(pattern, transcript)
+        if match:
+            wine = match.group(1).strip()
+            break
+
+    # Enhanced quantity extraction
+    quantity_patterns = [
+        r'\b(one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve)\s+(?:bottles?|cases?)\b',
+        r'\b(\d+)\s+(?:bottles?|cases?|units?)\b',
+        r'\b(a\s+(?:bottle|case|dozen))\b',
+        r'\b(half\s+a\s+dozen|dozen)\b'
+    ]
+    
+    for pattern in quantity_patterns:
+        match = re.search(pattern, text)
+        if match:
+            quantity = match.group(1).strip()
+            break
+
+    # Size extraction
+    size_patterns = [
+        r'\b(magnum|half-bottle|standard|375ml|750ml|1\.5l|split)\b',
+        r'\bin\s+(large|small|regular)\s+(?:size|bottles?)\b'
+    ]
+    
+    for pattern in size_patterns:
+        match = re.search(pattern, text)
+        if match:
+            size = match.group(1).strip()
+            break
+
+    # Delivery/timing extraction
+    delivery_patterns = [
+        r'\b(?:for|by|on)\s+(today|tomorrow|this\s+week|next\s+week|friday|monday|tuesday|wednesday|thursday|saturday|sunday)\b',
+        r'\b(?:for|by)\s+(\d{1,2}\/\d{1,2}|\d{1,2}th?|\d{1,2}nd|\d{1,2}rd)\b',
+        r'\b(as soon as possible|asap|urgent|rush|immediately)\b'
+    ]
+    
+    for pattern in delivery_patterns:
+        match = re.search(pattern, text.lower())
+        if match:
+            delivery = match.group(1).strip()
+            break
+
+    # Build intent-specific responses with wine intelligence
+    if intent == "add_to_order":
+        parts = []
+
+        if customer:
+            parts.append(customer)
+
+        if customer and (quantity or wine):
+            parts.append("needs")
+
+        if quantity and wine:
+            parts.append(f"{quantity} of {wine}")
+        elif quantity:
+            parts.append(quantity)
+        elif wine:
+            parts.append(wine)
+
+        if size:
+            parts.append(f"in {size}")
+
+        if delivery:
+            parts.append(f"for {delivery}")
+
+        if len(parts) >= 2:
+            return "I heard: " + " ".join(parts) + "."
+        else:
+            return "I heard: add to order."
+
+    elif intent == "check_shipment_status":
+        if wine:
+            return f"I heard: ETA check for {wine}."
+        else:
+            return "I heard: shipment status check."
+
+    elif intent == "check_inventory":
+        parts = []
+        if wine:
+            parts.append(f"check inventory for {wine}")
+        else:
+            parts.append("inventory check")
+
+        if "cheapest possible" in text:
+            parts.append("cheapest possible")
+
+        if customer:
+            parts.append(f"for {customer}")
+
+        return "I heard: " + " ".join(parts) + "."
+
+    elif intent == "gift_request":
+        parts = ["gift request"]
+        if "wedding" in text:
+            parts = ["wedding gift request"]
+        elif "mother to daughter" in text:
+            parts = ["mother to daughter gift request"]
+        elif "anniversary" in text:
+            parts = ["anniversary gift request"]
+        elif "birthday" in text:
+            parts = ["birthday gift request"]
+
+        if wine:
+            parts.append(f"for {wine}")
+        elif "champagne" in text:
+            parts.append("for champagne")
+        elif "sparkling wine" in text:
+            parts.append("for sparkling wine")
+        elif "red wine" in text:
+            parts.append("for red wine")
+        elif "white wine" in text:
+            parts.append("for white wine")
+
+        # Look for quality indicators
+        if "best" in text and ("you've got" in text or "available" in text):
+            parts.append("the best available")
+        elif "premium" in text:
+            parts.append("premium quality")
+        elif "special" in text:
+            parts.append("something special")
+
+        # Look for vintage
+        if "1982" in text:
+            parts.append("vintage 1982")
+        elif "2019" in text:
+            parts.append("vintage 2019")
+        elif re.search(r'\b(19|20)\d{2}\b', text):
+            vintage_match = re.search(r'\b(19|20)\d{2}\b', text)
+            parts.append(f"vintage {vintage_match.group()}")
+
+        return "I heard: " + " ".join(parts) + "."
+
+    elif intent == "taste_preference_query":
+        # Extract taste descriptors from the text
+        taste_descriptors = []
+        if "fruity" in text.lower():
+            taste_descriptors.append("fruity")
+        if "light" in text.lower():
+            taste_descriptors.append("light")
+        if "bold" in text.lower():
+            taste_descriptors.append("bold")
+        if "crisp" in text.lower():
+            taste_descriptors.append("crisp")
+        
+        response = handle_taste_query(taste_descriptors, wine_intelligence)
+        return f"I heard: {transcript}. {response}"
+
+    elif intent == "wine_pairing_request":
+        # Extract food type from text
+        food_type = ""
+        if "seafood" in text.lower():
+            food_type = "seafood"
+        elif "salmon" in text.lower():
+            food_type = "seafood"
+        elif "celebration" in text.lower() or "wedding" in text.lower():
+            food_type = "celebration"
+        elif "steak" in text.lower() or "meat" in text.lower():
+            food_type = "red meat"
+        
+        if food_type:
+            response = handle_pairing_query(food_type, wine_intelligence)
+            return f"I heard: {transcript}. {response}"
+        else:
+            return f"I heard: {transcript}. I'd be happy to help with wine pairings - could you tell me what food you're serving?"
+
+    elif intent == "flavor_profile_inquiry":
+        return f"I heard: {transcript}. I'd be happy to tell you about that wine's flavor profile. Which specific wine are you interested in?"
+
+    elif intent == "taste_based_recommendation":
+        return f"I heard: {transcript}. I can definitely help you find similar wines. What wine did you have in mind as a reference?"
+
+    elif intent == "customer_intelligence":
+        customer_name = entities.get("customer_name", "") if entities else ""
+        if customer_name:
+            response = fairfield_handlers['customer_intelligence'](customer_name)
+            return f"Here's the intelligence on {customer_name}: {response}"
+        else:
+            return "Which customer would you like intelligence on?"
+
+    elif intent == "daily_briefing" or intent == "daily_priorities":
+        response = fairfield_handlers['daily_briefing']()
+        return f"Here's your daily briefing: {response}"
+
+    elif intent == "opportunity_analysis":
+        customer_name = entities.get("customer_name", "") if entities else ""
+        if customer_name:
+            response = fairfield_handlers['opportunity_analysis'](customer_name)
+            return f"Opportunity analysis: {response}"
+        else:
+            return "Which customer's opportunities should I analyze?"
+
+    elif intent == "gap_analysis":
+        customer_name = entities.get("customer_name", "") if entities else ""
+        if customer_name:
+            response = fairfield_handlers['gap_analysis'](customer_name)
+            return f"Gap analysis: {response}"
+        else:
+            return "Which customer's wine list should I analyze for gaps?"
+
+    elif intent == "competitive_strategy":
+        customer_name = entities.get("customer_name", "") if entities else ""
+        competitor = entities.get("competitor", None) if entities else None
+        if customer_name:
+            response = fairfield_handlers['competitive_strategy'](customer_name, competitor)
+            return f"Competitive strategy: {response}"
+        else:
+            return "Which customer needs competitive strategy?"
+
+    elif intent == "meeting_preparation":
+        customer_name = entities.get("customer_name", "") if entities else ""
+        if customer_name:
+            response = fairfield_handlers['meeting_preparation'](customer_name)
+            return f"Meeting preparation: {response}"
+        else:
+            return "Which customer meeting should I prepare you for?"
+
+    elif intent == "distributor_intelligence":
+        distributor_name = entities.get("distributor_name", "") if entities else ""
+        if distributor_name:
+            response = fairfield_handlers['distributor_intelligence'](distributor_name)
+            return f"Distributor intelligence: {response}"
+        else:
+            return "Which distributor would you like intelligence on?"
+
+    else:
+        # Keep it simple for other intents
+        if customer and wine:
+            return f"I heard: {customer} request for {wine}."
+        elif customer:
+            return f"I heard: request from {customer}."
+        elif wine:
+            return f"I heard: request about {wine}."
+        else:
+            return "I heard your request."
+
+def generate_aimee_response(text, voice_id="rzsnuMd2pwYz1rGtMIVI"):
+    """Generate TTS response using ElevenLabs"""
+    if not elevenlabs_client:
+        print("ElevenLabs client not available, falling back to gTTS")
+        return generate_audio_response(text)
+
+    try:
+        print(f"Generating ElevenLabs audio for: {text[:50]}...")
+
+        # Try the new SDK method first with balanced expressive settings
+        try:
+            audio = elevenlabs_client.generate(
+                text=text,
+                voice=voice_id,
+                model="eleven_multilingual_v2",
+                voice_settings={
+                    "stability": 0.35,          # Higher = more consistent, still expressive
+                    "similarity_boost": 0.8,    # Keep voice characteristics strong
+                    "style": 0.3,               # Moderate personality (not too wild)
+                    "use_speaker_boost": True   # Enhanced voice presence
+                }
+            )
+        except AttributeError:
+            # Fall back to older SDK method
+            print("Using older ElevenLabs SDK method...")
+            try:
+                audio = elevenlabs_client.text_to_speech.convert(
+                    voice_id=voice_id,
+                    text=text,
+                    model_id="eleven_multilingual_v2",
+                    voice_settings={
+                        "stability": 0.35,
+                        "similarity_boost": 0.8,
+                        "style": 0.3,
+                        "use_speaker_boost": True
+                    }
+                )
+            except Exception:
+                # Final fallback to basic model
+                audio = elevenlabs_client.text_to_speech.convert(
+                    voice_id=voice_id,
+                    text=text,
+                    model_id="eleven_monolingual_v1"
+                )
+
+        # Convert generator to bytes if needed
+        if hasattr(audio, '__iter__') and not isinstance(audio, bytes):
+            audio_bytes = b"".join(audio)
+        else:
+            audio_bytes = audio
+
+        # Save to temporary file
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp_file:
+            tmp_file.write(audio_bytes)
+            return tmp_file.name
+
+    except Exception as e:
+        print(f"ElevenLabs generation failed: {e}")
+        return generate_audio_response(text)
+
+class WhisperModelManager:
+    def __init__(self):
+        self.models = {}
+        self.executor = ThreadPoolExecutor(max_workers=2)
+        self.load_lock = threading.Lock()
+    
+    def get_model(self, model_type="base"):
+        if not WHISPER_AVAILABLE:
+            raise RuntimeError("Whisper not available")
+        
+        if model_type not in self.models:
+            with self.load_lock:
+                if model_type not in self.models:
+                    print(f"Loading Whisper model: {model_type}")
+                    self.models[model_type] = whisper.load_model(model_type)
+                    print(f"Model {model_type} loaded successfully")
+        
+        return self.models[model_type]
+
+# Initialize model manager and classifier
+model_manager = WhisperModelManager()
+
+# Initialize classifier once
+classifier = AimeeClassifier(data_file="aimee_training_data_tagged.json", threshold=0.1)
+
+# Initialize wine intelligence
+wine_intelligence = AimeeWineIntelligence()
+
+# Precompiled keyword sets for faster lookup
+TONE_KEYWORDS = {
+    'urgent': ['urgent', 'asap', 'rush', 'immediately', 'emergency', 'stat'],
+    'polite': ['please', 'thank you', 'kindly', 'appreciate', 'grateful'],
+    'casual': ['hey', 'sup', 'what\'s up', 'yo'],
+    'formal': ['sir', 'madam', 'certainly', 'regarding', 'furthermore']
+}
+
+def detect_tone(transcript_lower: str) -> str:
+    """Cached tone detection using precompiled keyword sets"""
+    for tone, keywords in TONE_KEYWORDS.items():
+        if any(keyword in transcript_lower for keyword in keywords):
+            return tone
+    return "neutral"
+
+def format_response(intent: str, tone: str) -> str:
+    """Cached response formatting"""
+    intent_responses = {
+        "add_to_order": "I'll get that order processed.",
+        "check_inventory": "I'll check what we have in stock.",
+        "cancel_order": "Consider it canceled.",
+        "confirm_delivery": "I'll confirm those delivery details.",
+        "check_pricing": "Let me pull current pricing for you.",
+        "check_shipment_status": "I'll track that shipment for you.",
+        "gift_request": "Perfect! I'll help you find the ideal gift.",
+        "product_recommendation": "I'll recommend something perfect for you.",
+        "schedule_appointment": "I'll get that appointment scheduled.",
+        "taste_preference_query": "Let me find wines that match your taste preferences.",
+        "wine_pairing_request": "I'll suggest perfect wine pairings for you.",
+        "flavor_profile_inquiry": "I'll tell you all about that wine's flavor profile.",
+        "taste_based_recommendation": "I'll find wines similar to what you love."
+    }
+    
+    base_response = intent_responses.get(intent, "I'll help you with that.")
+    
+    if tone == "urgent":
+        return f"{base_response} Right on it."
+    elif tone == "polite":
+        return f"{base_response} Thank you for your business."
+    elif tone == "casual":
+        return f"{base_response} No problem!"
+    else:
+        return base_response
+
+@lru_cache(maxsize=1000)
+def transcribe_audio_cached(filepath: str, model_type: str = "base", priority: str = "speed") -> Dict[str, Any]:
+    """Cached transcription with performance optimization"""
+    
+    file_hash = hash_file(filepath)
+    cache_key = f"{file_hash}_{model_type}"
+    
+    if cache_key in transcription_cache:
+        print(f"Cache hit for {cache_key}")
+        return transcription_cache[cache_key]
+    
+    if not WHISPER_AVAILABLE:
+        return {
+            'text': '[Whisper not available]',
+            'transcription_time': 0,
+            'model_used': 'none'
+        }
+    
+    start_time = time.time()
+    
+    try:
+        model = model_manager.get_model(model_type)
+        
+        # Transcription options for better performance
+        options = {
+            "fp16": False,  # Better compatibility
+            "language": "en"  # Faster when language is known
+        }
+        
+        result = model.transcribe(filepath, **options)
+        
+        transcription_time = time.time() - start_time
+        
+        result_data = {
+            'text': result["text"].strip(),
+            'transcription_time': round(transcription_time, 2),
+            'model_used': model_type
+        }
+        
+        # Cache the result
+        transcription_cache[cache_key] = result_data
+        
+        # Save cache periodically
+        if len(transcription_cache) % 10 == 0:
+            save_cache()
+        
+        return result_data
+        
+    except Exception as e:
+        print(f"Transcription error: {e}")
+        return {
+            'text': f'[Transcription error: {str(e)}]',
+            'transcription_time': time.time() - start_time,
+            'model_used': model_type
+        }
+
+def verify_transcript_background(filepath: str, base_transcript: str, file_hash: str):
+    """Background verification using medium model"""
+    try:
+        print(f"Starting background verification for {file_hash}")
+        
+        # Use medium model for verification
+        verification_result = transcribe_audio_cached(filepath, model_type="medium", priority="accuracy")
+        
+        # Store verification result
+        verification_results[file_hash] = {
+            'original': base_transcript,
+            'verified': verification_result['text'],
+            'confidence': 'high' if abs(len(base_transcript) - len(verification_result['text'])) < 10 else 'medium',
+            'completed_at': datetime.now().isoformat()
+        }
+        
+        print(f"Verification completed for {file_hash}")
+        
+    except Exception as e:
+        print(f"Background verification error: {e}")
+        verification_results[file_hash] = {
+            'original': base_transcript,
+            'verified': '[Verification failed]',
+            'confidence': 'low',
+            'error': str(e),
+            'completed_at': datetime.now().isoformat()
+        }
+
+def generate_audio_response(text: str) -> str:
+    """Generate audio response using gTTS as fallback"""
+    try:
+        tts = gTTS(text=text, lang='en', slow=False)
+        with tempfile.NamedTemporaryFile(delete=False, suffix='.mp3') as tmp_file:
+            tts.save(tmp_file.name)
+            return tmp_file.name
+    except Exception as e:
+        print(f"Error generating audio: {e}")
+        return None
+
+def log_interaction(transcript: str, classification: Dict[str, Any], audio_filename: str):
+    """Log interaction to CSV file"""
+    try:
+        with open('aimee_interactions.csv', 'a', newline='', encoding='utf-8') as csvfile:
+            writer = csv.writer(csvfile)
+            
+            # Write header if file is empty
+            if csvfile.tell() == 0:
+                writer.writerow(['timestamp', 'transcript', 'intent', 'tone', 'confidence', 'audio_file'])
+            
+            writer.writerow([
+                datetime.now().isoformat(),
+                transcript,
+                classification.get('intent', 'unknown'),
+                classification.get('tone', 'unknown'),
+                classification.get('match_score', 0.0),
+                audio_filename or 'none'
+            ])
+    except Exception as e:
+        print(f"Error logging interaction: {e}")
+
+# Flask routes
+@app.route('/')
+def index():
+    return render_template('voice_demo.html')
+
+@app.route('/test-elevenlabs')
+def test_elevenlabs():
+    """Test ElevenLabs API"""
+    test_text = "Hello, this is a test of Aimee's voice synthesis."
+    
+    try:
+        audio_file = generate_aimee_response(test_text)
+        if audio_file:
+            return jsonify({
+                'status': 'success',
+                'message': 'ElevenLabs test successful',
+                'audio_file': audio_file
+            })
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': 'Audio generation failed'
+            })
+    except Exception as e:
+        return jsonify({
+            'status': 'error',
+            'message': f'ElevenLabs test failed: {str(e)}'
+        })
+
+@app.route('/health')
+def health_check():
+    """Health check endpoint"""
+    return jsonify({
+        'status': 'healthy',
+        'whisper_available': WHISPER_AVAILABLE,
+        'elevenlabs_available': elevenlabs_client is not None
+    })
+
+@app.route('/demo')
+def voice_demo():
+    return render_template('voice_demo.html')
+
+@app.route('/test-classification', methods=['POST'])
+def test_classification():
+    """Test classification endpoint"""
+    try:
+        data = request.get_json()
+        text = data.get('text', '')
+        
+        if not text:
+            return jsonify({'error': 'No text provided'}), 400
+        
+        # Process text
+        processed_text = preprocess_wine_terminology(text)
+        print(f"Original: '{text}'")
+        print(f"Processed: '{processed_text}'")
+        
+        # Get classification
+        classification = classifier.classify(processed_text)
+        print(f"DEBUG - Classification result: {classification}")
+        
+        # Test extraction
+        intent = classification.get('intent', 'unknown')
+        key_details = extract_key_details(text, intent, classification.get('entities', {}))
+        print(f"Extracted details: '{key_details}'")
+        
+        # Get classifier stats
+        stats = classifier.get_stats()
+        
+        return jsonify({
+            'original_text': text,
+            'processed_text': processed_text,
+            'classification': classification,
+            'extracted_details': key_details,
+            'classifier_stats': stats
+        })
+        
+    except Exception as e:
+        print(f"Error in test_classification: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    """Handle audio file upload and processing"""
+    try:
+        if 'audio' not in request.files:
+            return jsonify({'error': 'No audio file'}), 400
+        
+        file = request.files['audio']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
+        
+        # Save uploaded file
+        filename = secure_filename(f"{uuid.uuid4()}_{file.filename}")
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(filepath)
+        
+        processing_start = time.time()
+        
+        # Get file hash for verification tracking
+        file_hash = hash_file(filepath)
+        
+        # Fast transcription using base model
+        print("Starting fast transcription...")
+        transcript_data = transcribe_audio_cached(filepath, model_type="base", priority="speed")
+        transcript = transcript_data['text']
+        
+        # Start background verification
+        threading.Thread(
+            target=verify_transcript_background, 
+            args=(filepath, transcript, file_hash),
+            daemon=True
+        ).start()
+        
+        if not transcript or transcript.strip() == '':
+            return jsonify({'error': 'Could not transcribe audio'}), 400
+        
+        print(f"Transcript: '{transcript}'")
+        
+        # Process transcript
+        processed_transcript = preprocess_wine_terminology(transcript)
+        print(f"Processed transcript: '{processed_transcript}'")
+        
+        # Classify intent and tone
+        classification = classifier.classify(processed_transcript)
+        tone = detect_tone(transcript.lower())
+        classification['tone'] = tone
+        
+        print(f"DEBUG - Classification result: {classification}")
+        
+        intent = classification['intent']
+        score = classification['match_score']
+        
+        # Check for special response scenarios first
+        special_response = detect_special_responses(transcript)
+        print(f"DEBUG - Special response: {special_response}")
+        
+        if special_response:
+            response_text = special_response
+        else:
+            # Generate response text with extracted key details
+            if intent != "unknown":
+                # Extract key details and create summary
+                key_details = extract_key_details(transcript, intent, classification.get('entities', {}))
+                base_response = format_response(intent, tone)
+                response_text = f"{key_details} {base_response}"
+            else:
+                response_text = "I heard your message, but I'm not sure how to help. Could you please rephrase that?"
+        
+        # Generate audio response
+        print(f"Generating audio response for: '{response_text}'")
+        audio_filename = generate_aimee_response(response_text)
+        
+        processing_time = time.time() - processing_start
+        
+        # Log interaction
+        log_interaction(transcript, classification, audio_filename)
+        
+        # Response data
+        response_data = {
+            'transcript': transcript,
+            'intent': classification['intent'],
+            'tone': classification['tone'],
+            'score': classification['match_score'],
+            'processing_time': round(processing_time, 2),
+            'transcription_time': transcript_data.get('transcription_time', 0),
+            'model_used': transcript_data.get('model_used', 'base'),
+            'response_text': response_text,
+            'audio_file': audio_filename,
+            'file_hash': file_hash,
+            'verification_status': 'pending'
+        }
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Upload error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/process-text', methods=['POST'])
+def process_text():
+    """Process text input directly"""
+    try:
+        data = request.get_json()
+        transcript = data.get('text', '')
+        
+        if not transcript:
+            return jsonify({'error': 'No text provided'}), 400
+        
+        processing_start = time.time()
+        
+        # Process transcript
+        processed_transcript = preprocess_wine_terminology(transcript)
+        
+        # Classify intent and tone
+        classification = classifier.classify(processed_transcript)
+        tone = detect_tone(transcript.lower())
+        classification['tone'] = tone
+        
+        intent = classification.get("intent", "unknown")
+        
+        # Check for special response scenarios first
+        special_response = detect_special_responses(transcript)
+        
+        if special_response:
+            response_text = special_response
+        else:
+            # Generate response text with extracted key details
+            if intent != "unknown":
+                # Extract key details and create summary
+                key_details = extract_key_details(transcript, intent, classification.get('entities', {}))
+                base_response = format_response(intent, tone)
+                response_text = f"{key_details} {base_response}"
+            else:
+                response_text = "I heard your message, but I'm not sure how to help. Could you please rephrase that?"
+        
+        # Generate audio response
+        audio_filename = generate_aimee_response(response_text)
+        
+        processing_time = time.time() - processing_start
+        
+        # Log interaction
+        log_interaction(transcript, classification, audio_filename)
+        
+        # Response data
+        response_data = {
+            'transcript': transcript,
+            'intent': classification['intent'],
+            'tone': classification['tone'],
+            'score': classification['match_score'],
+            'processing_time': round(processing_time, 2),
+            'transcription_time': 0,  # No transcription for text input
+            'model_used': 'text_input',
+            'response_text': response_text,
+            'audio_file': audio_filename
+        }
+        
+        return jsonify(response_data)
+        
+    except Exception as e:
+        print(f"Text processing error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    """Serve uploaded audio files"""
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/verification-status/<file_hash>')
+def verification_status(file_hash):
+    """Check verification status for a file"""
+    if file_hash in verification_results:
+        return jsonify({
+            'status': 'completed',
+            'result': verification_results[file_hash]
+        })
+    else:
+        return jsonify({
+            'status': 'pending'
+        })
+
+@app.route('/force-verify', methods=['POST'])
+def force_verify():
+    """Force verification of a specific file"""
+    try:
+        data = request.get_json()
+        file_hash = data.get('file_hash')
+        
+        if not file_hash:
+            return jsonify({'error': 'No file hash provided'}), 400
+        
+        # Find the file by hash (simplified - in production you'd maintain a mapping)
+        # For now, just return the cached result if available
+        if file_hash in verification_results:
+            return jsonify({
+                'status': 'completed',
+                'result': verification_results[file_hash]
+            })
+        else:
+            return jsonify({
+                'status': 'not_found',
+                'message': 'File verification not available'
+            })
+            
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/cleanup', methods=['POST'])
+def cleanup_old_files():
+    """Clean up old uploaded files"""
+    try:
+        cleanup_count = 0
+        upload_dir = app.config['UPLOAD_FOLDER']
+        
+        for filename in os.listdir(upload_dir):
+            file_path = os.path.join(upload_dir, filename)
+            if os.path.isfile(file_path):
+                # Delete files older than 1 hour
+                if time.time() - os.path.getctime(file_path) > 3600:
+                    os.remove(file_path)
+                    cleanup_count += 1
+        
+        return jsonify({
+            'status': 'success',
+            'files_cleaned': cleanup_count
+        })
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/clear-cache', methods=['POST'])
+def clear_cache():
+    """Clear transcription cache"""
+    global transcription_cache
+    cache_size = len(transcription_cache)
+    transcription_cache.clear()
+    
+    return jsonify({
+        'status': 'success',
+        'cleared_entries': cache_size
+    })
+
+if __name__ == '__main__':
+    print("Starting Aimee Voice Pipeline...")
+    print(f"Whisper available: {WHISPER_AVAILABLE}")
+    print(f"ElevenLabs available: {elevenlabs_client is not None}")
+    print(f"Wine intelligence loaded: {len(wine_intelligence.wine_database)} wines")
+    
+    app.run(debug=True, host='0.0.0.0', port=5000)

@@ -1,0 +1,82 @@
+{
+  "clip_005": {
+    "transcript": "Amy, I need to send three cases of Chateau de Bocastel, Rouge, Chateau de Nouveau de Pupp. It needs to be 2019 vintage. And did I say three cases? Yes, it needs to be three cases. Please, tomorrow, to Acme, Wine and Lickers. And please confirm.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_006": {
+    "transcript": "Hey Amy, LeBella's customer customer, I don't know the customer number, it's LeBella's fine wine and spirits, you find it and make it happen please. They need seven bottles of Charchoos green delivered tomorrow, please. And thank you. Send me a confirmation text and email at your earliest convenience.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_007": {
+    "transcript": "Amy, please send an email to purchasing. Can you also see Franklin, Co-brand Regional Manager as well on that? Subject line need to focus. That's, quote, need to focus. End quote. Ask them for an update, be polite, but also make them aware that I need this by the end of day. Thank you, and don't forget to see C.C. Paul.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_009": {
+    "transcript": "Amy, one of my beverage directors is looking for a gin. However, they want the gin to be, what they say, less junipery. So can you please find me some jins that have less juniper than otherwise? Send it to my email, please. And text to me. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_014": {
+    "transcript": "Amy, I need a SF delivery and SF order, excuse me, to deliver two customer 715602 greens, farms and Westport. I need April pricing and I need 11 cases of Jordan, Shardinay 750 of course for Wednesday May 16th delivery. Please. Thank you. Please confirm my email.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_015": {
+    "transcript": "Amy, please put an order for DB Fine Wine for tomorrow delivery for seven cases of Vega Cecilia Unico 2012, 750 on out, please. Thank you. Please confirm with an email.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_021": {
+    "transcript": "Amy, I didn't do my homework last night. I really need your help. I need you to give me the top 100 SKU for the zip code 06-855, please. I have a new store opening and I think this could really nail down our place in the pecking order. So as soon as you can get that to me, please forward it. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_023": {
+    "transcript": "Amy, I need a list compiled of all current vintage ports that we have in stock. Nothing under a six pack, okay? Please don't waste my time. I need to know, also separate them by organic, biodynamic, sustainable, regenerative farming, or conventional, all right? Thank you. And make sure you CC Paul.",
+    "intent": "check_inventory",
+    "tone": "polite"
+  },
+  "clip_026": {
+    "transcript": "Amy, please put together a cell sheet for the, um, all the sancer that we have in stock that worldwide brings in. The price point has to be under 380, a case, okay? Don't give me anything over that. 380 and under has to be in stock and we also have to have, um, more than 25 cases on hand. All right? All right, let me know. Thank you.",
+    "intent": "check_inventory",
+    "tone": "polite"
+  },
+  "clip_029": {
+    "transcript": "Hey Amy, whoa, whoa, that was the biggest B I've ever seen. Wow, right by my head. Anyway, this order is for Westport wine and spirits. It's for tomorrow, Wednesday, May 12th delivery. I need one case of Tanuta Sanguido, Sasekaya 2021. Please, that's one six back of Sanguido, Sasekaya 2021. Please, confirm to email in text. Thank you, Amy.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_033": {
+    "transcript": "Hi Amy, just really quick. I need three cases of Gurgich Hill's Fume Blanc delivered to Putnam-Wine spirits for tomorrow June 6th delivery. Please send a confirmed email and text to me as soon as you can. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_036": {
+    "transcript": "Hi Amy. Can you email Antonella in purchasing and let her know that Paul's fine wine and spirits and gran age, customer 7156000 wants to pre-order off of the Frederick Wildman. We offer for burgundy 7 bottles of the Russo Shembo, Shem Barton, I think it's called, and three bottles of the Mazzi Shem Barton 2019. Thank you. Please confirm and also don't forget to see Paul burn.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_050": {
+    "transcript": "Amy please email credit department let them know that I collected a check for customer 703333 that's Blackstone Grille Southport let them know that I collected the entire past due and I have a order scheduled for tomorrow delivery it just needs to arrive with net 30 terms thanks again confirmation to my email and text thank you",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_054": {
+    "transcript": "Amy, I have a Bev Director over at Hennoki. Excuse me. Hennoki's sushi. Oh my God, oh this guy almost just hit me. Jesus. How did anyone just get their license now? Oh my God. Anyway, I need, I forgot exactly what I was going to, oh that's right. The buyer at Hennoki sushi wants a sample of drum, shembo, gum powder, Irish gin. Please put that on the next sample request form. Thank you. Send a confirmation text and email to me. Thank you.",
+    "intent": "add_to_order",
+    "tone": "polite"
+  },
+  "clip_070": {
+    "transcript": "Amy, I'm getting a lot of questions regarding Chateau de Boca, Coude de laie de Boca, 2023 vintage. What's the ETA on that? Has that left France yet? Or is it still stuck in port? Will that be affected by tariffs? Or are we holding on price? Can you update me please with your most recent information? Appreciate it. Thank you.",
+    "intent": "price_quote",
+    "tone": "polite"
+  },
+  "clip_016": {
+    "transcript": "Amy, can you cancel the order for the Pinot Grigio?",
+    "intent": "cancel_order",
+    "tone": "polite"
+  }
+}

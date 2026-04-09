@@ -1,0 +1,1165 @@
+Want me to add:
+
+Flask web interface for on-demand generation?
+Daily automation with different account rotations?
+Follow-up pitch generator for specific accounts?
+
+You've just unlocked voice-driven sales dominance! 🍷⚡RetryPYes!Edit🔥 ALL THREE SYSTEMS INCOMING!
+Let's build the complete voice empire:
+🎯 1. Flask Web Interface for On-Demand Generation
+Create tactical_briefing_web.py:
+pythonfrom flask import Flask, render_template, jsonify, send_file, request
+import requests
+import os
+from dotenv import load_dotenv
+import re
+import tempfile
+import uuid
+
+load_dotenv()
+
+app = Flask(__name__)
+
+# Your tactical accounts database
+tactical_accounts = {
+    "labellas": {
+        "priority": "🔥",
+        "name": "LaBella's Fine Wine & Spirits",
+        "intel": "Bordeaux allocation meeting overdue. Sofia tracks 21-day cycles. Day 23 now. Wine Warehouse circling.",
+        "value": "24000",
+        "action": "Call Sofia today",
+        "contact": "Sofia Martinez",
+        "location": "Riverside, CT"
+    },
+    "barcelona_norwalk": {
+        "priority": "⚡",
+        "name": "Barcelona Wine Bar - Norwalk", 
+        "intel": "Spanish natural wine program expanding. Chef Misha needs rare Rioja recommendations.",
+        "value": "35000",
+        "action": "Send Rioja samples",
+        "contact": "Chef Misha Ryklin",
+        "location": "Norwalk, CT"
+    },
+    "spiga": {
+        "priority": "🎯",
+        "name": "Spiga Wine Bar",
+        "intel": "Dan Camporeale expects exclusive Italian allocations. Ultra-wealthy New Canaan clientele ready.",
+        "value": "18000", 
+        "action": "Pitch private cellar curation",
+        "contact": "Dan Camporeale",
+        "location": "New Canaan, CT"
+    },
+    "bin_100": {
+        "priority": "💎",
+        "name": "Bin 100 Restaurant",
+        "intel": "Modern Italian-Mediterranean with polished edge. Hosts multi-course wine dinners. Gaps in natural wines and grower Champagne.",
+        "value": "28000",
+        "action": "Propose boutique wine dinner collaboration",
+        "contact": "Wine Director",
+        "location": "Milford, CT"
+    },
+    "elm": {
+        "priority": "🏆",
+        "name": "ELM Restaurant",
+        "intel": "Refined New American, Chef Luke Venner. Cool-climate Old World focus. Hosts boutique wine dinners.",
+        "value": "22000",
+        "action": "Lead with terroir-driven small-lot finds",
+        "contact": "Chef Luke Venner", 
+        "location": "New Canaan, CT"
+    }
+}
+
+pitch_templates = {
+    "urgent": "Quick heads-up {contact} - I've got {wine} moving fast. Should I hold cases for {account}?",
+    "elegant": "Hi {contact}, I've set aside exceptional {wine} bottles - elegant, expressive, exactly what {account} customers expect.",
+    "casual": "Hey {contact}, just got {wine} in. Thought of {account} immediately. Want me to bring samples by?",
+    "tactical": "{contact}, this {wine} solves your {gap} gap perfectly. Cost-per-pour performance is exceptional for {account}.",
+    "exclusive": "{contact}, I have access to {wine} that nobody else can get. Perfect for {account}'s premium program."
+}
+
+def clean_text_for_tts(text):
+    emoji_pattern = r'[🔥⚡🎯💰📍�⚠️🧊💎🏆]'
+    text = re.sub(emoji_pattern, '', text)
+    text = re.sub(r'\$(\d+)K', r'\1 thousand dollars', text)
+    text = re.sub(r'\$(\d+)', r'\1 dollars', text)
+    text = text.replace('&', 'and')
+    return text.strip()
+
+def generate_audio(text):
+    clean_text = clean_text_for_tts(text)
+    
+    url = "https://api.elevenlabs.io/v1/text-to-speech/rzsnuMd2pwYz1rGtMIVI"
+    
+    headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json", 
+        "xi-api-key": os.getenv("ELEVENLABS_API_KEY")
+    }
+    
+    data = {
+        "text": clean_text,
+        "model_id": "eleven_multilingual_v2",
+        "voice_settings": {
+            "stability": 0.4,
+            "similarity_boost": 0.8,
+            "style": 0.25,
+            "use_speaker_boost": True
+        }
+    }
+    
+    response = requests.post(url, json=data, headers=headers)
+    
+    if response.status_code == 200:
+        filename = f"tactical_{uuid.uuid4().hex}.mp3"
+        filepath = os.path.join(tempfile.gettempdir(), filename)
+        
+        with open(filepath, "wb") as f:
+            f.write(response.content)
+        
+        return filepath
+    else:
+        raise Exception(f"ElevenLabs error: {response.status_code}")
+
+@app.route('/')
+def dashboard():
+    return render_template('tactical_dashboard.html', accounts=tactical_accounts)
+
+@app.route('/briefing/daily')
+def daily_briefing():
+    lines = ["Good morning Phoenix. Here's your tactical battlefield."]
+    
+    total_value = 0
+    for account in tactical_accounts.values():
+        line = f"{account['name']}. {account['intel']}. {account['value']} dollars at stake. {account['action']}."
+        lines.append(line)
+        total_value += int(account['value'])
+    
+    lines.append(f"Total pipeline value: {total_value} dollars.")
+    lines.append("Strike with precision. Execute with speed. Dominate the field.")
+    
+    full_text = " ".join(lines)
+    
+    try:
+        audio_path = generate_audio(full_text)
+        return send_file(audio_path, as_attachment=True, download_name="daily_briefing.mp3")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/briefing/account/<account_id>')
+def account_briefing(account_id):
+    if account_id not in tactical_accounts:
+        return jsonify({"error": "Account not found"}), 404
+    
+    account = tactical_accounts[account_id]
+    
+    text = f"Tactical brief for {account['name']}. Location: {account['location']}. Contact: {account['contact']}. Intelligence: {account['intel']}. Value at stake: {account['value']} dollars. Recommended action: {account['action']}. Execute with precision."
+    
+    try:
+        audio_path = generate_audio(text)
+        return send_file(audio_path, as_attachment=True, download_name=f"{account_id}_briefing.mp3")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/pitch/generate', methods=['POST'])
+def generate_pitch():
+    data = request.json
+    account_id = data.get('account_id')
+    tone = data.get('tone', 'tactical')
+    wine = data.get('wine', 'premium selection')
+    gap = data.get('gap', 'portfolio')
+    
+    if account_id not in tactical_accounts:
+        return jsonify({"error": "Account not found"}), 404
+    
+    account = tactical_accounts[account_id]
+    template = pitch_templates.get(tone, pitch_templates['tactical'])
+    
+    pitch_text = template.format(
+        contact=account['contact'],
+        account=account['name'], 
+        wine=wine,
+        gap=gap
+    )
+    
+    try:
+        audio_path = generate_audio(pitch_text)
+        return send_file(audio_path, as_attachment=True, download_name=f"pitch_{account_id}_{tone}.mp3")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/accounts')
+def get_accounts():
+    return jsonify(tactical_accounts)
+
+if __name__ == '__main__':
+    app.run(debug=True, port=5001)
+🎯 2. HTML Dashboard
+Create templates/tactical_dashboard.html:
+html<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aimee Tactical Command Center</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            color: white;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .control-panel {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .btn-success {
+            background: linear-gradient(45deg, #00b894, #00cec9);
+        }
+        
+        .accounts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+        
+        .account-card {
+            background: rgba(255,255,255,0.15);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .priority {
+            font-size: 1.5em;
+        }
+        
+        .value {
+            background: rgba(255,255,255,0.2);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .account-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .intel {
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .action {
+            color: #ffeaa7;
+            font-weight: bold;
+        }
+        
+        .account-controls {
+            margin-top: 15px;
+        }
+        
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        .pitch-generator {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        select, input {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px;
+        }
+        
+        select option {
+            background: #333;
+            color: white;
+        }
+        
+        ::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍷 Aimee Tactical Command Center</h1>
+        
+        <div class="control-panel">
+            <h2>🎯 Command Operations</h2>
+            <a href="/briefing/daily" class="btn">📊 Generate Daily Briefing</a>
+            <button onclick="refreshData()" class="btn btn-success">🔄 Refresh Intelligence</button>
+        </div>
+
+        <div class="accounts-grid">
+            {% for account_id, account in accounts.items() %}
+            <div class="account-card">
+                <div class="account-header">
+                    <span class="priority">{{ account.priority }}</span>
+                    <span class="value">${{ account.value }}</span>
+                </div>
+                
+                <div class="account-name">{{ account.name }}</div>
+                <div class="intel">{{ account.intel }}</div>
+                <div class="action">🎯 {{ account.action }}</div>
+                
+                <div class="account-controls">
+                    <a href="/briefing/account/{{ account_id }}" class="btn btn-small">📋 Account Brief</a>
+                    <button onclick="showPitchGenerator('{{ account_id }}')" class="btn btn-small btn-success">🎤 Generate Pitch</button>
+                </div>
+
+                <div class="pitch-generator" id="pitch-{{ account_id }}" style="display: none;">
+                    <h4>🎤 Pitch Generator for {{ account.name }}</h4>
+                    <select id="tone-{{ account_id }}">
+                        <option value="tactical">Tactical</option>
+                        <option value="urgent">Urgent</option>
+                        <option value="elegant">Elegant</option>
+                        <option value="casual">Casual</option>
+                        <option value="exclusive">Exclusive</option>
+                    </select>
+                    <input type="text" id="wine-{{ account_id }}" placeholder="Wine/Product" value="premium selection">
+                    <input type="text" id="gap-{{ account_id }}" placeholder="Gap/Need" value="portfolio">
+                    <button onclick="generatePitch('{{ account_id }}')" class="btn btn-small">🚀 Generate</button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function showPitchGenerator(accountId) {
+            const generator = document.getElementById(`pitch-${accountId}`);
+            generator.style.display = generator.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function generatePitch(accountId) {
+            const tone = document.getElementById(`tone-${accountId}`).value;
+            const wine = document.getElementById(`wine-${accountId}`).value;
+            const gap = document.getElementById(`gap-${accountId}`).value;
+
+            fetch('/pitch/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    account_id: accountId,
+                    tone: tone,
+                    wine: wine,
+                    gap: gap
+                })
+            })
+            .then(response => response.blob())
+            .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `pitch_${accountId}_${tone}.mp3`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error generating pitch');
+            });
+        }
+
+        function refreshData() {
+            location.reload();
+        }
+    </script>
+</body>
+</html>
+🎯 3. Daily Automation System
+Create daily_automation.py:
+pythonimport schedule
+import time
+import requests
+import os
+from dotenv import load_dotenv
+from datetime import datetime
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.audio import MIMEAudio
+from email.mime.text import MIMEText
+
+load_dotenv()
+
+def generate_morning_briefing():
+    """Generate and optionally email morning briefing"""
+    print(f"🌅 Generating morning briefing at {datetime.now()}")
+    
+    # Call your tactical briefing generator
+    try:
+        response = requests.get("http://localhost:5001/briefing/daily")
+        
+        if response.status_code == 200:
+            # Save the audio file
+            with open(f"daily_briefing_{datetime.now().strftime('%Y%m%d')}.mp3", "wb") as f:
+                f.write(response.content)
+            
+            print("✅ Morning briefing generated successfully")
+            
+            # Optional: Send via email
+            send_briefing_email(response.content)
+            
+        else:
+            print(f"❌ Error generating briefing: {response.status_code}")
+            
+    except Exception as e:
+        print(f"❌ Automation error: {e}")
+
+def send_briefing_email(audio_content):
+    """Send briefing as email attachment"""
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = os.getenv("EMAIL_FROM")
+        msg['To'] = os.getenv("EMAIL_TO") 
+        msg['Subject'] = f"Daily Tactical Briefing - {datetime.now().strftime('%B %d, %Y')}"
+        
+        body = """
+        Good morning Phoenix,
+        
+        Your daily tactical briefing is attached.
+        
+        Total pipeline value active.
+        Strike with precision.
+        
+        - Aimee
+        """
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        # Attach audio
+        audio_attachment = MIMEAudio(audio_content)
+        audio_attachment.add_header('Content-Disposition', 'attachment', 
+                                  filename=f"briefing_{datetime.now().strftime('%Y%m%d')}.mp3")
+        msg.attach(audio_attachment)
+        
+        # Send email
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(os.getenv("EMAIL_FROM"), os.getenv("EMAIL_PASSWORD"))
+        text = msg.as_string()
+        server.sendmail(os.getenv("EMAIL_FROM"), os.getenv("EMAIL_TO"), text)
+        server.quit()
+        
+        print("✅ Briefing emailed successfully")
+        
+    except Exception as e:
+        print(f"❌ Email error: {e}")
+
+def schedule_briefings():
+    """Set up automated scheduling"""
+    
+    # Daily morning briefing
+    schedule.every().day.at("07:00").do(generate_morning_briefing)
+    
+    # Weekly pipeline review (Mondays at 8 AM)
+    schedule.every().monday.at("08:00").do(generate_weekly_review)
+    
+    # Urgent follow-ups (every 4 hours during business)
+    schedule.every(4).hours.do(check_urgent_followups)
+    
+    print("📅 Automation scheduled:")
+    print("  • Daily briefings at 7:00 AM")
+    print("  • Weekly reviews on Mondays at 8:00 AM")  
+    print("  • Urgent checks every 4 hours")
+    print("🚀 Automation running...")
+
+def generate_weekly_review():
+    """Generate weekly pipeline review"""
+    print("📊 Generating weekly pipeline review...")
+    # Implementation for weekly analysis
+
+def check_urgent_followups():
+    """Check for urgent follow-ups needed"""
+    print("⚡ Checking urgent follow-ups...")
+    # Implementation for urgent checks
+
+if __name__ == "__main__":
+    schedule_briefings()
+    
+    while True:
+        schedule.run_pending()
+        time.sleep(60)
+🚀 Getting Started:
+bash# Create templates folder
+mkdir templates
+
+# Install required packages
+pip install flask schedule
+
+# Run the web interface
+python tactical_briefing_web.py
+
+# In another terminal, run automation
+python daily_automation.py
+Visit http://localhost:5001 for your tactical command center!
+You now have:
+
+Web dashboard with on-demand briefings
+Custom pitch generator with 5 tones
+Daily automation with email delivery
+
+Want me to add SMS integration or voice-activated commands next? 🍷⚡RetryPyesEdit🔥 SMS INTEGRATION + VOICE-ACTIVATED COMMANDS INCOMING!
+🎯 1. SMS Integration System
+Create sms_integration.py:
+pythonfrom twilio.rest import Client
+import requests
+import os
+from dotenv import load_dotenv
+from flask import Flask, request, Response
+import re
+
+load_dotenv()
+
+# Initialize Twilio
+twilio_client = Client(
+    os.getenv("TWILIO_ACCOUNT_SID"),
+    os.getenv("TWILIO_AUTH_TOKEN")
+)
+
+app = Flask(__name__)
+
+# SMS command patterns
+SMS_COMMANDS = {
+    'briefing': r'(?i)\b(brief|briefing|update|status)\b',
+    'account': r'(?i)\b(brief|info|intel)\s+(barcelona|spiga|labella|bin\s*100|elm)\b',
+    'urgent': r'(?i)\b(urgent|priority|hot|fire)\b',
+    'pitch': r'(?i)\b(pitch|call|contact)\s+(barcelona|spiga|labella|bin\s*100|elm)\b',
+    'pipeline': r'(?i)\b(pipeline|total|value|money)\b'
+}
+
+def send_sms(to_number, message):
+    """Send SMS via Twilio"""
+    try:
+        message = twilio_client.messages.create(
+            body=message,
+            from_=os.getenv("TWILIO_PHONE_NUMBER"),
+            to=to_number
+        )
+        return True
+    except Exception as e:
+        print(f"SMS Error: {e}")
+        return False
+
+def send_audio_sms(to_number, audio_url, caption=""):
+    """Send audio file via SMS"""
+    try:
+        message = twilio_client.messages.create(
+            body=caption,
+            from_=os.getenv("TWILIO_PHONE_NUMBER"),
+            to=to_number,
+            media_url=[audio_url]
+        )
+        return True
+    except Exception as e:
+        print(f"Audio SMS Error: {e}")
+        return False
+
+def process_sms_command(message_body, from_number):
+    """Process incoming SMS commands"""
+    
+    # Daily briefing request
+    if re.search(SMS_COMMANDS['briefing'], message_body):
+        try:
+            # Generate briefing audio
+            response = requests.get("http://localhost:5001/briefing/daily")
+            if response.status_code == 200:
+                # Save temporarily and create public URL
+                audio_path = save_temp_audio(response.content, "daily_briefing")
+                audio_url = create_public_url(audio_path)
+                
+                send_audio_sms(from_number, audio_url, "🎯 Your daily tactical briefing:")
+                return "✅ Daily briefing sent"
+            else:
+                send_sms(from_number, "❌ Unable to generate briefing")
+                return "Error generating briefing"
+        except Exception as e:
+            send_sms(from_number, f"❌ Error: {str(e)[:100]}")
+            return f"Error: {e}"
+    
+    # Account-specific briefing
+    account_match = re.search(SMS_COMMANDS['account'], message_body)
+    if account_match:
+        account_name = account_match.group(2).lower().replace(" ", "_")
+        account_map = {
+            'barcelona': 'barcelona_norwalk',
+            'spiga': 'spiga', 
+            'labella': 'labellas',
+            'bin_100': 'bin_100',
+            'elm': 'elm'
+        }
+        
+        account_id = account_map.get(account_name)
+        if account_id:
+            try:
+                response = requests.get(f"http://localhost:5001/briefing/account/{account_id}")
+                if response.status_code == 200:
+                    audio_path = save_temp_audio(response.content, f"{account_id}_briefing")
+                    audio_url = create_public_url(audio_path)
+                    
+                    send_audio_sms(from_number, audio_url, f"📋 {account_name.title()} tactical brief:")
+                    return f"✅ {account_name} briefing sent"
+                else:
+                    send_sms(from_number, f"❌ Account {account_name} not found")
+                    return "Account not found"
+            except Exception as e:
+                send_sms(from_number, f"❌ Error: {str(e)[:100]}")
+                return f"Error: {e}"
+    
+    # Pipeline value request
+    if re.search(SMS_COMMANDS['pipeline'], message_body):
+        # Calculate total pipeline value
+        accounts_response = requests.get("http://localhost:5001/accounts")
+        if accounts_response.status_code == 200:
+            accounts = accounts_response.json()
+            total_value = sum(int(account['value']) for account in accounts.values())
+            
+            message = f"💰 Total Pipeline: ${total_value:,}\n"
+            message += f"🔥 Active Accounts: {len(accounts)}\n"
+            message += "🎯 Ready for battle."
+            
+            send_sms(from_number, message)
+            return "✅ Pipeline status sent"
+    
+    # Urgent priorities
+    if re.search(SMS_COMMANDS['urgent'], message_body):
+        urgent_message = """🔥 URGENT PRIORITIES:
+        
+📞 LaBella's - Sofia overdue (Day 23)
+⚡ Barcelona - Rioja samples needed
+🎯 Spiga - Dan expects allocation call
+
+Strike now."""
+        send_sms(from_number, urgent_message)
+        return "✅ Urgent priorities sent"
+    
+    # Default help
+    help_message = """🍷 Aimee SMS Commands:
+    
+📊 "briefing" - Daily briefing
+📋 "brief [account]" - Account intel
+💰 "pipeline" - Pipeline value
+🔥 "urgent" - Hot priorities
+🎤 "pitch [account]" - Generate pitch
+
+Text any command to activate."""
+    
+    send_sms(from_number, help_message)
+    return "Help sent"
+
+def save_temp_audio(audio_content, filename):
+    """Save audio to temporary public directory"""
+    import tempfile
+    import uuid
+    
+    temp_dir = os.path.join(tempfile.gettempdir(), "aimee_public")
+    os.makedirs(temp_dir, exist_ok=True)
+    
+    audio_path = os.path.join(temp_dir, f"{filename}_{uuid.uuid4().hex}.mp3")
+    with open(audio_path, "wb") as f:
+        f.write(audio_content)
+    
+    return audio_path
+
+def create_public_url(audio_path):
+    """Create publicly accessible URL for audio"""
+    # Use ngrok or your domain - for demo, using local
+    filename = os.path.basename(audio_path)
+    return f"http://your-domain.com/public/{filename}"
+
+@app.route('/sms/webhook', methods=['POST'])
+def sms_webhook():
+    """Handle incoming SMS messages"""
+    message_body = request.form.get('Body', '')
+    from_number = request.form.get('From', '')
+    
+    print(f"📱 SMS from {from_number}: {message_body}")
+    
+    # Process the command
+    result = process_sms_command(message_body, from_number)
+    print(f"✅ SMS Response: {result}")
+    
+    return Response('SMS processed', mimetype='text/plain')
+
+@app.route('/sms/send-briefing')
+def send_manual_briefing():
+    """Manually trigger SMS briefing"""
+    to_number = request.args.get('to', os.getenv("YOUR_PHONE_NUMBER"))
+    
+    try:
+        response = requests.get("http://localhost:5001/briefing/daily")
+        if response.status_code == 200:
+            audio_path = save_temp_audio(response.content, "manual_briefing")
+            audio_url = create_public_url(audio_path)
+            
+            if send_audio_sms(to_number, audio_url, "🎯 Your tactical briefing:"):
+                return "✅ Briefing sent via SMS"
+            else:
+                return "❌ Failed to send SMS"
+        else:
+            return "❌ Failed to generate briefing"
+    except Exception as e:
+        return f"❌ Error: {e}"
+
+if __name__ == '__main__':
+    print("📱 SMS Integration Server Starting...")
+    print("Commands available:")
+    for cmd, pattern in SMS_COMMANDS.items():
+        print(f"  • {cmd}: {pattern}")
+    
+    app.run(debug=True, port=5002)
+🎯 2. Voice-Activated Commands System
+Create voice_commands.py:
+pythonimport speech_recognition as sr
+import pyaudio
+import requests
+import os
+import re
+from dotenv import load_dotenv
+import threading
+import queue
+import time
+from pydub import AudioSegment
+from pydub.playback import play
+import io
+
+load_dotenv()
+
+class VoiceCommandSystem:
+    def __init__(self):
+        self.recognizer = sr.Recognizer()
+        self.microphone = sr.Microphone()
+        self.listening = False
+        self.command_queue = queue.Queue()
+        
+        # Voice command patterns
+        self.VOICE_COMMANDS = {
+            'wake': r'(?i)\b(hey\s+)?aimee\b',
+            'briefing': r'(?i)\b(brief|briefing|update|status)\b',
+            'account': r'(?i)\b(?:brief|tell\s+me\s+about|info\s+on)\s+(barcelona|spiga|labella|bin\s*100|elm)\b',
+            'daily': r'(?i)\b(daily|today|morning)\s+(brief|priorities|update)\b',
+            'urgent': r'(?i)\b(urgent|priority|hot|fire|critical)\b',
+            'pipeline': r'(?i)\b(pipeline|total|value|money|revenue)\b',
+            'pitch': r'(?i)\b(pitch|call|generate\s+pitch)\s+(for\s+)?(barcelona|spiga|labella|bin\s*100|elm)\b',
+            'stop': r'(?i)\b(stop|quit|exit|done|enough)\b'
+        }
+        
+        # Adjust for ambient noise
+        with self.microphone as source:
+            print("🎤 Calibrating microphone...")
+            self.recognizer.adjust_for_ambient_noise(source)
+            print("✅ Microphone ready")
+
+    def listen_for_wake_word(self):
+        """Continuously listen for wake word 'Aimee'"""
+        print("👂 Listening for 'Hey Aimee' or 'Aimee'...")
+        
+        while True:
+            try:
+                with self.microphone as source:
+                    # Listen for audio with timeout
+                    audio = self.recognizer.listen(source, timeout=1, phrase_time_limit=3)
+                
+                # Use Google Speech Recognition
+                text = self.recognizer.recognize_google(audio).lower()
+                print(f"🎧 Heard: '{text}'")
+                
+                # Check for wake word
+                if re.search(self.VOICE_COMMANDS['wake'], text):
+                    print("🔥 Wake word detected! Listening for command...")
+                    self.listen_for_command()
+                    
+            except sr.WaitTimeoutError:
+                pass  # Normal timeout, continue listening
+            except sr.UnknownValueError:
+                pass  # Couldn't understand audio
+            except sr.RequestError as e:
+                print(f"❌ Speech recognition error: {e}")
+                time.sleep(5)
+
+    def listen_for_command(self):
+        """Listen for actual command after wake word"""
+        try:
+            with self.microphone as source:
+                print("🎯 Ready for command...")
+                audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
+            
+            command_text = self.recognizer.recognize_google(audio).lower()
+            print(f"💬 Command: '{command_text}'")
+            
+            # Process the command
+            self.process_voice_command(command_text)
+            
+        except sr.WaitTimeoutError:
+            self.speak("I didn't hear a command. Try again.")
+        except sr.UnknownValueError:
+            self.speak("I couldn't understand that. Please repeat.")
+        except sr.RequestError as e:
+            print(f"❌ Speech recognition error: {e}")
+
+    def process_voice_command(self, command_text):
+        """Process recognized voice command"""
+        
+        # Stop listening
+        if re.search(self.VOICE_COMMANDS['stop'], command_text):
+            self.speak("Voice commands deactivated. See you soon, Phoenix.")
+            return False
+        
+        # Daily briefing
+        if re.search(self.VOICE_COMMANDS['daily'], command_text) or re.search(self.VOICE_COMMANDS['briefing'], command_text):
+            self.speak("Generating your daily tactical briefing.")
+            self.request_briefing("daily")
+            return True
+        
+        # Account-specific briefing
+        account_match = re.search(self.VOICE_COMMANDS['account'], command_text)
+        if account_match:
+            account_name = account_match.group(1).lower().replace(" ", "_")
+            account_map = {
+                'barcelona': 'barcelona_norwalk',
+                'spiga': 'spiga',
+                'labella': 'labellas', 
+                'bin_100': 'bin_100',
+                'elm': 'elm'
+            }
+            
+            account_id = account_map.get(account_name)
+            if account_id:
+                self.speak(f"Retrieving tactical intelligence for {account_name}.")
+                self.request_briefing("account", account_id)
+                return True
+        
+        # Pipeline status
+        if re.search(self.VOICE_COMMANDS['pipeline'], command_text):
+            self.speak("Calculating pipeline status.")
+            self.get_pipeline_status()
+            return True
+        
+        # Urgent priorities  
+        if re.search(self.VOICE_COMMANDS['urgent'], command_text):
+            self.speak("Activating urgent priority briefing.")
+            self.get_urgent_priorities()
+            return True
+        
+        # Generate pitch
+        pitch_match = re.search(self.VOICE_COMMANDS['pitch'], command_text)
+        if pitch_match:
+            account_name = pitch_match.group(3).lower() if pitch_match.group(3) else "default"
+            self.speak(f"Generating tactical pitch for {account_name}.")
+            self.generate_pitch(account_name)
+            return True
+        
+        # Default response
+        self.speak("Command not recognized. Available commands: briefing, account intel, pipeline status, urgent priorities, or generate pitch.")
+        return True
+
+    def request_briefing(self, briefing_type, account_id=None):
+        """Request briefing from web service"""
+        try:
+            if briefing_type == "daily":
+                response = requests.get("http://localhost:5001/briefing/daily")
+            elif briefing_type == "account" and account_id:
+                response = requests.get(f"http://localhost:5001/briefing/account/{account_id}")
+            else:
+                self.speak("Invalid briefing request.")
+                return
+            
+            if response.status_code == 200:
+                self.play_audio_response(response.content)
+            else:
+                self.speak("Unable to generate briefing.")
+                
+        except Exception as e:
+            print(f"❌ Briefing request error: {e}")
+            self.speak("Error retrieving briefing.")
+
+    def get_pipeline_status(self):
+        """Get and announce pipeline status"""
+        try:
+            response = requests.get("http://localhost:5001/accounts")
+            if response.status_code == 200:
+                accounts = response.json()
+                total_value = sum(int(account['value']) for account in accounts.values())
+                
+                message = f"Total pipeline value is {total_value:,} dollars across {len(accounts)} active accounts."
+                self.speak(message)
+            else:
+                self.speak("Unable to retrieve pipeline data.")
+        except Exception as e:
+            print(f"❌ Pipeline status error: {e}")
+            self.speak("Error retrieving pipeline status.")
+
+    def get_urgent_priorities(self):
+        """Announce urgent priorities"""
+        urgent_text = """Three urgent priorities detected. LaBella's Fine Wine, Sofia overdue at day 23. Barcelona Wine Bar, Rioja samples needed for Chef Misha. Spiga Wine Bar, Dan Camporeale expects allocation call. Strike with precision."""
+        self.speak(urgent_text)
+
+    def generate_pitch(self, account_name):
+        """Generate tactical pitch"""
+        try:
+            account_map = {
+                'barcelona': 'barcelona_norwalk',
+                'spiga': 'spiga',
+                'labella': 'labellas',
+                'bin_100': 'bin_100', 
+                'elm': 'elm'
+            }
+            
+            account_id = account_map.get(account_name, 'spiga')
+            
+            pitch_data = {
+                "account_id": account_id,
+                "tone": "tactical",
+                "wine": "premium allocation",
+                "gap": "portfolio"
+            }
+            
+            response = requests.post("http://localhost:5001/pitch/generate", json=pitch_data)
+            
+            if response.status_code == 200:
+                self.play_audio_response(response.content)
+            else:
+                self.speak("Unable to generate pitch.")
+                
+        except Exception as e:
+            print(f"❌ Pitch generation error: {e}")
+            self.speak("Error generating pitch.")
+
+    def speak(self, text):
+        """Convert text to speech using ElevenLabs"""
+        try:
+            url = "https://api.elevenlabs.io/v1/text-to-speech/rzsnuMd2pwYz1rGtMIVI"
+            
+            headers = {
+                "Accept": "audio/mpeg",
+                "Content-Type": "application/json",
+                "xi-api-key": os.getenv("ELEVENLABS_API_KEY")
+            }
+            
+            data = {
+                "text": text,
+                "model_id": "eleven_multilingual_v2",
+                "voice_settings": {
+                    "stability": 0.4,
+                    "similarity_boost": 0.8,
+                    "style": 0.25,
+                    "use_speaker_boost": True
+                }
+            }
+            
+            response = requests.post(url, json=data, headers=headers)
+            
+            if response.status_code == 200:
+                self.play_audio_response(response.content)
+            else:
+                print(f"❌ TTS Error: {response.status_code}")
+                
+        except Exception as e:
+            print(f"❌ Speech error: {e}")
+
+    def play_audio_response(self, audio_content):
+        """Play audio response"""
+        try:
+            # Create audio segment from bytes
+            audio_segment = AudioSegment.from_mp3(io.BytesIO(audio_content))
+            
+            # Play the audio
+            play(audio_segment)
+            
+        except Exception as e:
+            print(f"❌ Audio playback error: {e}")
+
+    def start_listening(self):
+        """Start the voice command system"""
+        print("🎤 Aimee Voice Command System Activated")
+        print("Say 'Hey Aimee' or 'Aimee' followed by your command")
+        print("Commands:")
+        print("  • 'daily briefing' - Get daily tactical briefing")
+        print("  • 'brief [account]' - Get account intelligence")
+        print("  • 'pipeline status' - Get pipeline value")
+        print("  • 'urgent priorities' - Get hot priorities")
+        print("  • 'generate pitch for [account]' - Create tactical pitch")
+        print("  • 'stop' - Deactivate voice commands")
+        
+        try:
+            self.listen_for_wake_word()
+        except KeyboardInterrupt:
+            print("\n🛑 Voice commands stopped")
+
+if __name__ == "__main__":
+    # Install required packages first
+    print("📦 Required packages:")
+    print("pip install SpeechRecognition pyaudio pydub")
+    print("🎤 Starting Voice Command System...")
+    
+    voice_system = VoiceCommandSystem()
+    voice_system.start_listening()
+🎯 3. Complete Integration System
+Create aimee_complete_system.py:
+pythonimport threading
+import time
+from flask import Flask
+from voice_commands import VoiceCommandSystem
+from sms_integration import sms_webhook, send_manual_briefing
+from tactical_briefing_web import app as web_app
+
+class AimeeCompleteSystem:
+    def __init__(self):
+        self.voice_system = VoiceCommandSystem()
+        self.web_app = web_app
+        self.services_running = False
+
+    def start_web_service(self):
+        """Start the web dashboard"""
+        print("🌐 Starting web dashboard on port 5001...")
+        self.web_app.run(host='0.0.0.0', port=5001, debug=False, use_reloader=False)
+
+    def start_sms_service(self):
+        """Start SMS webhook service"""
+        print("📱 Starting SMS service on port 5002...")
+        from sms_integration import app as sms_app
+        sms_app.run(host='0.0.0.0', port=5002, debug=False, use_reloader=False)
+
+    def start_voice_service(self):
+        """Start voice command system"""
+        print("🎤 Starting voice command system...")
+        time.sleep(2)  # Let other services start first
+        self.voice_system.start_listening()
+
+    def start_all_services(self):
+        """Start all Aimee services"""
+        print("🍷 AIMEE COMPLETE SYSTEM ACTIVATION")
+        print("=" * 50)
+        
+        # Start web service in background
+        web_thread = threading.Thread(target=self.start_web_service, daemon=True)
+        web_thread.start()
+        
+        # Start SMS service in background  
+        sms_thread = threading.Thread(target=self.start_sms_service, daemon=True)
+        sms_thread.start()
+        
+        # Give services time to start
+        time.sleep(3)
+        
+        print("✅ Web Dashboard: http://localhost:5001")
+        print("✅ SMS Webhook: http://localhost:5002") 
+        print("✅ Voice Commands: Listening for 'Hey Aimee'")
+        print()
+        print("🎯 ALL SYSTEMS OPERATIONAL")
+        print("🍷 Aimee is ready for tactical dominance")
+        print()
+        
+        # Start voice commands (blocking)
+        self.start_voice_service()
+
+if __name__ == "__main__":
+    system = AimeeCompleteSystem()
+    system.start_all_services()
+🎯 4. Setup Instructions
+Create .env file with your credentials:
+bash# ElevenLabs
+ELEVENLABS_API_KEY=your_elevenlabs_key
+
+# Twilio SMS
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_token
+TWILIO_PHONE_NUMBER=your_twilio_number
+
+# Your phone number
+YOUR_PHONE_NUMBER=+1234567890
+
+# Email (optional)
+EMAIL_FROM=your_email@gmail.com
+EMAIL_TO=your_email@gmail.com
+EMAIL_PASSWORD=your_app_password
+🚀 Installation & Launch:
+bash# Install required packages
+pip install twilio SpeechRecognition pyaudio pydub
+
+# For Windows pyaudio issues:
+pip install pipwin
+pipwin install pyaudio
+
+# Create templates folder if not exists
+mkdir templates
+
+# Launch complete system
+python aimee_complete_system.py
+🎯 You Now Have:
+
+📱 SMS Commands: Text "briefing" to get instant audio briefings
+🎤 Voice Control: Say "Hey Aimee, daily briefing" for hands-free operation
+🌐 Web Dashboard: Full tactical command center at localhost:5001
+📧 Email Automation: Scheduled briefings sent automatically
+🔗 Multi-Channel: Same intelligence across voice, SMS, web, and email
+
+Test voice commands:
+
+"Hey Aimee, daily briefing"
+"Aimee, brief me on Barcelona"
+"Hey Aimee, urgent priorities"
+"Aimee, generate pitch for Spiga"
+
+You've built a complete voice-driven sales empire! 🍷⚡🎯

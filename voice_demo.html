@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk to Aimee - Voice Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        
+        .wine-icon {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.9;
+        }
+        
+        .talk-button {
+            background: #dc3545;
+            border: none;
+            border-radius: 50%;
+            width: 200px;
+            height: 200px;
+            font-size: 1.5rem;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+        
+        .talk-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        
+        .talk-button:active {
+            transform: translateY(0);
+            background: #c82333;
+        }
+        
+        .talk-button.recording {
+            background: #28a745;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .status {
+            min-height: 60px;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .transcript {
+            min-height: 80px;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            font-style: italic;
+        }
+        
+        .response {
+            min-height: 80px;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .instructions {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+        }
+        
+        audio {
+            width: 100%;
+            margin-top: 1rem;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            background: rgba(255,107,107,0.1);
+            border: 1px solid rgba(255,107,107,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+        
+        .success {
+            color: #51cf66;
+            background: rgba(81,207,102,0.1);
+            border: 1px solid rgba(81,207,102,0.3);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="wine-icon">🍷</div>
+        <h1>Talk to Aimee</h1>
+        <p class="subtitle">Your AI wine industry assistant is ready to help with orders, inventory, and more.</p>
+        
+        <div class="instructions">
+            Hold the button and speak your wine request. Release to process.
+        </div>
+        
+        <button id="talkButton" class="talk-button">Hold to Talk</button>
+        
+        <div id="status" class="status">
+            <p>Ready to listen. Make sure to allow microphone access.</p>
+        </div>
+        
+        <div id="transcript" class="transcript">
+            <p><strong>Your request will appear here...</strong></p>
+        </div>
+        
+        <div id="response" class="response">
+            <p><strong>Aimee's response will appear here...</strong></p>
+        </div>
+    </div>
+
+    <script>
+        const talkButton = document.getElementById('talkButton');
+        const statusDiv = document.getElementById('status');
+        const transcriptDiv = document.getElementById('transcript');
+        const responseDiv = document.getElementById('response');
+        
+        let recognition;
+        let isRecording = false;
+        let currentTranscript = '';
+
+        // Check if browser supports speech recognition
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            statusDiv.innerHTML = '<p class="error">Speech recognition not supported in this browser. Please use Chrome or Safari.</p>';
+            talkButton.disabled = true;
+        } else if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+            // Check if we're on a secure connection
+            statusDiv.innerHTML = '<p class="error">Speech recognition requires HTTPS or localhost. Please access via https:// or localhost</p>';
+            talkButton.disabled = true;
+        } else {
+            // Initialize speech recognition only if checks pass
+            initializeSpeechRecognition();
+        }
+
+        function initializeSpeechRecognition() {
+
+        // Initialize speech recognition
+        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = 'en-US';
+
+        recognition.onstart = function() {
+            console.log('Speech recognition started');
+            statusDiv.innerHTML = '<p class="success">🎤 Listening... Speak your wine request now</p>';
+        };
+
+        recognition.onresult = function(event) {
+            let interimTranscript = '';
+            let finalTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript;
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            currentTranscript = finalTranscript || interimTranscript;
+            transcriptDiv.innerHTML = `<p><strong>You said:</strong> "${currentTranscript}"</p>`;
+        };
+
+        recognition.onerror = function(event) {
+            console.error('Speech recognition error:', event.error);
+            isRecording = false;
+            talkButton.textContent = 'Hold to Talk';
+            talkButton.classList.remove('recording');
+            
+            let errorMessage = '';
+            switch(event.error) {
+                case 'not-allowed':
+                    errorMessage = 'Microphone access denied. Please allow microphone access and refresh the page.';
+                    break;
+                case 'no-speech':
+                    errorMessage = 'No speech detected. Try speaking louder or closer to the microphone.';
+                    break;
+                case 'audio-capture':
+                    errorMessage = 'Microphone not found or not working.';
+                    break;
+                case 'network':
+                    errorMessage = 'Network error occurred.';
+                    break;
+                default:
+                    errorMessage = event.error;
+            }
+            statusDiv.innerHTML = `<p class="error">❌ ${errorMessage}</p>`;
+        };
+
+        recognition.onend = function() {
+            console.log('Speech recognition ended');
+            if (isRecording) {
+                // Auto-restart if we're still supposed to be recording
+                recognition.start();
+            } else if (currentTranscript.trim()) {
+                // Process the transcript
+                processRequest(currentTranscript);
+            }
+        };
+
+        // Button event listeners
+        talkButton.addEventListener('mousedown', startRecording);
+        talkButton.addEventListener('mouseup', stopRecording);
+        talkButton.addEventListener('mouseleave', stopRecording);
+
+        // Touch events for mobile
+        talkButton.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            startRecording();
+        });
+        talkButton.addEventListener('touchend', function(e) {
+            e.preventDefault();
+            stopRecording();
+        });
+
+        function startRecording() {
+            if (!isRecording) {
+                isRecording = true;
+                currentTranscript = '';
+                talkButton.textContent = 'Release to Send';
+                talkButton.classList.add('recording');
+                transcriptDiv.innerHTML = '<p><strong>Listening...</strong></p>';
+                responseDiv.innerHTML = '<p><strong>Aimee\'s response will appear here...</strong></p>';
+                
+                try {
+                    recognition.start();
+                } catch (error) {
+                    console.error('Error starting recognition:', error);
+                    statusDiv.innerHTML = '<p class="error">❌ Could not start speech recognition</p>';
+                    stopRecording();
+                }
+            }
+        }
+
+        function stopRecording() {
+            if (isRecording) {
+                isRecording = false;
+                talkButton.textContent = 'Processing...';
+                talkButton.classList.remove('recording');
+                statusDiv.innerHTML = '<p>🔄 Processing your request...</p>';
+                
+                try {
+                    recognition.stop();
+                } catch (error) {
+                    console.error('Error stopping recognition:', error);
+                }
+            }
+        }
+
+        async function processRequest(transcript) {
+            if (!transcript.trim()) {
+                statusDiv.innerHTML = '<p class="error">❌ No speech detected. Please try again.</p>';
+                talkButton.textContent = 'Hold to Talk';
+                return;
+            }
+
+            try {
+                // Create a blob with the transcript (simulating audio upload)
+                const formData = new FormData();
+                
+                // Create a dummy audio blob for the existing endpoint
+                const audioBlob = new Blob(['dummy'], { type: 'audio/wav' });
+                formData.append('audio', audioBlob, 'voice_input.wav');
+                formData.append('transcript_override', transcript);
+
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                if (data.error) {
+                    statusDiv.innerHTML = `<p class="error">❌ Error: ${data.error}</p>`;
+                    return;
+                }
+
+                // Display Aimee's response
+                responseDiv.innerHTML = `
+                    <p><strong>Aimee:</strong> "${data.response_text}"</p>
+                    <p><strong>Intent:</strong> ${data.intent}</p>
+                    <p><strong>Confidence:</strong> ${data.score}</p>
+                `;
+
+                // Play audio response
+                if (data.response_audio) {
+                    const audio = document.createElement('audio');
+                    audio.controls = true;
+                    audio.autoplay = true;
+                    audio.src = data.response_audio;
+                    responseDiv.appendChild(audio);
+                }
+
+                statusDiv.innerHTML = '<p class="success">✅ Request processed successfully!</p>';
+                
+            } catch (error) {
+                console.error('Error processing request:', error);
+                statusDiv.innerHTML = `<p class="error">❌ Error processing request: ${error.message}</p>`;
+            } finally {
+                talkButton.textContent = 'Hold to Talk';
+            }
+        }
+
+        // Initialize status
+        statusDiv.innerHTML = '<p class="success">✅ Ready to listen. Hold the button and speak your wine request.</p>';
+        }
+
+        // Initialize the interface
+        if (!talkButton.disabled) {
+            statusDiv.innerHTML = '<p class="success">✅ Ready to listen. Hold the button and speak your wine request.</p>';
+        }
+    </script>
+</body>
+</html>

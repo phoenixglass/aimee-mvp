@@ -1,0 +1,409 @@
+{
+  "training_examples": [
+    {
+      "id": 1,
+      "text": "I want something fruity for seafood",
+      "intent": "wine_recommendation",
+      "entities": {
+        "taste_preference": "fruity",
+        "food_pairing": "seafood"
+      }
+    },
+    {
+      "id": 2,
+      "text": "I want something bold and fruity",
+      "intent": "wine_recommendation", 
+      "entities": {
+        "taste_preference": ["bold", "fruity"]
+      }
+    },
+    {
+      "id": 3,
+      "text": "What should I focus on today?",
+      "intent": "daily_briefing",
+      "entities": {}
+    },
+    {
+      "id": 4,
+      "text": "Brief me on LeBella's",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "LeBella's Fine Wine"
+      }
+    },
+    {
+      "id": 5,
+      "text": "How do I beat Wine Warehouse?",
+      "intent": "competitive_intelligence",
+      "entities": {
+        "competitor": "Wine Warehouse"
+      }
+    },
+    {
+      "id": 6,
+      "text": "Brief me on Barcelona Wine Bar",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 7,
+      "text": "Tell me about Barcelona",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 8,
+      "text": "What's the opportunity at Barcelona Wine Bar?",
+      "intent": "opportunity_analysis",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 9,
+      "text": "Brief me on Bin 100",
+      "intent": "customer_intelligence", 
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    },
+    {
+      "id": 10,
+      "text": "What should I know about Bin 100 Restaurant?",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant"
+      }
+    },
+    {
+      "id": 11,
+      "text": "Tell me about Spiga",
+      "intent": "customer_intelligence",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 12,
+      "text": "What's missing from Bin 100's wine list?",
+      "intent": "gap_analysis",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "analysis_type": "wine_list_gaps"
+      }
+    },
+    {
+      "id": 13,
+      "text": "Who's the decision maker at Spiga?",
+      "intent": "contact_intelligence",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "info_type": "decision_maker"
+      }
+    },
+    {
+      "id": 14,
+      "text": "What Spanish wines can I sell to Barcelona?",
+      "intent": "product_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "product_category": "Spanish wines"
+      }
+    },
+    {
+      "id": 15,
+      "text": "When does Barcelona usually reorder?",
+      "intent": "timing_intelligence",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "info_type": "reorder_pattern"
+      }
+    },
+    {
+      "id": 16,
+      "text": "What's the best approach for New Canaan customers?",
+      "intent": "market_strategy",
+      "entities": {
+        "location": "New Canaan",
+        "strategy_type": "customer_approach"
+      }
+    },
+    {
+      "id": 17,
+      "text": "How do I compete with Wine Warehouse at Bin 100?",
+      "intent": "competitive_strategy",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "competitor": "Wine Warehouse",
+        "strategy_type": "competitive_response"
+      }
+    },
+    {
+      "id": 18,
+      "text": "What's the revenue opportunity at Spiga?",
+      "intent": "revenue_analysis",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 19,
+      "text": "Tell me about Connecticut Distributors",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Connecticut Distributors Inc."
+      }
+    },
+    {
+      "id": 20,
+      "text": "Who should I contact at CDI?",
+      "intent": "contact_intelligence",
+      "entities": {
+        "distributor_name": "Connecticut Distributors Inc.",
+        "info_type": "key_contacts"
+      }
+    },
+    {
+      "id": 21,
+      "text": "What's the total market size in Fairfield County?",
+      "intent": "market_analysis",
+      "entities": {
+        "location": "Fairfield County",
+        "analysis_type": "market_size"
+      }
+    },
+    {
+      "id": 22,
+      "text": "Which distributor serves Barcelona Wine Bar?",
+      "intent": "distributor_mapping",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 23,
+      "text": "What Italian wines work for Spiga's wealthy customers?",
+      "intent": "product_recommendation",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "product_category": "Italian wines",
+        "customer_type": "wealthy"
+      }
+    },
+    {
+      "id": 24,
+      "text": "How often does Bin 100 rotate their wine list?",
+      "intent": "timing_intelligence",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "info_type": "wine_list_rotation"
+      }
+    },
+    {
+      "id": 25,
+      "text": "What's Barcelona's Spanish wine program like?",
+      "intent": "program_analysis",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "program_type": "Spanish wine program"
+      }
+    },
+    {
+      "id": 26,
+      "text": "Brief me on all my Fairfield County accounts",
+      "intent": "regional_briefing",
+      "entities": {
+        "location": "Fairfield County"
+      }
+    },
+    {
+      "id": 27,
+      "text": "What premium opportunities exist at Spiga?",
+      "intent": "premium_opportunity",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    },
+    {
+      "id": 28,
+      "text": "How do I position against chain restaurants at Bin 100?",
+      "intent": "competitive_positioning",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "competitor_type": "chain restaurants"
+      }
+    },
+    {
+      "id": 29,
+      "text": "What's the wine spend at these three restaurants?",
+      "intent": "financial_analysis",
+      "entities": {
+        "analysis_type": "wine_spend",
+        "scope": "multiple_customers"
+      }
+    },
+    {
+      "id": 30,
+      "text": "Tell me about Missing Link Wine Company",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Missing Link Wine Company"
+      }
+    },
+    {
+      "id": 31,
+      "text": "What Portuguese wines could work at Barcelona?",
+      "intent": "expansion_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "product_category": "Portuguese wines"
+      }
+    },
+    {
+      "id": 32,
+      "text": "When should I call Dan at Spiga?",
+      "intent": "timing_strategy",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "contact_name": "Dan"
+      }
+    },
+    {
+      "id": 33,
+      "text": "What makes New Canaan different from other markets?",
+      "intent": "market_differentiation",
+      "entities": {
+        "location": "New Canaan"
+      }
+    },
+    {
+      "id": 34,
+      "text": "How do I get an appointment with Barcelona's wine director?",
+      "intent": "appointment_strategy",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "contact_type": "wine director"
+      }
+    },
+    {
+      "id": 35,
+      "text": "What's the competitive landscape in Milford?",
+      "intent": "competitive_landscape",
+      "entities": {
+        "location": "Milford"
+      }
+    },
+    {
+      "id": 36,
+      "text": "Brief me on today's priorities",
+      "intent": "daily_priorities",
+      "entities": {}
+    },
+    {
+      "id": 37,
+      "text": "What boutique Italian producers work for Bin 100?",
+      "intent": "product_recommendation",
+      "entities": {
+        "customer_name": "Bin 100 Restaurant",
+        "product_category": "boutique Italian producers"
+      }
+    },
+    {
+      "id": 38,
+      "text": "How big is Barcelona's wine program compared to competitors?",
+      "intent": "competitive_comparison",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar",
+        "comparison_type": "wine program size"
+      }
+    },
+    {
+      "id": 39,
+      "text": "What's the best time to approach Spiga with premium wines?",
+      "intent": "timing_strategy",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria",
+        "product_category": "premium wines"
+      }
+    },
+    {
+      "id": 40,
+      "text": "Tell me about Martignetti Companies",
+      "intent": "distributor_intelligence",
+      "entities": {
+        "distributor_name": "Martignetti Companies"
+      }
+    },
+    {
+      "id": 41,
+      "text": "What wine education opportunities exist at Barcelona?",
+      "intent": "education_opportunity",
+      "entities": {
+        "customer_name": "Barcelona Wine Bar"
+      }
+    },
+    {
+      "id": 42,
+      "text": "How do I counter Costco's pricing at LeBella's?",
+      "intent": "pricing_strategy",
+      "entities": {
+        "customer_name": "LeBella's Fine Wine",
+        "competitor": "Costco"
+      }
+    },
+    {
+      "id": 43,
+      "text": "What's my total addressable market in Connecticut?",
+      "intent": "market_size",
+      "entities": {
+        "location": "Connecticut"
+      }
+    },
+    {
+      "id": 44,
+      "text": "Give me talking points for my Spiga meeting",
+      "intent": "meeting_preparation",
+      "entities": {
+        "customer_name": "Spiga Wine Bar & Salumeria"
+      }
+    }
+  ],
+  "intents": [
+    "wine_recommendation",
+    "daily_briefing", 
+    "customer_intelligence",
+    "competitive_intelligence",
+    "opportunity_analysis",
+    "gap_analysis",
+    "contact_intelligence",
+    "product_opportunity",
+    "timing_intelligence",
+    "market_strategy",
+    "competitive_strategy",
+    "revenue_analysis",
+    "distributor_intelligence",
+    "market_analysis",
+    "distributor_mapping",
+    "product_recommendation",
+    "program_analysis",
+    "regional_briefing",
+    "premium_opportunity",
+    "competitive_positioning",
+    "financial_analysis",
+    "expansion_opportunity",
+    "timing_strategy",
+    "market_differentiation",
+    "appointment_strategy",
+    "competitive_landscape",
+    "daily_priorities",
+    "competitive_comparison",
+    "education_opportunity",
+    "pricing_strategy",
+    "market_size",
+    "meeting_preparation"
+  ]
+}

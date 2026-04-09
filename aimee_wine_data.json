@@ -1,0 +1,36 @@
+{
+  "wine_database": {
+    "caymus_cabernet": {
+      "full_name": "Caymus Cabernet Sauvignon",
+      "variety": "Cabernet Sauvignon",
+      "region": "Napa Valley",
+      "taste_profile": {"body": 0.9, "acidity": 0.6, "tannins": 0.8, "sweetness": 0.2},
+      "flavor_notes": ["blackberry", "cedar", "vanilla"],
+      "food_pairings": ["red meat", "aged cheese", "grilled lamb"],
+      "description": "A full-bodied Cabernet Sauvignon with rich tannins and notes of blackberry and cedar."
+    },
+    "kendall_jackson_chardonnay": {
+      "full_name": "Kendall-Jackson Chardonnay",
+      "variety": "Chardonnay", 
+      "region": "California",
+      "taste_profile": {"body": 0.7, "acidity": 0.7, "tannins": 0.1, "sweetness": 0.3},
+      "flavor_notes": ["apple", "vanilla", "butter"],
+      "food_pairings": ["seafood", "poultry", "cream sauces"],
+      "description": "A medium-bodied Chardonnay with crisp acidity and notes of green apple and vanilla."
+    },
+    "dom_perignon": {
+      "full_name": "Dom Pérignon Champagne",
+      "variety": "Champagne",
+      "region": "Champagne, France",
+      "taste_profile": {"body": 0.8, "acidity": 0.9, "tannins": 0.0, "sweetness": 0.2},
+      "flavor_notes": ["citrus", "brioche", "almond"],
+      "food_pairings": ["seafood", "caviar", "celebration"],
+      "description": "A prestigious Champagne with vibrant acidity and fine bubbles, featuring notes of citrus and brioche."
+    }
+  },
+  "training_examples": [
+    {"text": "I want something fruity", "intent": "taste_preference_query", "entities": {"taste_descriptors": ["fruity"]}},
+    {"text": "What goes with salmon?", "intent": "wine_pairing_request", "entities": {"food_type": "salmon"}},
+    {"text": "I need champagne for a wedding", "intent": "wine_pairing_request", "entities": {"food_type": "celebration"}}
+  ]
+}

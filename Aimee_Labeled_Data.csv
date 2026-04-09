@@ -1,0 +1,432 @@
+text,intent,tone
+Did we ever ship that 2020 Barolo to Le Bella’s?,check_shipment_status,curious
+Check if the Blackstone order was delivered yet.,quality_judgment,neutral
+What’s the ETA on the Ridge Zin for Bin 100?,check_shipment_status,curious
+Can you shoot a follow-up email to Blackstones about their order?,send_email,neutral
+Send a thank-you email to the sommelier at Elm.,send_email,polite
+Email Dan from Spiga about the Tuscan allocation.,send_email,neutral
+Remind me to call the buyer at Horse Neck tomorrow morning.,set_reminder,neutral
+Set a reminder for our Friday tasting with Rebecca’s.,set_reminder,neutral
+Ping me next week to check in with Missing Link.,set_reminder,neutral
+They want a sample of something bold but not too dry — what should I bring?,product_recommendation,curious
+Bring a sparkling rosé sample to 99 Bottles.,sample_request,neutral
+Drop off that Cabernet sample at The Cottage in Westport.,sample_request,neutral
+Customer is asking for a wine gift under $60 — any recs?,gift_request,curious
+Find me something elegant to give a client — nothing too sweet.,gift_request,neutral
+"They need a corporate gift — red, French, $100 budget.",gift_request,neutral
+Recommend a white Burgundy for a seafood-focused tasting menu.,pairing_suggestion,neutral
+What’s a crowd-pleaser red with medium tannins?,product_recommendation,curious
+Suggest a Napa Cab that drinks above its price.,product_recommendation,neutral
+What pairs well with grilled lamb and rosemary potatoes?,pairing_suggestion,curious
+Suggest a wine to go with oysters and mignonette.,pairing_suggestion,neutral
+Need something for a cheese-heavy charcuterie board.,pairing_suggestion,neutral
+Describe the taste profile of the 2019 Chablis we carry.,taste_profile,neutral
+Is that Pinot light-bodied or fuller?,taste_profile,curious
+What’s the finish like on that 2017 Tempranillo?,taste_profile,curious
+Find restaurants in Greenwich that list Sassicaia.,restaurant_lookup,neutral
+Who in Norwalk carries the 2021 Gavi di Gavi?,restaurant_lookup,curious
+Check if Elm still lists the Antinori Tignanello.,restaurant_lookup,neutral
+"That Pinot was wrong — they asked for the 2017 vintage, not 2018.",correct_order,urgent
+Correct the order for New Canaan Wine — remove the rosé.,correct_order,neutral
+"We sent Chianti, but they wanted Barbera. Fix it before delivery.",correct_order,neutral
+"Ничего особого в нем не нашел. В меру сухое, вкус не сильно выражен. Для тихого вечера за ужин пойдет",taste_profile,neutral
+Parfum! Super frumos!,taste_description,positive
+V nice whitr,quality_judgment,positive
+"Happy, dry, bubbles.",taste_description,positive
+Light and sweet,taste_profile,neutral
+"Plum, rich, fruity, pepper, delicious Red.",quality_judgment,positive
+"Nice peach, pineapple, mango fruit with a backdrop of cut grass, minerality, and a hint of petrol. Elegant wine.",taste_profile,positive
+"Dried fruits, plumbs, peppery notes, spices. Full body, medium low acidity, silky tannins. Very good Nero d’avola",taste_profile,positive
+Wow a very easy drinking Pinot Noir. Fresh on the palate with a lovely soft finish. Good to see a Pinot Noir being produced by the clever team at this winery. Great fresh labels to match the wine.,quality_judgment,positive
+"Full body, goes with meat",pairing_suggestion,neutral
+"Swiss Cheese, yeast, lime, high acidity, med body, finish with honey, yeast, pear, mineral, very pleasing and enjoyable.",taste_profile,positive
+"Цвет насыщенный золотой. В аромате груша, персик, дыня, ананас. Во вкусе яблоко, груша, лайм. Кислотность низкая.",taste_profile,neutral
+A bit harsh Cabernet Sauvignon. Good with food such as a hamburger.,pairing_suggestion,neutral
+"Drank at Tasté, not really a Gaja...",quality_judgment,neutral
+"A terrific rose, light, but some body, dry. Yum! Bought it at Malloy’s, on special",quality_judgment,cheerful
+"❗Meio Seco❗observar temperatura de consumo apropriada, a 12°C ficou bom. Exala muito álcool na taça.",taste_profile,neutral
+"Red fruits, chocolate, some oak, balsamic. Very well balanced, med tanins, med+ finish. Great wine!",taste_profile,positive
+Drink now.,quality_judgment,neutral
+This wine reminds me of a walk a late summer day along a path surrounded by dry flowers and bushes of herbs. It gives the sensation of being ‘unbridled’ as a teenager who is fervently trying to discover his personality.,taste_profile,neutral
+"3.8🌟
+Some Spanish Rioja 🇪🇸 from 100% Tempranillo Blanco grapes!🍇
+Hints of citrus 🍊and some stone like 🗿Like notes. 
+High acidity but seems very light! 👨‍🔬
+12.5% of alcohol! 🥂
+👃: oak, vanilla, cherry, grapefruit, smoke, apple and some ash
+👅: blackberry, lemon, lime, strawberry, pepper, blackcurrant, tobacco, stone, spiced pear and baked apple",taste_profile,cheerful
+"Very good sparkling wine
+Crisp refreshing tiny bubbles",quality_judgment,positive
+"A fresh sweet SPanish blend of SB95 & Perellada5, shows tropical fruits(passion fruit) and fig, herbal notes and aromas from the aging",taste_profile,neutral
+"A great wine!
+Although doubled in price in the past 2 years, still enjoy this wine.  I feel that the ‘18 vintage is slightly sweeter than the ‘17 but that might just be due to the pairings.  Well balanced tannins with some licorice, smoke and leather notes on the pallet.  Really enjoy this wine and still a good buy at around ¥2,000.",price_comment,positive
+"Dry, and fruity, good!",taste_profile,cheerful
+"Great value for money. Tastes like,,,,,, a piece of raspberry cake fallen on a heavy smoker’s leather jacket.",price_comment,cheerful
+Very good - and great value. Available from Uncle Dans.,price_comment,positive
+My perfect idea of a good Bordeaux,quality_judgment,positive
+Great with vietnamien food,pairing_suggestion,positive
+Decent blend of Merlot and Malbec.,quality_judgment,neutral
+Delicious 😍😍😍 very musty in flavor,taste_profile,cheerful
+"Prowein 2019 #268
+
+Intense lemon zest with lots of jasminium and peach and lemon flowers
+
+Mouth is creamy smooth with a medium (+) acidity and mineral sweet exit and aftertaste
+
+3.7",taste_profile,neutral
+Fruity nose of lemon and wildflowers. Nice  sharp acidity and bright fruit. Very enjoyable. Certainly not a pedigree Chardonnay nit a step up from a Pinot Grigio 88,taste_profile,positive
+"Dry but fresh with lots of citrus, some green apple, and minerals on the palate with fairly long finish. Would pair well with grilled fish or sashimi. Excellent value.",pairing_suggestion,positive
+Great aroma. Red fruit with Tar cinnamon and spice. Nice!,taste_profile,cheerful
+Sweet and not bitter.,taste_profile,neutral
+Achei um pouco doce demais para o meu gosto.,quality_judgment,neutral
+Always a reliable wine.,quality_judgment,neutral
+Super smooth,taste_profile,neutral
+Very good for R145 a bottle! Soft and easy drinking,price_comment,cheerful
+"Herbaceous, fruity, stone fruit, can drink more than one glass. Good easy drinking sav",quality_judgment,positive
+"Very young Fronsac that will become better with age. Lots of tannins, nose is closed up yet, good balance. You can tell that it will be a very good wine after 10 years.",taste_profile,positive
+爽やかで飲みやすい。飲みやす過ぎるくらいあっさり！,taste_profile,cheerful
+Not too dry. Fresh and crisp. Great accompanying fish.,pairing_suggestion,positive
+"10/1/2020 미국 생활 14년째 시작
+희수엄마 스페인 친구 선물
+ citrus green apple pear
+Good color. High acidity. Light body. Mineral. 
+Good. Dry.",taste_profile,neutral
+"Super smooth, berry and soft tanins. Great!!",taste_profile,positive
+Good bang for the buck.,price_comment,positive
+"Bold and punchy, with some spice or even pepper for an aftertaste. Oak and some dark fruit, but not enough to make this memorable. Would pair beautifully with a nice steak",pairing_suggestion,positive
+"Earthy, light spice, juicy red fruit, soft tannins, lovely finish. Excellent drop especially for under $20",price_comment,positive
+"Excellent wine, perfect with fish or BBQ’d chicken!",pairing_suggestion,positive
+"Fine, fine, fine, from the very first time/sip :)",quality_judgment,cheerful
+"Grass and straw on the nose with maybe some peach...green fruits, kiwi and maybe less-ripe mango on the palate with a good amount of acid zip...a bit of minerality.  Medium-long finish.",taste_profile,neutral
+Nice blackberry flavor,taste_profile,positive
+"Very good, it had a little bit of q alcohol flavour in the taste but I like it Very much.",quality_judgment,positive
+"Sweeter than your typical gruner. Reminded my friend of Woodchuck pear cider. High, racy acidity. Floral and aromatic with a funkiness on the end of the nose",taste_profile,neutral
+"Good barolo at its drinking window. 
+
+Dark cherries and strawberries, tobacco, tar and vanilla oak on nose. Good acidity and balanced tannins on palate. Medium plus bodied and medium fruity finish. Quality structure and balance. Still long life ahead. Tasted in the VinVin winebar in Helsinki.",taste_profile,neutral
+Excellent. Smooth and great value. Less than a tenner in SuperValu,price_comment,positive
+Apparently good to cellar for 10 years but I love it 90,quality_judgment,positive
+Good accompanying swordfish with a mango and berry compote.,pairing_suggestion,neutral
+"Удивительно, но эта шарданешка на уровне резервы, даже есть моменты превосходства.",quality_judgment,cheerful
+"Prowein 2019 #143
+
+Bordeaux blend
+
+74 cab 10 merlot franc petit verdot
+
+Mix of Rutherford and napa
+Slow 2 months fermentation
+
+Mix of overripe blackberry, Ripe strawberry confiture, touch of bee wax
+
+Mouth is very smooth silky with a lovely sweetness and a velvety mouthfeel with a rich full jammy flavours remaining light and elegant with a medium (+) acidity and tannin. Very persistent and expressive exit with eucalyptus sandalwood cocoa and tobacco. Crazy oscillating aftertaste long after its finished 
+4.3",taste_profile,neutral
+Very good value .... representing Spain in the best way 👍,quality_judgment,positive
+"Beautiful.  Very balanced between earthy and fruit. Had with free range chicken cacciatore and a Japanese akisake (wild chum salmon)  with fresh porcini sauce. Loverly...
+Paired well with the chocolate or torte, too... Till I moved on to the amarone grappa.",pairing_suggestion,positive
+"Встречается с завышенным ценником
+Питкое, кисленькое и летом заходит хорошо.",price_comment,neutral
+"Pale yellow color, with interesting yellow fruit aromas, and a very characteristic oil touch. Medium bodied, with a nice balance of green apple, petroleum, minerals and mushrooms.",taste_profile,neutral
+"Apoel, peer, geel fruit, grapefruit. Perzik, ananas, limoen,  bloemig, zacht bittertje,  hoog in de zuren, citrus",taste_profile,neutral
+Solid Tuscan red that makes for good company to steak and risotto.,pairing_suggestion,positive
+"Strong cured meat on the nose, a bit unimpressed with the taste, high tannins.",taste_profile,neutral
+Fresh and elegant !,taste_profile,cheerful
+"100% Chardonnay fermentowane i dojrzewające przez 6 miesięcy nad osadem w beczkach z francuskiego dębu. Jasnosłomkowa barwa ze złocistymi refleksami. Aromat melona, mango z akcentami drewna i prażonych migdałów. Dość mocno zbudowane z podwyższoną kwasowością. W ustach żywe smaki moreli, mango i ananasa z goryczkowym wykończeniem.",taste_profile,neutral
+"Fruity and dry.... good for doesn’t like sweet 
+really cold, really nice...",taste_profile,neutral
+"Slightly alcoholic, watered down raspberry-grape punch.",taste_profile,negative
+Absolutely love!,product_recommendation,cheerful
+"Excellent vino.
+Dark, juicy, and perfect with a bludon burger.
+
+Way more complex than I'd expect for a $15 bottle",pairing_suggestion,positive
+Good solid medium sweet Riesling. Light crisp fruitness. Lovely.,quality_judgment,positive
+"Deep purple colour. On the nose black cherry, spice and a hint of oak. On the palate rich layers of cherry, dark chocolate and a nuance of liquorice and spice. Full-bodied, dry, silky tannins, an exceptional wine. A benchmark in the new style Pinotage. Deserving of its accolades. One of the better wines in this varietal I have tasted.",quality_judgment,positive
+The first California Pinot that I’ve truly loved.  Nice structure.  Good acidity.,quality_judgment,positive
+Fresh pineapple lime,taste_profile,neutral
+"Happy International women’s day!
+
+This Rosso di montalcino has cassis and red berries with complexity of spices on the nose.
+The spices are like cinnamon, fennels, and licorices. 
+Can be Burunello taste after few years! 
+Medium tannins is good as one of the characteristics of the vino.
+
+There is one more that we smelled often when we were kids and we want to describe but cannot find which one!  
+
+Saluti!",taste_profile,cheerful
+Pairs great with homemade pizza with venison sausage,pairing_suggestion,positive
+"Not too sweet, not too dry. Smells like pineapple, lemon-strawberry aftertaste.",taste_profile,neutral
+Nice wine together with a bloody piece of cow.,pairing_suggestion,neutral
+"Best value Rioja for money. Velvety, spicy vanilla, smooth finish.",price_comment,positive
+"Lovely stone fruit, apricot and apple with vanilla",taste_profile,positive
+Leather and a little bit of smoke. Plum after long decanting.,taste_profile,neutral
+"Pale yellow color, green apple, gooseberry, medium aftertaste with hint of crushed gravel. 3.7.",taste_profile,neutral
+I loved this wine: discrete and elegant and not acid at all with a completely dry body but with aromas if honey and yellow flowers that were long and elegant. Amazing !,quality_judgment,positive
+Excellent with tiramisu,pairing_suggestion,positive
+Lovely citrus notes. Crisp and refreshing.,taste_profile,positive
+Dry white burgundy,taste_profile,neutral
+"Never tried a Mascota before, but will buy again. Great price, great taste and crowd pleaser.",product_recommendation,cheerful
+"Fruity, dry and good value!
+Goes well with red meats!",pairing_suggestion,cheerful
+"Varietal, long after taste, to be tasted with patience.
+Dark plums, cherries and spices.",taste_profile,neutral
+"Fine, but I have had better wine at this price range.",price_comment,neutral
+Fruity with plum undertones,taste_profile,neutral
+Super tasty rose. Off dry for sure with melon and peach flavours.,quality_judgment,positive
+Best Riesling white I’ve had,quality_judgment,positive
+"Sturdy, woody, acid. Very good.",quality_judgment,positive
+"Cucumber, green apples, minerals, citrus",taste_profile,neutral
+"Dry, smoky and earthy",taste_profile,neutral
+"80% Carinyena, 20% garnatxa",taste_profile,neutral
+"Refrescante, burbujas muy abundantes, se suavizan al final. Cítrica en boca, madera, y mineral.
+
+Refreshing, very abundant bubbles, they soften at the end. Citrus on the palate, wood, and mineral.",taste_profile,neutral
+"Slick but with depth. Open, leave, drink slowly and enjoy",taste_profile,neutral
+"Really good nose, and a deep flavour profile",taste_profile,positive
+Who said Quebec wines cannot be enjoyed ?,quality_judgment,positive
+Very great refreshing white wine that goes great with sardines. Makes me feel like I'm in the Mediterranean,pairing_suggestion,positive
+"Beautiful ruby color. Overly barnyard scent (very off-putting), light tight simple taste",taste_profile,neutral
+Delicious clean wine,taste_profile,positive
+"A third of the bottle kept uncorked in the kitchen counter since last dinner (24H, see TN).
+Aromas are more marked and an herbaceous background has appeared.
+Tannins seems rounder.
+No other change.",taste_profile,neutral
+"Easy drinking, smooth, full bodied and delightful partner for paella 🥰",pairing_suggestion,positive
+Dry and little sweet.,taste_profile,neutral
+"Smooth start of cherries and hint of prunes. Malbec! Good body and  tender acidity. Good length. Fruity and delightful!
+We had it at hotel Indigo Durham Uk",taste_profile,cheerful
+"I, personally, think this wine is rated higher than it is. Hot take, I know. It’s a good cab. Tannic. Smidge dry. Memorable(ish). Perhaps I need to expand my palate, but a B+ type of wine.",quality_judgment,negative
+Black currant and chalky minerality. Low acidity with soft tannins.,taste_profile,neutral
+Apple and Citrus top notes with a honey and toasted bread finish,taste_profile,neutral
+"4.0
+60% Grenache e 40% Cinsault per questo rosé che merita attenzione.
+Colore rosa pallido abbastanza profumato con cenni di frutti rossi e lampone. Esprime tantissimo in bocca però, forte e deciso sapore di frutta matura come fragole, melone e pesca gialla. Ottima acidità e tannini decisi, convogliano in un finale lungo e abboccato. 👏🏻👏🏻🍷🍷",taste_profile,positive
+"From aragonez and touriga nacional, a good selection from the interior region of Portugal 👌",quality_judgment,positive
+Full body with a curious flavour,taste_profile,neutral
+Smooth! 22 years old!,quality_judgment,cheerful
+"Slight tawny tinge to the ruby colour. Plum, black cherries and oak on the nose. Fruit and very nicely balanced tannins. Cracking wine.",taste_profile,positive
+Bold. Intense. Both in flavor and taste,taste_profile,neutral
+Just like it.  It is brut indeed.,quality_judgment,neutral
+"Wunderbar, trinkfertig",quality_judgment,positive
+"Beautiful ruby red color, dark but transparent, not too dense. Nose shows red fruits, a bit blunt, not very elegant. But great freshness on the palate, due to minerality, really smells and tastes stones. Good fruit, smooth tannins, and length.",taste_profile,neutral
+"A good brunello, tannins, full-bodied. Not as dynamic in flavor, finish could be more flavorful. Still worth it though!",quality_judgment,cheerful
+"Dry, acidic, peach, 
+Stuffed shells with sausage, ricotta and swisschard with tomato sauce",pairing_suggestion,neutral
+Would drink again for under $20,price_comment,polite
+Great!,quality_judgment,cheerful
+"Muito bom Cabernet Sauvignon brasileiro. Equilibrado e estrurado, com destaque para frutas vermelhas maduras, especiarias picantes e couro. Álcool inserido e taninos macios. Final de boa persistência. Excelente custo e benefício.",product_recommendation,positive
+Acidic,taste_profile,neutral
+Lemony citrus,taste_profile,neutral
+"Nice fruity modern Bordeaux. Great quality for price, nice every day kind of Sunday roast wine with family.",pairing_suggestion,cheerful
+"Remarkable Pošip from island of Korčula. Golden yellow in the glass. Dry, nice minerality, medium plus body, medium plus acidity, citruses, ripe yellow fruits, rich, balanced. Very long finish.",taste_profile,positive
+"Fantastic flavour, well ballanced and rich in the same time. Excellent Trntino by Endrizzi.it drunk with my Wife last skiing day in Madonna di Campiglio",product_recommendation,cheerful
+"Like the taste, quite dry and sweet at the same time",taste_profile,positive
+Soft and fruity with low acidity,taste_profile,neutral
+"If you are looking for a good Kosher Wine that is Dry and easy going, this one is for you. For my palate and taste profile, this one just doesn’t do it for me.. Cranberry and Black Pepper come up on the nose but the flavors are very basic and predictable. Too boring for me...
+
+2.4 out of 5.0 Rating",quality_judgment,negative
+"great value wine, dry with notes of berry.",quality_judgment,positive
+Oakey black berry and pretty smooth,taste_profile,neutral
+"Dulçor leve, acidez e álcool entre leve e moderado. Corpo leve. Vinho muito refrescante. Boa opção para dias quentes.
+
+Light sweetness, acidity and alcohol between mild and moderate. Light body. Very refreshing wine. Good option for hot days.",product_recommendation,positive
+Eminently drinkable. Light acid. Lighter tannins.  Smooth. Just sweet enough. Red currant. Cherry. $19 KL. Will get more.,taste_profile,positive
+Very good wine,quality_judgment,positive
+toast citrus apple pear peach apricot white peach,taste_profile,neutral
+"Pleasant enough but could do with a couple of years set aside to mellow out the tannins.   Good vanilla, dark chocolate, blackberry and cherry.  Had with venison which didn’t quite match as the meat was too strong a flavour.",quality_judgment,neutral
+"Mild attack, perfume, spicy, dry and easy drinking",taste_profile,neutral
+"It opens up fairly nicely after about 30 minutes has some dark fruits but no heavy decent balance, doable for the price. Had it in 19 from Gianni",quality_judgment,neutral
+"Very good,
+quite cheep wine. Great with cheesess",quality_judgment,positive
+"Chardonnay 100%,  envelhecido em carvalho francês. Cor amarelo ouro claro brilhante e límpido. Aromas de frutas brancas; pêssegos; melão maduro; notas cítricas; abacaxi amarelo; notas florais; mel; amêndoas; mineral. Acidez agradável. Álcool 13%. Médio corpo. Em boca, amplo; frutado; seco; boa cremosidade. Final de bom frescor e persistência.",taste_profile,neutral
+"Another delicious offering from Beyra. This Sauvignon Blanc is dry with notes of green apple, pear, grass and a well represented finish. It will be excellent with fish, white game meats, fowl and hearty cheeses and fruits.",pairing_suggestion,positive
+"Cassis and cherry with smoky notes of capsicum. Elegant, medium bodied, naturalistic wine.",taste_profile,positive
+"A warm woody Pinot, southern style. Not bad ... but far from a burgundy one!",quality_judgment,neutral
+"For the price you would think this bottle would not surprise you but the dryer; the better. Love the smell of the plum, dark berries and oak. Strong in tannins and dark in color.",price_comment,positive
+A little acidic but I like it.,taste_profile,polite
+Great dessert wine.  Sparkly,pairing_suggestion,positive
+"Grass, gooseberry, citrus",taste_profile,neutral
+Funky and gorgeous. A must try!,taste_profile,cheerful
+Easy to drink. Lighter than expected,taste_profile,positive
+"Мне не понравилось. Вкус кислый, но приятный, но послевкусие сильно спиртное, возможно я нарвалась на подделку. Покупала в Метро по акции",quality_judgment,frustrated
+悪くない。コスパいい。もう少し高いかとおもった,price_comment,neutral
+무난한 레드와인. 무난한 까베르네 쇼비뇽,taste_profile,neutral
+"Столовое дольчетто, как будто оно и не пролежало 42 года. Питко, гастрономично, не отбивающее вкус еды. Конечно нет вообще никаких изысков, но и не ждали мы от него. 3.7",taste_profile,neutral
+酸度突出 微氧化风,taste_profile,neutral
+"My first encounter with this excellent white wine. Interesting blend, complex bouquet, well balanced, age worthy. Impressive!",quality_judgment,cheerful
+"Pronounced aromas of Vanilla, oak, meat, white pepper, floral, slight almond, blackberry. Very dry, fine tannins, full bodied, high acidity, medium to long finish, a lot going on in this wine!",taste_profile,cheerful
+"Vinho agradável. Fruta vermelha em predominância mirtilo cereja , taninos leves. Boa compra",taste_profile,cheerful
+Древесный топчик,taste_profile,cheerful
+"Decent enough, recognisable Marlborough in style, not as expressive as some.",quality_judgment,neutral
+酸，气味也奇怪,taste_profile,frustrated
+Citrus and strawberries,taste_profile,neutral
+"Hm, right up my alley. Lemon confit, pineapple confit, lime, the acidity just goes to complement the rest in this case. Very very good",taste_profile,positive
+$12.95 nice quiet rich and smooth,price_comment,positive
+An average wine. Great everyday drinker,quality_judgment,neutral
+"Wonderful, robust, amazing!",quality_judgment,cheerful
+The first decent Czech red wine I’ve had,quality_judgment,positive
+"Very dry taste with medium bubbles, acidity is very well balanced including light tones of green apple. The taste is creamy though.",taste_profile,neutral
+Crisp with tropical fruit and nice minerality. Great wine with seafood,pairing_suggestion,neutral
+A grower! Fruit forward with strawberry and watermelon and then a lovely little tangy tartiness that zips through.,taste_profile,cheerful
+Not a good year for Burgundy,quality_judgment,frustrated
+"Havde helt glemt hvor dejligt den smager... ærgerligt det var den sidste på hylden. Syre, mørke bær, men alligevel dejlig rund i smagen.",taste_profile,cheerful
+Nice if u like coffee. Good body and dark red,taste_profile,neutral
+"Ottimo con maiale nero dei nebrodi e funghi, davvero delizioso!",pairing_suggestion,cheerful
+"Prowein 2019 #247
+
+Intense interesting raspberry banana with vanilla and an amarena soup
+
+Mouth is silky smooth with a really lovely mouthfeel with a great flavour persistence syroup amarenas with a great exit and aftertaste
+
+Light elegant and powerful
+
+4.25",taste_profile,positive
+Nice sweetness and acidity.... but sweetness took over and I hoped the opposite 🤷🏽‍♂️,taste_profile,frustrated
+"Dark salmon-pink color, elegant, fine bubbles. Stawberry, raspberry, vanilla, yeasty fragance on the nose. Complex, ripe taste, berries and yeast on the palate. 55% Pinot Noir, 45% Chardonnay. Dosage: 8 g/l.",taste_profile,positive
+A nice Carmenere with aromas of cherries and black pepper,taste_profile,neutral
+"Crisp banana melon peach 
+Excellent balance between acidity and alcohol",taste_profile,positive
+"Sehr schön! Feinfruchtig, würzig, mit Röstaromen und Vanille… Top PLV. Detaillierte Bewertung siehe 30. April 2021. Heute getreu dem Motto: eine gute (Wildschwein–) Soße benötigt einen guten Wein 🍇🍷🇫🇷",price_comment,cheerful
+average local Swiss wine. Priced fairly.,price_comment,neutral
+Absolutely lovely champagne!,quality_judgment,cheerful
+Dry. Easily one of my favorite Pinots out there. Delicious.,quality_judgment,cheerful
+Brent’s favourite brant. Ate with cavier April 2019. Expected taste for price. Prefer over verve.,price_comment,polite
+"Тонкие нотки этила. Возьмите, что угодно другое из этой ценовой категории и не прогадаете. Только пригубили и убрали на черный день подальше.",price_comment,frustrated
+Smokey to start with a plum finish. Good wine for the price!,price_comment,cheerful
+Suprisingly good. Dried fruit and some minerals.,taste_profile,cheerful
+"Smooth Simi dry, Berry delight, I like the light wood notes being aged in French and American oak barrels.",taste_profile,cheerful
+"Я под кайфом 🥴 
+Огонь 🔥 Совиньон",quality_judgment,cheerful
+It was good for the price,price_comment,neutral
+タンニンが強く美味しかったです。,taste_profile,cheerful
+"Frutado, acidez leve e taninos macios. 
+
+Ótimo custo benefício! Agradou a todos por aqui",price_comment,cheerful
+Toasted almond note with grapefruit and green apple acidity on the palate.  Rich mouthfeel with a long and elegant finish,taste_profile,neutral
+"Sur le fruit, léger mais intéressant. Petit goût menthol/poivre à la mise en bouche. Un vin sympa 👍",taste_profile,cheerful
+"Blåbärssylt, ek, smörkola i finishen.
+Gott!
+
+Ludvigs födelsedag",taste_profile,cheerful
+"Simple, crisp and perfect for summer. Every flavor is light - mineral and citrus. Lovely, lovely bottle. It’s simple but highly drinkable.",quality_judgment,positive
+雖然不貴 但相對DOCG 等級少二個層次,quality_judgment,neutral
+"Vino para tomar con gaseosa, aún así aún se puede beber un poco pero poco",quality_judgment,frustrated
+Impossible de finir la bouteille. Trop de sucre résiduels? Au début c est plaisant ensuite ca sature. Décevant.,quality_judgment,frustrated
+Full bodied great match with braised beef short rib,pairing_suggestion,neutral
+"Lovely drop, good drinking. Comes on strong for a pinot.",quality_judgment,positive
+Gott och fruktigt med inslag av päron.,taste_profile,cheerful
+Maybe it was good?  Couldn’t taste anything after contracting Covid but the mouthfeel was quite nice. 😅,quality_judgment,cheerful
+"Complex, many flavors, bold body, heavy fruit, dark, thick",taste_profile,neutral
+"This is an excellent wine. Entry level by Domain A out of Tasmania. Red berries, a touch of sweetness and some earthy tannin in the finish. Really enjoyed this one!",restaurant_lookup,cheerful
+"Отличное красное сухое вино. Мягкий вкус, приятный запах винограда",taste_profile,cheerful
+"Strawberry, cherry. Light and refreshing. Great value.",price_comment,cheerful
+"Very fruity, hints of blackberry and raspberry. Not tannic. Not overly acidic or sweet. Very strong, forward flavor. Not my style, but for lovers of fruity wines I imagine this is pretty good.",taste_profile,neutral
+"Full, round, halfdry-ish red wine with notes of vanilla, oak and blackberries. Excellent wine to drink by itself and also enjoyable with food :)",taste_profile,cheerful
+Tannic. Spicy. Oak,taste_profile,neutral
+"Cool, weisser PM. Beerig, frisch, breit!",taste_profile,cheerful
+"Deep ruby, just starting to fade at the rim.  Nose of blackberry jam and tobacco, black cherry, kirsch, chocolate.  Smells good!  The palate adds a load of spice and is quite bitter.  Tobacco prominent on the palate, wet leaves.  Still very high tannins.  High(-) acidity.  I found the palate a bit challenging, although Aglianco is a style I usually really like.  I'd try it again, with a really long decant.",taste_profile,neutral
+"Really interesting, really sweet. Some earthy notes to it as well. Went well with the sticky toffee pudding.",taste_profile,neutral
+"An amazing cava, I strongly recommend it",quality_judgment,positive
+"Delicious Pepper, cherry, and leather flavor",taste_profile,neutral
+"3.75 💫🍷 🇮🇹 
+Cabernet de la Toscana.
+
+De un púrpura vivo y capa media a baja; va dejando finas lágrimas.
+Aromas frutales y florales. Cereza, ciruela, mermelada de frutos rojos, algo de chocolate y tabaco.
+En boca es ligero y fresco. Suaves frutas envueltas de los taninos y una buena acidez. Dejando un final algo especiado de persistencia media.
+
+La relación precio calidad me parece muy buena. Acompaña muy bien estos días soleados con piqueos o alguna pasta.
+Fácil de beber.
+✍🏼🧔🏻🍷",taste_profile,cheerful
+"super smooth, blackberry and brown sugar, not super bold and just a bit dry",taste_profile,neutral
+"Had better but easy to drink.  Aromas if red fruit, spices and herbs. Shares the real history of Chilean wine. Pipeno.",quality_judgment,neutral
+"Some apple, peach hints & lots of bubbles 😉👌",taste_profile,neutral
+"The Heitz Cellar Trailside Vineyard has a dark elegance. The nose offers you dark fruit, with leather & vanilla. Leathery, tobacco, & dark chocolate on the palate, but also so much raspberry, black cherry, & blackberry. Full bodied & incredibly well balanced mouthfeel. The tannins are quite smooth & not too intense. While this cabernet has a multitude of dark fruit flavors, it is lighter than the typical Napa Cabernets. As delicious as this wine was now, it’s still young. 
+$125
+✨",taste_profile,positive
+"This wine tastes juicy and smooth!84%Cabernet Sauvignon and 16% Merlot from Horse Heaven Hills Vineyards, Columbia Valley, Washington. The wine spent 9 months in 48% new/52% used French and American oak barrels.",taste_profile,cheerful
+Crispy and citrus nose.  Clean crisp and easy to drink!  Skip the Champagne once and try this Cava.  Great wine for the price.,quality_judgment,cheerful
+"Super value.  Needs to be open and served at room temperature and you have a wonderfully smooth, black berries slightly spiced.   d ca",price_comment,neutral
+"Nice Pinot noir, reasonably priced",price_comment,neutral
+"Very interesting wine - light ruby color, high acidity, pleasant finish with slight bitterness... nothing common with typical Garnacha from Navarra..",taste_profile,neutral
+"I like this one, a distinct Syrah blend (87%) plus Grenache, Mourvèdre, Cinsault, Viognier and Merlot from Columbia Valley produced in partnership between Chateau Ste. Michelle and renowned French producers from Rhône Valley. The nose exhibits aromas of blueberry coulis, black cherry jelly and black cherry with floral notes and a dash of vanilla and smoke. Flavours of violet, elderberry, blackberry, sweet tobacco, baking spices and herbal notes drawn tight against the vivid acidity and assertive tannins.",taste_profile,neutral
+Excellent vin,quality_judgment,neutral
+Complex red! Lots of flavor! Enjoy!,quality_judgment,cheerful
+"A fine zin with a strong wood body of the barrels. Cherry and some berries, fruit and lasting aftertaste. It goes perfectly with some food because of the smoky mood",taste_profile,neutral
+"Very untypical of one of my personal heroes-this one has a hyper tropical jellybean nose.
+However it reins itself in on the pallets and becomes balanced and drinkable as all the other Pato products. However The artificial yeast feel transfers to the palate. Ones tongue is coated with the sense of a sorbic aid￼.",taste_profile,neutral
+"Good value for money. A carmenere with  Aconcágua terroir notes that brings balanced tannins and acidity, good ripeness, fruity. Interesting always to have a bottle always in cellar for day by day.",quality_judgment,positive
+"Light ruby red color with a scent of black currant, oak, forest floor with a whiff of alcohol. The wine itself is on the lighter, fruity side with sour cherries, a hint o vanilla and poppy seed with well embedded tannins and still slightly prominent alcohol (which steals this otherwise good wine a higher rating). Good value for money and nice wine for game dishes.",taste_profile,positive
+Pleasant.  Ripe red fruit.  Chocolate and vanilla and a little oak.  Very good value.,taste_profile,positive
+A bit too fruity for me,taste_profile,neutral
+"3.6/5 ⭐️ Fruity with vanilla notes
+
+🍇 82S,18PS from Napa Valley
+
+🍷 Appearance: clear; deep purple
+
+👃🏻Nose: clean; medium intensity; fruity aromas of red fruit, black fruit (plum), oak (notes of vanilla, chocolate), herbs; developing
+
+👅 Palate: dry; high acidity; high tannin; high alcohol (15.8%); full body; pronounced flavour intensity; flavours of alcohol, herbs (mint), mineral, casis, oak (vanilla); medium finish",taste_profile,neutral
+"Nice wine, a bit lighter than a cab in a good way",quality_judgment,positive
+"Good malbec flavour, hints of raspberry, mild tannin or oak compared to some others, would go well with liquorice. Can be enjoyed without food.",taste_profile,neutral
+"Next bottle, previous corked. 84 Points, drink from 2022 until 2027. Deep ruby with small rims. Rustic nose of red berries and forest soil. Dry on the tongue with high acidity and loads of edgy tannins. Finishing up medium and very dry, wait and pray.",taste_profile,neutral
+"This wine needs a long time to open up — I decanted for 1 hour but it was better after 2.  I enjoyed this wine, but I will not buy it again.  This is a “food wine”.  Smoked meat, blackberry, blueberry, bramble and barnyard aromas.  The funky barnyard seems to blow off after a while.  The nose is dense and complex.  Jammy blueberry, blackberry, black currant, blue raspberry and spice flavors.  Really nice fruity finish — the flavor coats your mouth and lingers for a while.  Highly alcoholic finish.",taste_profile,frustrated
+"Was a bit dry and off when I opened the bottle. But after airing a bit it turned out great. Sangiovese like, unexpected from Greece, nicr!",quality_judgment,cheerful
+Tastes like a light red with the very light rose flavor. Amazing wine!,quality_judgment,cheerful
+"Dark, heavy, balanced, smooth, full fruit but not fruity or jammy. A real solid Syrah, nicely aged after 11 years.",taste_profile,positive
+"Color: dark ruby with brown
+Nose: mature at this point. I get plum and dark cherry, very mature. Cedar and chestnut. Raisin. Certainly minerals
+Palate: tannins still kicking! Medium-high acidity but the wine is in balance though a bit muted perhaps. dark fruit compote and licorice. Minerals. Cigar box. Ink 
+Finish: long with a little alcohol burn
+
+What to say. Pignolo does age gracefully. Mature but still tannic, this was a beautiful match for herb steak and potatoes. I wish I had a young one to compare",taste_profile,cheerful
+"It’s not just cherries.. There’s more to the picture! Some fine floral hints of geranium, lavender and a bit of vanilla layered over the expected ripe cherry note, which is perfectly mirrored to the palate, where freshness, roundness, soft tannins and its medium body make it a good companion for any everyday meal. Pleasant spicy kick on the finish where it comes out the 30% Zweigelt oak aged.",taste_profile,positive
+Well matured powerhouse . Dark cherry raspberry flavors. Hints of oak,quality_judgment,positive
+"This wine nicely amplifies all kinds of umami flavours. Enjoy with pairing food! 😋
+👁️ medium purple
+👃 wood, raspberry/blackberry jam, vanilla, pepper
+👅 intense Oak, raspberry/blackberry/blueberry jam
+Character: dry, more oak than tannins which are medium, smooth and little acidity, medium-full body, not that heavy in taste but 14vol%
+🏁 Medium-long
+🍽️ Steak 🥩, lasagne with 🍅 & bacon 🥓, also anchovies",taste_profile,cheerful
+"Founded in 1986. Fresh and lively expression of Tempranillo. Juicy and fruity. 3 months in oak barrel. Balanced, rounded and delicious",misc,cheerful
+"Ashtray and sweaty spice on the nose. Austere stale bread, overcooked chicken, and unripe red apple. Acidic, light bodied, good tannic structure. I’m not sure if age will help. Skip this one.",taste_profile,negative
+"I'd say nop nop nop. Blackberry and tobacco if you wanna try but you can also smoke and eat the fruit, it will be better. Not my cup of tea errrrr wine.",taste_profile,frustrated
+Could actually taste and smell the capsicum... surprised y self... could have been suggestive... soft leather dark plum... thick and lingering... surprisingly good wa wine.... good memories of window hopping and hillbilly elegy...,quality_judgment,neutral
+"This is a very nice Chianti Classico, with cherries and a bit of funk!",quality_judgment,cheerful
+Nice sparkling wine. Dukes birthday in Tuscany,quality_judgment,positive
+Good for $5.99,price_comment,neutral
+"Pinot Blanc, Chardonnay, Sauvignon Blanc",misc,neutral
+"Smoke, white pepper and truffle on the nose, a lot more depth that the light colour would have you believe. Tart cranberry, anise and a wood chip earthiness to the flavours. Dry, light tannins, packs more of a punch towards the front with a light finish.",taste_profile,neutral
+Pairs well with chorizo & cheese,pairing_suggestion,neutral
+"Lovely, creamy and biscuits nose with yellow apple and some stone fruit. The palate is crispy, and has a surprising floral touch to it. The cream comes through but not as strongly as on the nose. There is plenty of yellow apple, with a touch of raspberry. Fine mousse, long and complex finish. Excellent wine. Disgorged in 2018.",taste_profile,positive
+Good nose easy drink red berries low tannin. Enjoyed it at JX BUCKLEY,taste_profile,cheerful
+Sweet and slightly sparkly. Can drink alone or with dinner.,taste_profile,neutral
+"Pauillac Grand Cru Classé 
+Pauillac France 🇫🇷 
+-------PAUILLAC-------
+         ⭐️ ⭐️ ⭐️ ⭐️
+Vintage 2015 this bottle of wine is 4 years old 
+* 		Type Red Wine 🍷 from red grapes 🍇 
+* 		Producer Moulin des Carruades
+* 		Varietal Red Bordeaux Blend
+* 		Designation n/a
+* 		Vineyard n/a
+* 		Country France 🇫🇷 
+* 		Region Bordeaux
+* 		SubRegion Médoc
+* 		Appellation",quality_judgment,positive
+"A year ago I had, today much better than last year..  And more earthy. 😘😘😘😘🍷🍷🍷",quality_judgment,cheerful
+cherry red fruit Korean food,misc,neutral
+"I mean, I'm not finding anything wrong with it. If it were the only red I'd ever drink again, I'd be ok with that. It was even good a few days later cold and with flaming hot baked lays🤷🏻‍♀️",quality_judgment,neutral
+"#vince wine show #budapest#2019 #hungary # 10yearchallange  , very structured, and very well made, elegant and soft on the palate",quality_judgment,positive
+"3,9 for this delicious champagne.
+
+Scent: Medium plus intensity. Tangerine zest, yeast, sourdough, rubber, bitter almond, oxidised apples and a nice minerality.  
+
+Looks: Light yellow.  
+
+Mouthfeel: Dry. Dosage equals eight grams of sugar per litre, which I think brings good structure and balance. ABV is 12%. High acidity. Good for being a non-vintage.  
+
+Grape varieties: 45% Chardonnay, 45% Pinot Noir and 10% ""Pinot"" Meunier. Maturation on its lees for three years. Malolactic fermentation has been avoided.",taste_profile,neutral
