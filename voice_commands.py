@@ -22,7 +22,7 @@ class VoiceCommandSystem:
         
         # Voice command patterns
         self.VOICE_COMMANDS = {
-            'wake': r'(?i)\b(hey\s+)?aimee\b',
+            'wake': r'(?i)\b(aimee|amy|aimi|amie)\b',
             'briefing': r'(?i)\b(brief|briefing|update|status)\b',
             'account': r'(?i)\b(?:brief|tell\s+me\s+about|info\s+on)\s+(barcelona|spiga|labella|bin\s*100|elm)\b',
             'daily': r'(?i)\b(daily|today|morning)\s+(brief|priorities|update)\b',
