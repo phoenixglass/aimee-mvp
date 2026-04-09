@@ -13,6 +13,9 @@ import io
 
 load_dotenv()
 
+# Salesforce is accessed via the Flask API at localhost:5000
+SF_BASE = "http://localhost:5000/salesforce"
+
 class VoiceCommandSystem:
     def __init__(self):
         self.recognizer = sr.Recognizer()
@@ -29,7 +32,13 @@ class VoiceCommandSystem:
             'urgent': r'(?i)\b(urgent|priority|hot|fire|critical)\b',
             'pipeline': r'(?i)\b(pipeline|total|value|money|revenue)\b',
             'pitch': r'(?i)\b(pitch|call|generate\s+pitch)\s+(for\s+)?(barcelona|spiga|labella|bin\s*100|elm)\b',
-            'stop': r'(?i)\b(stop|quit|exit|done|enough)\b'
+            'stop': r'(?i)\b(stop|quit|exit|done|enough)\b',
+            # Salesforce commands
+            'sf_lookup': r'(?i)\b(?:pull|look\s+up|salesforce|crm|find)\s+(?:account\s+)?(.+?)(?:\s+in\s+salesforce)?\s*$',
+            'sf_opportunities': r'(?i)\b(?:opportunities?|deals?|pipeline)\s+(?:for\s+)?(.+)',
+            'sf_log_call': r'(?i)\b(?:log\s+(?:a\s+)?call|note|record\s+call)\s+(?:for\s+)?(.+)',
+            'sf_update': r'(?i)\bupdate\s+(.+?)\s+(?:in\s+salesforce|record)\b',
+            'sf_activity': r'(?i)\b(?:recent\s+activity|last\s+contact|activity)\s+(?:for\s+)?(.+)',
         }
         
         # Adjust for ambient noise
@@ -137,8 +146,40 @@ class VoiceCommandSystem:
             self.generate_pitch(account_name)
             return True
         
+        # ── Salesforce: account lookup ─────────────────────────────────
+        sf_lookup = re.search(self.VOICE_COMMANDS['sf_lookup'], command_text)
+        if sf_lookup:
+            account_name = sf_lookup.group(1).strip()
+            self.speak(f"Pulling {account_name} from Salesforce.")
+            self.sf_get_account(account_name)
+            return True
+
+        # ── Salesforce: opportunities ──────────────────────────────────
+        sf_opps = re.search(self.VOICE_COMMANDS['sf_opportunities'], command_text)
+        if sf_opps:
+            account_name = sf_opps.group(1).strip()
+            self.speak(f"Checking Salesforce opportunities for {account_name}.")
+            self.sf_get_opportunities(account_name)
+            return True
+
+        # ── Salesforce: log call note ──────────────────────────────────
+        sf_log = re.search(self.VOICE_COMMANDS['sf_log_call'], command_text)
+        if sf_log:
+            account_name = sf_log.group(1).strip()
+            self.speak(f"What are your call notes for {account_name}?")
+            self.sf_capture_and_log_call(account_name)
+            return True
+
+        # ── Salesforce: recent activity ────────────────────────────────
+        sf_act = re.search(self.VOICE_COMMANDS['sf_activity'], command_text)
+        if sf_act:
+            account_name = sf_act.group(1).strip()
+            self.speak(f"Retrieving recent Salesforce activity for {account_name}.")
+            self.sf_get_recent_activity(account_name)
+            return True
+
         # Default response
-        self.speak("Command not recognized. Available commands: briefing, account intel, pipeline status, urgent priorities, or generate pitch.")
+        self.speak("Command not recognized. Available commands: briefing, account intel, pipeline status, urgent priorities, generate pitch, pull account from Salesforce, log call, or check opportunities.")
         return True
 
     def request_briefing(self, briefing_type, account_id=None):
@@ -260,6 +301,110 @@ class VoiceCommandSystem:
         except Exception as e:
             print(f"❌ Audio playback error: {e}")
 
+    # ── Salesforce helpers ─────────────────────────────────────────────────
+
+    def sf_get_account(self, account_name: str):
+        """Pull account info from Salesforce and speak the summary."""
+        try:
+            response = requests.post(
+                f"{SF_BASE}/account",
+                json={"account_name": account_name},
+                timeout=10,
+            )
+            if response.status_code == 200:
+                data = response.json()
+                self.speak(data.get("voice_summary", f"Got account info for {account_name}."))
+            elif response.status_code == 404:
+                self.speak(f"I couldn't find {account_name} in Salesforce.")
+            else:
+                error = response.json().get("error", "Unknown error")
+                self.speak(f"Salesforce returned an error: {error}")
+        except requests.exceptions.ConnectionError:
+            self.speak("Aimee server is not running. Please start the Flask app first.")
+        except Exception as e:
+            print(f"❌ SF account lookup error: {e}")
+            self.speak("Error retrieving account from Salesforce.")
+
+    def sf_get_opportunities(self, account_name: str):
+        """Pull open opportunities for an account and speak the summary."""
+        try:
+            response = requests.post(
+                f"{SF_BASE}/opportunities",
+                json={"account_name": account_name},
+                timeout=10,
+            )
+            if response.status_code == 200:
+                data = response.json()
+                self.speak(data.get("voice_summary", f"Retrieved opportunities for {account_name}."))
+            elif response.status_code == 404:
+                self.speak(f"No opportunities found for {account_name} in Salesforce.")
+            else:
+                error = response.json().get("error", "Unknown error")
+                self.speak(f"Couldn't retrieve opportunities: {error}")
+        except requests.exceptions.ConnectionError:
+            self.speak("Aimee server is not running. Please start the Flask app first.")
+        except Exception as e:
+            print(f"❌ SF opportunities error: {e}")
+            self.speak("Error retrieving opportunities from Salesforce.")
+
+    def sf_capture_and_log_call(self, account_name: str):
+        """Listen for dictated call notes, then log them as a Task in Salesforce."""
+        try:
+            with self.microphone as source:
+                print("🎙️  Listening for call notes...")
+                audio = self.recognizer.listen(source, timeout=15, phrase_time_limit=60)
+
+            notes_text = self.recognizer.recognize_google(audio)
+            print(f"📝 Call notes: '{notes_text}'")
+            self.speak(f"Got it. Logging call for {account_name}.")
+
+            response = requests.post(
+                f"{SF_BASE}/log-call",
+                json={
+                    "account_name": account_name,
+                    "subject": f"Call - {account_name}",
+                    "description": notes_text,
+                },
+                timeout=10,
+            )
+            if response.status_code == 200:
+                self.speak(f"Call note logged for {account_name} in Salesforce.")
+            else:
+                error = response.json().get("error", "Unknown error")
+                self.speak(f"Couldn't log call note: {error}")
+
+        except sr.WaitTimeoutError:
+            self.speak("I didn't hear any notes. Call not logged.")
+        except sr.UnknownValueError:
+            self.speak("I couldn't understand the notes. Please try again.")
+        except requests.exceptions.ConnectionError:
+            self.speak("Aimee server is not running. Please start the Flask app first.")
+        except Exception as e:
+            print(f"❌ SF log call error: {e}")
+            self.speak("Error logging call note.")
+
+    def sf_get_recent_activity(self, account_name: str):
+        """Retrieve and speak recent Salesforce activity for an account."""
+        try:
+            response = requests.post(
+                f"{SF_BASE}/recent-activity",
+                json={"account_name": account_name},
+                timeout=10,
+            )
+            if response.status_code == 200:
+                data = response.json()
+                self.speak(data.get("voice_summary", f"Retrieved activity for {account_name}."))
+            elif response.status_code == 404:
+                self.speak(f"No activity found for {account_name} in Salesforce.")
+            else:
+                error = response.json().get("error", "Unknown error")
+                self.speak(f"Couldn't retrieve activity: {error}")
+        except requests.exceptions.ConnectionError:
+            self.speak("Aimee server is not running. Please start the Flask app first.")
+        except Exception as e:
+            print(f"❌ SF activity error: {e}")
+            self.speak("Error retrieving Salesforce activity.")
+
     def start_listening(self):
         """Start the voice command system"""
         print("🎤 Aimee Voice Command System Activated")
@@ -271,6 +416,10 @@ class VoiceCommandSystem:
         print("  • 'urgent priorities' - Get hot priorities")
         print("  • 'generate pitch for [account]' - Create tactical pitch")
         print("  • 'stop' - Deactivate voice commands")
+        print("  • 'pull [account] from Salesforce' - Account info from CRM")
+        print("  • 'opportunities for [account]' - Open deals in Salesforce")
+        print("  • 'log call for [account]' - Dictate and log a call note")
+        print("  • 'recent activity for [account]' - Last logged activity")
         
         try:
             self.listen_for_wake_word()
