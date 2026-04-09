@@ -23,7 +23,15 @@ from enhanced_aimee_wine_intelligence import (
 )
 from aimee_fairfield_integration import get_customer_intelligence
 from aimee_classifier import AimeeClassifier
-from salesforce_integration import get_salesforce
+try:
+    from salesforce_integration import get_salesforce
+    _SALESFORCE_AVAILABLE = True
+except Exception as _sf_import_err:
+    _SALESFORCE_AVAILABLE = False
+    print(f"⚠️ salesforce_integration not available: {_sf_import_err}")
+
+    def get_salesforce():  # type: ignore[return]
+        raise RuntimeError("Salesforce integration is not available (import failed at startup)")
 from gtts import gTTS
 from dotenv import load_dotenv
 
@@ -1647,6 +1655,8 @@ def clear_cache():
 @app.route("/salesforce/health", methods=["GET"])
 def salesforce_health():
     """Check Salesforce connectivity."""
+    if not _SALESFORCE_AVAILABLE:
+        return jsonify({"connected": False, "error": "Salesforce integration unavailable"}), 503
     sf = get_salesforce()
     result = sf.health_check()
     status = 200 if result.get("connected") else 503
