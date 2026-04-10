@@ -1,4 +1,11 @@
 from elevenlabs.client import ElevenLabs
+try:
+    from elevenlabs import VoiceSettings as ElevenLabsVoiceSettings
+except ImportError:
+    try:
+        from elevenlabs.types import VoiceSettings as ElevenLabsVoiceSettings
+    except ImportError:
+        ElevenLabsVoiceSettings = None
 from flask import Flask, request, render_template, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -8,6 +15,7 @@ import json
 import hashlib
 import threading
 import re
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 import time
@@ -637,41 +645,38 @@ def generate_aimee_response(text, voice_id="rzsnuMd2pwYz1rGtMIVI"):
     
     try:
         print(f"Generating ElevenLabs audio for: {text[:50]}...")
-        
-        # Try the new SDK method first with balanced expressive settings
-        try:
-            audio = elevenlabs_client.generate(
-                text=text,
-                voice=voice_id,
-                model="eleven_multilingual_v2",
-                voice_settings={
-                    "stability": 0.35,          # Higher = more consistent, still expressive
-                    "similarity_boost": 0.8,    # Keep voice characteristics strong
-                    "style": 0.3,               # Moderate personality (not too wild)
-                    "use_speaker_boost": True   # Enhanced voice presence
-                }
+
+        # Build VoiceSettings object if SDK supports it, otherwise omit
+        if ElevenLabsVoiceSettings is not None:
+            vs = ElevenLabsVoiceSettings(
+                stability=0.35,
+                similarity_boost=0.8,
+                style=0.3,
+                use_speaker_boost=True,
             )
-        except AttributeError:
-            # Fall back to older SDK method
-            print("Using older ElevenLabs SDK method...")
+        else:
+            vs = None
+
+        # Try the new SDK client.generate() method
+        try:
+            kwargs = dict(text=text, voice=voice_id, model="eleven_multilingual_v2")
+            if vs is not None:
+                kwargs["voice_settings"] = vs
+            audio = elevenlabs_client.generate(**kwargs)
+        except (AttributeError, TypeError):
+            # Fall back to text_to_speech.convert()
+            print("Using text_to_speech.convert()...")
             try:
-                audio = elevenlabs_client.text_to_speech.convert(
-                    voice_id=voice_id,
-                    text=text,
-                    model_id="eleven_multilingual_v2",
-                    voice_settings={
-                        "stability": 0.35,
-                        "similarity_boost": 0.8,
-                        "style": 0.3,
-                        "use_speaker_boost": True
-                    }
-                )
+                kwargs = dict(voice_id=voice_id, text=text, model_id="eleven_multilingual_v2")
+                if vs is not None:
+                    kwargs["voice_settings"] = vs
+                audio = elevenlabs_client.text_to_speech.convert(**kwargs)
             except Exception:
-                # Final fallback to basic model
+                # Final fallback — no voice_settings, basic model
                 audio = elevenlabs_client.text_to_speech.convert(
                     voice_id=voice_id,
                     text=text,
-                    model_id="eleven_monolingual_v1"
+                    model_id="eleven_monolingual_v1",
                 )
         
         # Convert generator to bytes if needed
@@ -1394,6 +1399,7 @@ def upload():
 
     except Exception as e:
         print(f"Upload error: {e}")
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/audio/<filename>')
