@@ -1,12 +1,15 @@
 """
 Salesforce Integration for Aimee MVP
 Handles: account lookup, call note logging, and record updates via Salesforce REST API
-Uses the simple_salesforce library with OAuth2 Username-Password flow.
+Uses OAuth2 Username-Password flow (POST to /services/oauth2/token) to obtain an
+access token, then passes session_id + instance_url to simple_salesforce — avoiding
+the SOAP API login() call which is disabled in many orgs.
 """
 
 import os
 import re
 import logging
+import requests
 from datetime import datetime
 try:
     from dotenv import load_dotenv
@@ -29,10 +32,12 @@ class SalesforceIntegration:
     """
     Aimee's Salesforce connector.
 
+    Authentication uses the OAuth2 Username-Password grant — no SOAP login() required.
+
     Credentials are read from environment variables:
       SF_USERNAME       - Salesforce login email
       SF_PASSWORD       - Salesforce login password
-      SF_SECURITY_TOKEN - Security token (from My Settings → Reset My Security Token)
+      SF_SECURITY_TOKEN - Security token appended to password (from My Settings → Reset My Security Token)
       SF_CONSUMER_KEY   - Connected App consumer key
       SF_CONSUMER_SECRET- Connected App consumer secret
       SF_DOMAIN         - 'login' for production, 'test' for sandbox (default: login)
@@ -47,7 +52,7 @@ class SalesforceIntegration:
     # ------------------------------------------------------------------
 
     def connect(self) -> bool:
-        """Establish (or re-use) a Salesforce session. Returns True on success."""
+        """Establish (or re-use) a Salesforce session via OAuth2. Returns True on success."""
         if self._connected and self._sf:
             return True
 
@@ -75,22 +80,38 @@ class SalesforceIntegration:
             print(f"[Salesforce] ❌ {msg}")
             return False
 
+        # OAuth2 Username-Password grant — avoids the SOAP login() call
+        token_url = f"https://{domain}.salesforce.com/services/oauth2/token"
+        payload = {
+            "grant_type": "password",
+            "client_id": consumer_key,
+            "client_secret": consumer_secret,
+            "username": username,
+            # Salesforce requires password + security_token concatenated
+            "password": password + security_token,
+        }
+
         try:
-            self._sf = Salesforce(
-                username=username,
-                password=password,
-                security_token=security_token,
-                consumer_key=consumer_key,
-                consumer_secret=consumer_secret,
-                domain=domain,
-            )
+            response = requests.post(token_url, data=payload, timeout=30)
+            response.raise_for_status()
+            token_data = response.json()
+
+            access_token = token_data["access_token"]
+            instance_url = token_data["instance_url"]
+
+            # Initialise simple_salesforce with the token directly — no SOAP login
+            self._sf = Salesforce(session_id=access_token, instance_url=instance_url)
             self._connected = True
-            logger.info("Connected to Salesforce as %s", username)
+            logger.info("Connected to Salesforce as %s (OAuth2)", username)
             print(f"[Salesforce] ✅ Connected as {username}")
             return True
-        except SalesforceAuthenticationFailed as e:
-            logger.error("Salesforce authentication failed: %s", e)
-            print(f"[Salesforce] ❌ Authentication failed: {e}")
+        except requests.HTTPError as e:
+            try:
+                error_detail = e.response.json().get("error_description", str(e))
+            except Exception:
+                error_detail = str(e)
+            logger.error("Salesforce OAuth2 authentication failed: %s", error_detail)
+            print(f"[Salesforce] ❌ Authentication failed: {error_detail}")
             return False
         except Exception as e:
             logger.error("Salesforce connection error: %s", e)
