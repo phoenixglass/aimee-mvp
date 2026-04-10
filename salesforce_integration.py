@@ -70,7 +70,9 @@ class SalesforceIntegration:
         }.items() if not v]
 
         if missing:
-            logger.error("Missing Salesforce credentials: %s", ", ".join(missing))
+            msg = "Missing Salesforce credentials: " + ", ".join(missing)
+            logger.error(msg)
+            print(f"[Salesforce] ❌ {msg}")
             return False
 
         try:
@@ -84,12 +86,15 @@ class SalesforceIntegration:
             )
             self._connected = True
             logger.info("Connected to Salesforce as %s", username)
+            print(f"[Salesforce] ✅ Connected as {username}")
             return True
         except SalesforceAuthenticationFailed as e:
             logger.error("Salesforce authentication failed: %s", e)
+            print(f"[Salesforce] ❌ Authentication failed: {e}")
             return False
         except Exception as e:
             logger.error("Salesforce connection error: %s", e)
+            print(f"[Salesforce] ❌ Connection error: {e}")
             return False
 
     @property

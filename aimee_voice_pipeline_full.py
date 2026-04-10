@@ -554,9 +554,9 @@ def extract_key_details(transcript: str, intent: str) -> str:
                    "competitive_landscape", "competitive_comparison", "education_opportunity", 
                    "pricing_strategy", "market_size", "meeting_preparation",
                    "tactical_briefing", "account_intelligence"]:
-    if not customer:
+        if not customer:
             return "I couldn't identify which customer you wanted a briefing on. Please specify the customer name."
-        
+
         print(f"DEBUG - Calling get_customer_intelligence for {customer}")
         try:
             response = get_customer_intelligence(customer)  # Pass just the customer name
@@ -564,7 +564,7 @@ def extract_key_details(transcript: str, intent: str) -> str:
             return response
         except Exception as e:
             print(f"DEBUG - Customer intelligence error: {e}")
-            return f"I couldn't retrieve the tactical briefing for {customer}. Please try again.
+            return f"I couldn't retrieve the tactical briefing for {customer}. Please try again."
 
     elif intent == "taste_preference_query":
         # Extract taste descriptors from the text
@@ -1630,7 +1630,12 @@ if __name__ == '__main__':
     
     print(f"Classifier: {'✅ Ready' if classifier else '❌ Not available'}")
     sf_status = get_salesforce().health_check()
-    print(f"Salesforce: {'✅ Connected — ' + str(sf_status.get('instance_url','')) if sf_status.get('connected') else '⚠️  Not connected — set SF_* vars in .env'}")
+    if sf_status.get('connected'):
+        print(f"Salesforce: ✅ Connected — {sf_status.get('instance_url', '')}")
+    else:
+        sf_error = sf_status.get('error', 'unknown error')
+        print(f"Salesforce: ❌ Not connected")
+        print(f"  └─ Error: {sf_error}")
     print(f"Fairfield County Intelligence: ✅ Ready - 17 tactical briefings loaded")
     print(f"Accounts: Barcelona (2), Spiga, ELM, The Cottage, Bin 100, Blackstones (3), Rebecca's, 99 Bottles, Horseneck, DB Fine Wines, Greens Farms, LaBella's, Acme")
     print(f"Voice Commands: 'Brief me on [account]', '[Region] accounts', 'Daily priorities', 'Market analysis'")
