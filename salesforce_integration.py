@@ -20,8 +20,12 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 try:
-    from simple_salesforce import Salesforce, SalesforceLogin, SFType
-    from simple_salesforce.exceptions import SalesforceAuthenticationFailed, SalesforceError
+    from simple_salesforce import Salesforce
+    from simple_salesforce.exceptions import (
+        SalesforceAuthenticationFailed,
+        SalesforceError,
+        SalesforceExpiredSession,
+    )
     SF_AVAILABLE = True
 except ImportError:
     SF_AVAILABLE = False
@@ -148,7 +152,7 @@ class SalesforceIntegration:
                 f"WHERE Name LIKE '%{safe_name}%' "
                 f"ORDER BY Name LIMIT 5"
             )
-            result = self.sf.query(query)
+            result = self._run(lambda sf: sf.query(query))
             records = result.get("records", [])
 
             if not records:
@@ -171,7 +175,7 @@ class SalesforceIntegration:
             return _error("Not connected to Salesforce")
 
         try:
-            record = self.sf.Account.get(account_id)
+            record = self._run(lambda sf: sf.Account.get(account_id))
             return {"success": True, "account": _clean_record(record)}
         except SalesforceError as e:
             logger.error("get_account_by_id error: %s", e)
@@ -229,7 +233,7 @@ class SalesforceIntegration:
                 f"WHERE AccountId = '{account_id}' AND IsClosed = false "
                 f"ORDER BY CloseDate ASC LIMIT 10"
             )
-            result = self.sf.query(query)
+            result = self._run(lambda sf: sf.query(query))
             records = [_clean_record(r) for r in result.get("records", [])]
             return {
                 "success": True,
@@ -292,7 +296,7 @@ class SalesforceIntegration:
                 f"WHERE AccountId = '{account_id}' "
                 f"ORDER BY LastName ASC LIMIT 10"
             )
-            result = self.sf.query(query)
+            result = self._run(lambda sf: sf.query(query))
             records = [_clean_record(r) for r in result.get("records", [])]
             return {
                 "success": True,
@@ -357,7 +361,7 @@ class SalesforceIntegration:
         task_data = {k: v for k, v in task_data.items() if v is not None}
 
         try:
-            result = self.sf.Task.create(task_data)
+            result = self._run(lambda sf: sf.Task.create(task_data))
             if result.get("success"):
                 return {
                     "success": True,
@@ -402,7 +406,7 @@ class SalesforceIntegration:
         resolved_name = account_result["account"]["Name"]
 
         try:
-            self.sf.Account.update(account_id, fields)
+            self._run(lambda sf: sf.Account.update(account_id, fields))
             return {
                 "success": True,
                 "account": resolved_name,
@@ -444,7 +448,7 @@ class SalesforceIntegration:
                 f"WHERE WhatId = '{account_id}' "
                 f"ORDER BY ActivityDate DESC LIMIT {limit}"
             )
-            result = self.sf.query(query)
+            result = self._run(lambda sf: sf.query(query))
             records = [_clean_record(r) for r in result.get("records", [])]
             return {
                 "success": True,
@@ -484,11 +488,10 @@ class SalesforceIntegration:
             return {"connected": False, "error": "Not authenticated"}
 
         try:
-            # Query org limits as a lightweight connectivity test
-            limits = self.sf.limits()
+            limits = self._run(lambda sf: sf.limits())
             return {
                 "connected": True,
-                "instance_url": self.sf.base_url,
+                "instance_url": self._sf.base_url,
                 "api_calls_remaining": limits.get("DailyApiRequests", {}).get("Remaining"),
             }
         except Exception as e:
@@ -498,6 +501,26 @@ class SalesforceIntegration:
     # ------------------------------------------------------------------
     # Private helpers
     # ------------------------------------------------------------------
+
+    def _reconnect(self) -> bool:
+        """Discard the cached session and obtain a fresh OAuth token."""
+        self._sf = None
+        self._connected = False
+        return self.connect()
+
+    def _run(self, api_call):
+        """
+        Execute api_call(sf_client), automatically reconnecting once if the
+        access token has expired.  All other exceptions propagate normally.
+        """
+        try:
+            return api_call(self._sf)
+        except SalesforceExpiredSession:
+            logger.info("Salesforce session expired — reconnecting")
+            print("[Salesforce] Session expired, reconnecting…")
+            if not self._reconnect():
+                raise
+            return api_call(self._sf)
 
     def _find_contact(self, contact_name: str, account_id: str) -> dict | None:
         """Find a contact by name within an account."""
@@ -510,7 +533,7 @@ class SalesforceIntegration:
                 f"AND (FirstName LIKE '%{safe_name}%' OR LastName LIKE '%{safe_name}%') "
                 f"LIMIT 1"
             )
-            result = self.sf.query(query)
+            result = self._run(lambda sf: sf.query(query))
             records = result.get("records", [])
             return records[0] if records else None
         except Exception:
