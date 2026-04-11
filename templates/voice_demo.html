@@ -380,8 +380,8 @@
             responseText.innerHTML = displayText;
             
             // Play audio response if available
-            if (result.audio_file) {
-                responseAudio.src = `/uploads/${result.audio_file.split('/').pop()}`;
+            if (result.response_audio) {
+                responseAudio.src = result.response_audio;
                 responseAudio.style.display = 'block';
                 responseAudio.play().catch(e => console.log('Audio play failed:', e));
             }

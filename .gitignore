@@ -2,3 +2,7 @@ demo_video/Photos-1-001.zip
 demo_video/demo_video.mp4
 wine_intelligence_data.json
 all_dataset.jsonl
+.env
+__pycache__/
+*.pyc
+*.pyo

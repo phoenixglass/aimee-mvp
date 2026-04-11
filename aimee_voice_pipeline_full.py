@@ -1,4 +1,11 @@
 from elevenlabs.client import ElevenLabs
+try:
+    from elevenlabs import VoiceSettings as ElevenLabsVoiceSettings
+except ImportError:
+    try:
+        from elevenlabs.types import VoiceSettings as ElevenLabsVoiceSettings
+    except ImportError:
+        ElevenLabsVoiceSettings = None
 from flask import Flask, request, render_template, jsonify, send_from_directory
 from werkzeug.utils import secure_filename
 import os
@@ -8,6 +15,7 @@ import json
 import hashlib
 import threading
 import re
+import traceback
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
 import time
@@ -22,6 +30,7 @@ from enhanced_aimee_wine_intelligence import (
 )
 from aimee_fairfield_integration import get_customer_intelligence
 from aimee_classifier import AimeeClassifier
+from salesforce_integration import get_salesforce
 from gtts import gTTS
 from dotenv import load_dotenv
 
@@ -553,9 +562,9 @@ def extract_key_details(transcript: str, intent: str) -> str:
                    "competitive_landscape", "competitive_comparison", "education_opportunity", 
                    "pricing_strategy", "market_size", "meeting_preparation",
                    "tactical_briefing", "account_intelligence"]:
-    if not customer:
+        if not customer:
             return "I couldn't identify which customer you wanted a briefing on. Please specify the customer name."
-        
+
         print(f"DEBUG - Calling get_customer_intelligence for {customer}")
         try:
             response = get_customer_intelligence(customer)  # Pass just the customer name
@@ -563,7 +572,7 @@ def extract_key_details(transcript: str, intent: str) -> str:
             return response
         except Exception as e:
             print(f"DEBUG - Customer intelligence error: {e}")
-            return f"I couldn't retrieve the tactical briefing for {customer}. Please try again.
+            return f"I couldn't retrieve the tactical briefing for {customer}. Please try again."
 
     elif intent == "taste_preference_query":
         # Extract taste descriptors from the text
@@ -636,41 +645,38 @@ def generate_aimee_response(text, voice_id="rzsnuMd2pwYz1rGtMIVI"):
     
     try:
         print(f"Generating ElevenLabs audio for: {text[:50]}...")
-        
-        # Try the new SDK method first with balanced expressive settings
-        try:
-            audio = elevenlabs_client.generate(
-                text=text,
-                voice=voice_id,
-                model="eleven_multilingual_v2",
-                voice_settings={
-                    "stability": 0.35,          # Higher = more consistent, still expressive
-                    "similarity_boost": 0.8,    # Keep voice characteristics strong
-                    "style": 0.3,               # Moderate personality (not too wild)
-                    "use_speaker_boost": True   # Enhanced voice presence
-                }
+
+        # Build VoiceSettings object if SDK supports it, otherwise omit
+        if ElevenLabsVoiceSettings is not None:
+            vs = ElevenLabsVoiceSettings(
+                stability=0.35,
+                similarity_boost=0.8,
+                style=0.3,
+                use_speaker_boost=True,
             )
-        except AttributeError:
-            # Fall back to older SDK method
-            print("Using older ElevenLabs SDK method...")
+        else:
+            vs = None
+
+        # Try the new SDK client.generate() method
+        try:
+            kwargs = dict(text=text, voice=voice_id, model="eleven_multilingual_v2")
+            if vs is not None:
+                kwargs["voice_settings"] = vs
+            audio = elevenlabs_client.generate(**kwargs)
+        except (AttributeError, TypeError):
+            # Fall back to text_to_speech.convert()
+            print("Using text_to_speech.convert()...")
             try:
-                audio = elevenlabs_client.text_to_speech.convert(
-                    voice_id=voice_id,
-                    text=text,
-                    model_id="eleven_multilingual_v2",
-                    voice_settings={
-                        "stability": 0.35,
-                        "similarity_boost": 0.8,
-                        "style": 0.3,
-                        "use_speaker_boost": True
-                    }
-                )
+                kwargs = dict(voice_id=voice_id, text=text, model_id="eleven_multilingual_v2")
+                if vs is not None:
+                    kwargs["voice_settings"] = vs
+                audio = elevenlabs_client.text_to_speech.convert(**kwargs)
             except Exception:
-                # Final fallback to basic model
+                # Final fallback — no voice_settings, basic model
                 audio = elevenlabs_client.text_to_speech.convert(
                     voice_id=voice_id,
                     text=text,
-                    model_id="eleven_monolingual_v1"
+                    model_id="eleven_monolingual_v1",
                 )
         
         # Convert generator to bytes if needed
@@ -1145,6 +1151,58 @@ def test_wine_intelligence():
         print(f"Wine intelligence test error: {e}")
         return jsonify({'error': str(e)}), 500
 
+@app.route('/process-text', methods=['POST'])
+def process_text():
+    """Handle text input directly, bypassing audio transcription."""
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No JSON body provided'}), 400
+        transcript = data.get('text', '').strip()
+        if not transcript:
+            return jsonify({'error': 'No text provided'}), 400
+
+        processing_start = time.time()
+        processed_transcript = preprocess_wine_terminology(transcript)
+        tone = detect_tone(transcript.lower())
+
+        if classifier is None:
+            return jsonify({'error': 'Classifier not available'}), 500
+        classification = classifier.classify(processed_transcript)
+
+        intent = classification['intent']
+        score = classification['match_score']
+
+        special_response = detect_special_responses(transcript)
+        if special_response:
+            response_text = special_response
+        else:
+            if intent != 'unknown':
+                key_details = extract_key_details(transcript, intent)
+                base_response = format_response(intent, tone)
+                response_text = f"{key_details} {base_response}"
+            else:
+                key_details = extract_key_details(transcript, intent)
+                response_text = f"{key_details} I'm Aimee. You talk. I'll catch what counts. No bosses. No filters. Just memory. Let's move."
+
+        audio_filename = generate_aimee_response(response_text)
+        processing_time = time.time() - processing_start
+
+        return jsonify({
+            'transcript': transcript,
+            'intent': intent,
+            'tone': tone,
+            'score': score,
+            'processing_time': round(processing_time, 2),
+            'model_used': 'text_input',
+            'response_text': response_text,
+            'response_audio': f'/audio/{audio_filename}' if audio_filename else None,
+        })
+    except Exception as e:
+        print(f"process_text error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/upload', methods=['POST'])
 def upload():
     start_time = time.time()
@@ -1341,6 +1399,7 @@ def upload():
 
     except Exception as e:
         print(f"Upload error: {e}")
+        traceback.print_exc()
         return jsonify({'error': str(e)}), 500
 
 @app.route('/audio/<filename>')
@@ -1406,6 +1465,148 @@ def clear_cache():
     save_cache()
     return jsonify({'message': 'Cache cleared successfully'})
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Salesforce endpoints
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.route('/salesforce/health', methods=['GET'])
+def salesforce_health():
+    """Check Salesforce connectivity."""
+    sf = get_salesforce()
+    result = sf.health_check()
+    status = 200 if result.get("connected") else 503
+    return jsonify(result), status
+
+
+@app.route('/salesforce/account', methods=['POST'])
+def salesforce_get_account():
+    """
+    Pull account information from Salesforce.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    Returns the account record plus a voice-ready summary.
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_account(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_account_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
+
+
+@app.route('/salesforce/opportunities', methods=['POST'])
+def salesforce_get_opportunities():
+    """
+    Return open opportunities for an account.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_opportunities(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_opportunity_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
+
+
+@app.route('/salesforce/log-call', methods=['POST'])
+def salesforce_log_call():
+    """
+    Log a call note as a completed Task on a Salesforce Account.
+    Body: {
+        "account_name": "Barcelona Wine Bar",
+        "subject": "Follow-up call",
+        "description": "Discussed Rioja allocation and summer menu.",
+        "duration_minutes": 10,        (optional)
+        "contact_name": "Chef Misha"   (optional)
+    }
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    subject = (data.get("subject") or "").strip()
+    description = (data.get("description") or "").strip()
+    duration = int(data.get("duration_minutes") or 0)
+    contact_name = (data.get("contact_name") or "").strip() or None
+
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+    if not description:
+        return jsonify({"success": False, "error": "description is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.log_call_note(account_name, subject, description, duration, contact_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = f"Call note logged for {result['account']}."
+    return jsonify(result), 200 if result.get("success") else 400
+
+
+@app.route('/salesforce/update-account', methods=['POST'])
+def salesforce_update_account():
+    """
+    Update fields on a Salesforce Account record.
+    Body: {
+        "account_name": "Barcelona Wine Bar",
+        "fields": {
+            "Phone": "203-555-1234",
+            "Description": "Key Rioja account, Chef Misha contact."
+        }
+    }
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    fields = data.get("fields") or {}
+
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+    if not fields or not isinstance(fields, dict):
+        return jsonify({"success": False, "error": "fields dict is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.update_account(account_name, fields)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.update_account_voice_summary(account_name, fields)
+    return jsonify(result), 200 if result.get("success") else 400
+
+
+@app.route('/salesforce/recent-activity', methods=['POST'])
+def salesforce_recent_activity():
+    """
+    Return recent activity (Tasks) for an account.
+    Body: {"account_name": "Barcelona Wine Bar"}
+    """
+    data = request.get_json(silent=True) or {}
+    account_name = (data.get("account_name") or "").strip()
+    if not account_name:
+        return jsonify({"success": False, "error": "account_name is required"}), 400
+
+    sf = get_salesforce()
+    result = sf.get_recent_activity(account_name)
+    if not result:
+        return jsonify({"success": False, "error": "Salesforce unavailable"}), 503
+
+    if result.get("success"):
+        result["voice_summary"] = sf.get_recent_activity_summary(account_name)
+    return jsonify(result), 200 if result.get("success") else 404
+
 def cleanup_old_files():
     """Remove audio files older than 24 hours"""
     def _cleanup():
@@ -1434,6 +1635,13 @@ if __name__ == '__main__':
         print(f"Wine Data Stats: {stats}")
     
     print(f"Classifier: {'✅ Ready' if classifier else '❌ Not available'}")
+    sf_status = get_salesforce().health_check()
+    if sf_status.get('connected'):
+        print(f"Salesforce: ✅ Connected — {sf_status.get('instance_url', '')}")
+    else:
+        sf_error = sf_status.get('error', 'unknown error')
+        print(f"Salesforce: ❌ Not connected")
+        print(f"  └─ Error: {sf_error}")
     print(f"Fairfield County Intelligence: ✅ Ready - 17 tactical briefings loaded")
     print(f"Accounts: Barcelona (2), Spiga, ELM, The Cottage, Bin 100, Blackstones (3), Rebecca's, 99 Bottles, Horseneck, DB Fine Wines, Greens Farms, LaBella's, Acme")
     print(f"Voice Commands: 'Brief me on [account]', '[Region] accounts', 'Daily priorities', 'Market analysis'")

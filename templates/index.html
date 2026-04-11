@@ -350,19 +350,17 @@
             showStatus('Processing command...', 'processing');
 
             try {
-                const formData = new FormData();
-                formData.append('transcript_override', command);
-
-                const response = await fetch('/upload', {
+                const response = await fetch('/process-text', {
                     method: 'POST',
-                    body: formData
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text: command })
                 });
 
                 const data = await response.json();
-                
+
                 if (response.ok) {
                     displayResponse(data);
-                    commandInput.value = ''; // Clear input
+                    commandInput.value = '';
                 } else {
                     showStatus('Error: ' + data.error, 'error');
                 }
