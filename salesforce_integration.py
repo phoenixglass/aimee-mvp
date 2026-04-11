@@ -1,9 +1,19 @@
 """
 Salesforce Integration for Aimee MVP
 Handles: account lookup, call note logging, and record updates via Salesforce REST API
-Uses OAuth2 Username-Password flow (POST to /services/oauth2/token) to obtain an
-access token, then passes session_id + instance_url to simple_salesforce — avoiding
-the SOAP API login() call which is disabled in many orgs.
+
+Authentication: OAuth 2.0 Web Server flow (authorization code grant) ONLY.
+  1. User visits /salesforce/login  → redirected to Salesforce authorization page
+  2. User approves                  → Salesforce redirects to /salesforce/callback
+  3. Callback exchanges the code    → calls connect_with_oauth_token() to store the token
+
+Required env vars (Connected App settings):
+  SF_CONSUMER_KEY    - Connected App consumer key
+  SF_CONSUMER_SECRET - Connected App consumer secret
+  SF_CALLBACK_URL    - Callback URL registered in the Connected App
+                       (e.g. http://localhost:5000/salesforce/callback)
+  SF_DOMAIN          - 'login' for production, 'test' for sandbox (default: login)
+  FLASK_SECRET_KEY   - Flask session secret (required for CSRF state cookie)
 """
 
 import os
@@ -34,21 +44,11 @@ except ImportError:
 
 class SalesforceIntegration:
     """
-    Aimee's Salesforce connector.
+    Aimee's Salesforce connector — OAuth 2.0 Web Server flow only.
 
-    Supports two authentication methods:
-      1. OAuth2 Web Server flow (preferred) — call connect_with_oauth_token() after the
-         /salesforce/callback route exchanges the authorization code for tokens.
-      2. OAuth2 Username-Password grant (fallback) — reads credentials from env vars and
-         calls connect() directly.
-
-    Env vars used by the Username-Password fallback:
-      SF_USERNAME       - Salesforce login email
-      SF_PASSWORD       - Salesforce login password
-      SF_SECURITY_TOKEN - Security token appended to password
-      SF_CONSUMER_KEY   - Connected App consumer key
-      SF_CONSUMER_SECRET- Connected App consumer secret
-      SF_DOMAIN         - 'login' for production, 'test' for sandbox (default: login)
+    Call connect_with_oauth_token() (from the /salesforce/callback route) to
+    authenticate.  Until that is called, is_connected() returns False and all
+    API methods return an error dict rather than raising.
     """
 
     def __init__(self):
@@ -77,79 +77,14 @@ class SalesforceIntegration:
         logger.info("Salesforce connected via OAuth2 Web Server flow (%s)", instance_url)
         print(f"[Salesforce] ✅ Connected via Web Server OAuth flow → {instance_url}")
 
-    def connect(self) -> bool:
-        """Establish (or re-use) a Salesforce session via OAuth2. Returns True on success."""
-        if self._connected and self._sf:
-            return True
-
-        if not SF_AVAILABLE:
-            logger.error("simple_salesforce package is not installed.")
-            return False
-
-        username = os.getenv("SF_USERNAME")
-        password = os.getenv("SF_PASSWORD")
-        security_token = os.getenv("SF_SECURITY_TOKEN", "")
-        consumer_key = os.getenv("SF_CONSUMER_KEY")
-        consumer_secret = os.getenv("SF_CONSUMER_SECRET")
-        domain = os.getenv("SF_DOMAIN", "login")
-
-        missing = [k for k, v in {
-            "SF_USERNAME": username,
-            "SF_PASSWORD": password,
-            "SF_CONSUMER_KEY": consumer_key,
-            "SF_CONSUMER_SECRET": consumer_secret,
-        }.items() if not v]
-
-        if missing:
-            msg = "Missing Salesforce credentials: " + ", ".join(missing)
-            logger.error(msg)
-            print(f"[Salesforce] ❌ {msg}")
-            return False
-
-        # OAuth2 Username-Password grant — avoids the SOAP login() call
-        token_url = f"https://{domain}.salesforce.com/services/oauth2/token"
-        payload = {
-            "grant_type": "password",
-            "client_id": consumer_key,
-            "client_secret": consumer_secret,
-            "username": username,
-            # Salesforce requires password + security_token concatenated
-            "password": password + security_token,
-        }
-
-        try:
-            response = requests.post(token_url, data=payload, timeout=30)
-            response.raise_for_status()
-            token_data = response.json()
-
-            access_token = token_data["access_token"]
-            instance_url = token_data["instance_url"]
-
-            # Initialise simple_salesforce with the token directly — no SOAP login
-            self._sf = Salesforce(session_id=access_token, instance_url=instance_url)
-            self._connected = True
-            logger.info("Connected to Salesforce as %s (OAuth2)", username)
-            print(f"[Salesforce] ✅ Connected as {username}")
-            return True
-        except requests.HTTPError as e:
-            try:
-                error_detail = e.response.json().get("error_description", str(e))
-            except Exception:
-                error_detail = str(e)
-            logger.error("Salesforce OAuth2 authentication failed: %s", error_detail)
-            print(f"[Salesforce] ❌ Authentication failed: {error_detail}")
-            return False
-        except Exception as e:
-            logger.error("Salesforce connection error: %s", e)
-            print(f"[Salesforce] ❌ Connection error: {e}")
-            return False
+    def is_connected(self) -> bool:
+        """Return True if an OAuth token has been stored and the session is live."""
+        return self._connected and self._sf is not None
 
     @property
     def sf(self):
-        """Return authenticated Salesforce client, connecting if needed."""
-        if not self._connected:
-            self.connect()
-        return self._sf
+        """Return the authenticated Salesforce client, or None if not yet authorised."""
+        return self._sf if self._connected else None
 
     # ------------------------------------------------------------------
     # Account lookup
@@ -525,16 +460,21 @@ class SalesforceIntegration:
     # ------------------------------------------------------------------
 
     def _reconnect(self) -> bool:
-        """Discard the cached session and obtain a fresh OAuth token.
+        """Discard the cached session and obtain a fresh token via the stored refresh token.
 
-        Tries the refresh token first (Web Server flow), then falls back to the
-        Username-Password grant if no refresh token is available.
+        Returns False (and leaves the integration unauthenticated) if no refresh
+        token is available — the user must re-run the Web Server OAuth flow.
         """
         self._sf = None
         self._connected = False
         if self._refresh_token:
             return self._refresh_with_token()
-        return self.connect()
+        logger.warning(
+            "Salesforce session expired and no refresh token is stored. "
+            "Re-authenticate by visiting /salesforce/login."
+        )
+        print("[Salesforce] ⚠️ Session expired — visit /salesforce/login to re-authenticate.")
+        return False
 
     def _refresh_with_token(self) -> bool:
         """Exchange the stored refresh token for a new access token."""
@@ -565,9 +505,12 @@ class SalesforceIntegration:
             print("[Salesforce] ✅ Session refreshed via refresh token")
             return True
         except Exception as e:
-            logger.error("Salesforce token refresh failed: %s — falling back to password grant", e)
+            logger.error(
+                "Salesforce token refresh failed: %s — visit /salesforce/login to re-authenticate.", e
+            )
+            print("[Salesforce] ❌ Token refresh failed — visit /salesforce/login to re-authenticate.")
             self._refresh_token = None
-            return self.connect()
+            return False
 
     def _run(self, api_call):
         """
@@ -609,11 +552,15 @@ _instance: SalesforceIntegration | None = None
 
 
 def get_salesforce() -> SalesforceIntegration:
-    """Return (and lazily connect) the module-level Salesforce singleton."""
+    """Return the module-level Salesforce singleton.
+
+    The instance is NOT pre-connected.  Authentication happens when the user
+    completes the OAuth 2.0 Web Server flow (/salesforce/login → /salesforce/callback),
+    which calls connect_with_oauth_token() on the returned instance.
+    """
     global _instance
     if _instance is None:
         _instance = SalesforceIntegration()
-        _instance.connect()
     return _instance
 
 
