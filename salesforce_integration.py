@@ -36,12 +36,16 @@ class SalesforceIntegration:
     """
     Aimee's Salesforce connector.
 
-    Authentication uses the OAuth2 Username-Password grant — no SOAP login() required.
+    Supports two authentication methods:
+      1. OAuth2 Web Server flow (preferred) — call connect_with_oauth_token() after the
+         /salesforce/callback route exchanges the authorization code for tokens.
+      2. OAuth2 Username-Password grant (fallback) — reads credentials from env vars and
+         calls connect() directly.
 
-    Credentials are read from environment variables:
+    Env vars used by the Username-Password fallback:
       SF_USERNAME       - Salesforce login email
       SF_PASSWORD       - Salesforce login password
-      SF_SECURITY_TOKEN - Security token appended to password (from My Settings → Reset My Security Token)
+      SF_SECURITY_TOKEN - Security token appended to password
       SF_CONSUMER_KEY   - Connected App consumer key
       SF_CONSUMER_SECRET- Connected App consumer secret
       SF_DOMAIN         - 'login' for production, 'test' for sandbox (default: login)
@@ -50,10 +54,28 @@ class SalesforceIntegration:
     def __init__(self):
         self._sf = None
         self._connected = False
+        self._refresh_token = None
+        self._instance_url = None
 
     # ------------------------------------------------------------------
     # Connection
     # ------------------------------------------------------------------
+
+    def connect_with_oauth_token(
+        self, access_token: str, instance_url: str, refresh_token: str = None
+    ) -> None:
+        """
+        Store an access token obtained via the OAuth2 Web Server (authorization code) flow.
+        Call this from the /salesforce/callback route after exchanging the auth code.
+        """
+        if not SF_AVAILABLE:
+            raise RuntimeError("simple_salesforce is not installed")
+        self._sf = Salesforce(session_id=access_token, instance_url=instance_url)
+        self._connected = True
+        self._refresh_token = refresh_token
+        self._instance_url = instance_url
+        logger.info("Salesforce connected via OAuth2 Web Server flow (%s)", instance_url)
+        print(f"[Salesforce] ✅ Connected via Web Server OAuth flow → {instance_url}")
 
     def connect(self) -> bool:
         """Establish (or re-use) a Salesforce session via OAuth2. Returns True on success."""
@@ -503,10 +525,49 @@ class SalesforceIntegration:
     # ------------------------------------------------------------------
 
     def _reconnect(self) -> bool:
-        """Discard the cached session and obtain a fresh OAuth token."""
+        """Discard the cached session and obtain a fresh OAuth token.
+
+        Tries the refresh token first (Web Server flow), then falls back to the
+        Username-Password grant if no refresh token is available.
+        """
         self._sf = None
         self._connected = False
+        if self._refresh_token:
+            return self._refresh_with_token()
         return self.connect()
+
+    def _refresh_with_token(self) -> bool:
+        """Exchange the stored refresh token for a new access token."""
+        consumer_key = os.getenv("SF_CONSUMER_KEY")
+        consumer_secret = os.getenv("SF_CONSUMER_SECRET")
+        domain = os.getenv("SF_DOMAIN", "login")
+
+        token_url = f"https://{domain}.salesforce.com/services/oauth2/token"
+        payload = {
+            "grant_type": "refresh_token",
+            "client_id": consumer_key,
+            "client_secret": consumer_secret,
+            "refresh_token": self._refresh_token,
+        }
+
+        try:
+            response = requests.post(token_url, data=payload, timeout=30)
+            response.raise_for_status()
+            token_data = response.json()
+
+            access_token = token_data["access_token"]
+            instance_url = token_data.get("instance_url", self._instance_url)
+
+            self._sf = Salesforce(session_id=access_token, instance_url=instance_url)
+            self._connected = True
+            self._instance_url = instance_url
+            logger.info("Salesforce session refreshed via refresh token")
+            print("[Salesforce] ✅ Session refreshed via refresh token")
+            return True
+        except Exception as e:
+            logger.error("Salesforce token refresh failed: %s — falling back to password grant", e)
+            self._refresh_token = None
+            return self.connect()
 
     def _run(self, api_call):
         """

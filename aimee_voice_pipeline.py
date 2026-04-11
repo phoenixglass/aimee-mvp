@@ -6,15 +6,18 @@ except ImportError:
         from elevenlabs.types import VoiceSettings as ElevenLabsVoiceSettings
     except ImportError:
         ElevenLabsVoiceSettings = None
-from flask import Flask, request, render_template, jsonify, send_from_directory
+from flask import Flask, request, render_template, jsonify, send_from_directory, session, redirect
 from werkzeug.utils import secure_filename
 import os
+import secrets
 import tempfile
+import urllib.parse
 import uuid
 import json
 import hashlib
 import threading
 import re
+import requests
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from functools import lru_cache
@@ -48,6 +51,9 @@ load_dotenv()
 
 # Initialize Flask app
 app = Flask(__name__)
+# SECRET_KEY is required for session-based CSRF state in the Salesforce OAuth flow.
+# Set FLASK_SECRET_KEY in .env to a stable value so sessions survive server restarts.
+app.secret_key = os.getenv("FLASK_SECRET_KEY") or secrets.token_hex(32)
 UPLOAD_FOLDER = tempfile.gettempdir()
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 16 * 1024 * 1024  # 16MB max file size
@@ -1626,6 +1632,121 @@ def clear_cache():
     transcript_cache.clear()
     save_cache()
     return jsonify({"message": "Cache cleared successfully"})
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Salesforce OAuth 2.0 Web Server flow
+# ─────────────────────────────────────────────────────────────────────────────
+
+@app.route("/salesforce/login")
+def salesforce_login():
+    """
+    Step 1 — redirect the user to Salesforce's authorization page.
+
+    Required env vars:
+      SF_CONSUMER_KEY  – Connected App consumer key
+      SF_CALLBACK_URL  – Must match the callback URL configured in the Connected App
+                         (e.g. http://localhost:5000/salesforce/callback)
+      SF_DOMAIN        – 'login' (production) or 'test' (sandbox); default: login
+    """
+    consumer_key = os.getenv("SF_CONSUMER_KEY")
+    callback_url = os.getenv("SF_CALLBACK_URL")
+
+    if not consumer_key:
+        return jsonify({"error": "SF_CONSUMER_KEY is not configured"}), 500
+    if not callback_url:
+        return jsonify({"error": "SF_CALLBACK_URL is not configured"}), 500
+
+    domain = os.getenv("SF_DOMAIN", "login")
+
+    # CSRF protection: store a random state token in the server-side session
+    state = secrets.token_urlsafe(32)
+    session["sf_oauth_state"] = state
+
+    params = {
+        "response_type": "code",
+        "client_id": consumer_key,
+        "redirect_uri": callback_url,
+        "state": state,
+        "scope": "api refresh_token",
+    }
+    auth_url = (
+        f"https://{domain}.salesforce.com/services/oauth2/authorize?"
+        + urllib.parse.urlencode(params)
+    )
+    return redirect(auth_url)
+
+
+@app.route("/salesforce/callback")
+def salesforce_callback():
+    """
+    Step 2 — Salesforce redirects here with an authorization code.
+    Exchange it for an access token and store it in the Salesforce singleton.
+    """
+    # Salesforce sends error details as query params on failure
+    error = request.args.get("error")
+    if error:
+        error_desc = request.args.get("error_description", "Unknown error")
+        return jsonify({"error": error, "error_description": error_desc}), 400
+
+    # Validate CSRF state
+    returned_state = request.args.get("state")
+    expected_state = session.pop("sf_oauth_state", None)
+    if not returned_state or returned_state != expected_state:
+        return jsonify({"error": "State mismatch — possible CSRF attack, please try again"}), 403
+
+    code = request.args.get("code")
+    if not code:
+        return jsonify({"error": "No authorization code in callback"}), 400
+
+    consumer_key = os.getenv("SF_CONSUMER_KEY")
+    consumer_secret = os.getenv("SF_CONSUMER_SECRET")
+    callback_url = os.getenv("SF_CALLBACK_URL")
+    domain = os.getenv("SF_DOMAIN", "login")
+
+    if not consumer_key or not consumer_secret or not callback_url:
+        return jsonify({"error": "Salesforce OAuth env vars are not fully configured"}), 500
+
+    # Exchange the authorization code for tokens
+    token_url = f"https://{domain}.salesforce.com/services/oauth2/token"
+    payload = {
+        "grant_type": "authorization_code",
+        "client_id": consumer_key,
+        "client_secret": consumer_secret,
+        "redirect_uri": callback_url,
+        "code": code,
+    }
+
+    try:
+        resp = requests.post(token_url, data=payload, timeout=30)
+        resp.raise_for_status()
+        token_data = resp.json()
+    except requests.HTTPError as exc:
+        try:
+            detail = exc.response.json().get("error_description", str(exc))
+        except Exception:
+            detail = str(exc)
+        return jsonify({"error": "Token exchange failed", "details": detail}), 502
+    except Exception as exc:
+        return jsonify({"error": "Token exchange failed", "details": str(exc)}), 502
+
+    access_token = token_data.get("access_token")
+    instance_url = token_data.get("instance_url")
+    refresh_token = token_data.get("refresh_token")
+
+    if not access_token or not instance_url:
+        return jsonify({"error": "Incomplete token response from Salesforce"}), 502
+
+    # Hand the token to the Salesforce singleton so all existing routes use it
+    if _SALESFORCE_AVAILABLE:
+        sf = get_salesforce()
+        sf.connect_with_oauth_token(access_token, instance_url, refresh_token)
+
+    return jsonify({
+        "success": True,
+        "message": "Salesforce authenticated successfully via OAuth2 Web Server flow",
+        "instance_url": instance_url,
+    })
 
 
 # ─────────────────────────────────────────────────────────────────────────────
