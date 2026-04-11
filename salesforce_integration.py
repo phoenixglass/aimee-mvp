@@ -2,22 +2,22 @@
 Salesforce Integration for Aimee MVP
 Handles: account lookup, call note logging, and record updates via Salesforce REST API
 
-Authentication priority:
-  1. JWT Bearer Token flow  — if SF_PRIVATE_KEY or SF_PRIVATE_KEY_FILE is set.
-     Signs a short-lived JWT with an RSA private key; no SOAP login involved.
-     Requires: SF_USERNAME, SF_CONSUMER_KEY, SF_PRIVATE_KEY / SF_PRIVATE_KEY_FILE
-  2. OAuth2 Username-Password grant — legacy fallback (requires SOAP login in many orgs).
-     Requires: SF_USERNAME, SF_PASSWORD, SF_CONSUMER_KEY, SF_CONSUMER_SECRET
-Authentication: OAuth 2.0 Web Server flow (authorization code grant) ONLY.
-  1. User visits /salesforce/login  → redirected to Salesforce authorization page
-  2. User approves                  → Salesforce redirects to /salesforce/callback
-  3. Callback exchanges the code    → calls connect_with_oauth_token() to store the token
+Authentication — two flows supported (tried in this order):
 
-Required env vars (Connected App settings):
-  SF_CONSUMER_KEY    - Connected App consumer key
-  SF_CONSUMER_SECRET - Connected App consumer secret
-  SF_CALLBACK_URL    - Callback URL registered in the Connected App
-                       (e.g. http://localhost:5000/salesforce/callback)
+  1. OAuth 2.0 Web Server flow (browser-based, recommended for interactive use):
+       1a. User visits /salesforce/login  → redirected to Salesforce authorization page
+       1b. User approves                  → Salesforce redirects to /salesforce/callback
+       1c. Callback exchanges the code    → calls connect_with_oauth_token() to store the token
+       Required env vars: SF_CONSUMER_KEY, SF_CONSUMER_SECRET, SF_CALLBACK_URL
+
+  2. JWT Bearer Token flow (server-to-server, no browser required):
+       Signs a short-lived JWT with an RSA private key; no SOAP login involved.
+       Required env vars: SF_USERNAME, SF_CONSUMER_KEY, SF_PRIVATE_KEY or SF_PRIVATE_KEY_FILE
+
+  NOTE: OAuth2 Username-Password grant is NOT supported because SOAP API login is
+  disabled in this org (INVALID_OPERATION error).
+
+Common env vars:
   SF_DOMAIN          - 'login' for production, 'test' for sandbox (default: login)
   FLASK_SECRET_KEY   - Flask session secret (required for CSRF state cookie)
 """
@@ -53,27 +53,19 @@ class SalesforceIntegration:
     """
     Aimee's Salesforce connector.
 
-    Authentication — two flows supported (tried in this order):
+    Authenticate via one of two flows:
 
-    1. JWT Bearer Token (preferred — works even when SOAP login is disabled):
-         SF_USERNAME         - Salesforce login email
-         SF_CONSUMER_KEY     - Connected App consumer key
-         SF_PRIVATE_KEY      - PEM-encoded RSA private key (raw string, or use SF_PRIVATE_KEY_FILE)
-         SF_PRIVATE_KEY_FILE - Path to PEM private-key file (alternative to SF_PRIVATE_KEY)
-         SF_DOMAIN           - 'login' for production, 'test' for sandbox (default: login)
+    1. Web Server OAuth flow (browser-based):
+         Visit /salesforce/login in a browser; the callback stores the token via
+         connect_with_oauth_token().  Requires SF_CONSUMER_KEY, SF_CONSUMER_SECRET,
+         SF_CALLBACK_URL.
 
-    2. OAuth2 Username-Password grant (legacy fallback — uses SOAP login internally):
-         SF_USERNAME         - Salesforce login email
-         SF_PASSWORD         - Salesforce login password
-         SF_SECURITY_TOKEN   - Security token (from My Settings → Reset My Security Token)
-         SF_CONSUMER_KEY     - Connected App consumer key
-         SF_CONSUMER_SECRET  - Connected App consumer secret
-         SF_DOMAIN           - 'login' for production, 'test' for sandbox (default: login)
-    Aimee's Salesforce connector — OAuth 2.0 Web Server flow only.
+    2. JWT Bearer Token flow (server-to-server, no browser):
+         Call connect().  Requires SF_USERNAME, SF_CONSUMER_KEY, and
+         SF_PRIVATE_KEY or SF_PRIVATE_KEY_FILE.
 
-    Call connect_with_oauth_token() (from the /salesforce/callback route) to
-    authenticate.  Until that is called, is_connected() returns False and all
-    API methods return an error dict rather than raising.
+    Until authenticated, is_connected() returns False and all API methods return
+    an error dict rather than raising.
     """
 
     def __init__(self):
@@ -87,10 +79,13 @@ class SalesforceIntegration:
     # ------------------------------------------------------------------
 
     def connect(self) -> bool:
-        """Establish (or re-use) a Salesforce session. Returns True on success.
+        """Establish (or re-use) a Salesforce session via JWT Bearer Token flow.
 
-        Tries JWT Bearer Token flow first (does not require SOAP login).
-        Falls back to OAuth2 Username-Password grant if no private key is configured.
+        Requires SF_PRIVATE_KEY or SF_PRIVATE_KEY_FILE to be set.
+        If neither is configured, directs the user to the Web Server OAuth flow instead.
+
+        Note: The OAuth2 Username-Password grant (which uses SOAP login internally) is
+        NOT supported because SOAP API login is disabled in this org.
         """
         if self._connected and self._sf:
             return True
@@ -99,11 +94,18 @@ class SalesforceIntegration:
             logger.error("simple_salesforce package is not installed.")
             return False
 
-        # Prefer JWT Bearer when a private key is available
         if os.getenv("SF_PRIVATE_KEY") or os.getenv("SF_PRIVATE_KEY_FILE"):
             return self._connect_jwt()
 
-        return self._connect_password_grant()
+        logger.warning(
+            "No JWT private key configured (SF_PRIVATE_KEY / SF_PRIVATE_KEY_FILE). "
+            "Authenticate via the Web Server OAuth flow by visiting /salesforce/login."
+        )
+        print(
+            "[Salesforce] ⚠️  No JWT key set — visit /salesforce/login to authenticate "
+            "via the OAuth 2.0 Web Server flow."
+        )
+        return False
 
     def _connect_jwt(self) -> bool:
         """Authenticate via JWT Bearer Token flow (RFC 7523).
@@ -204,74 +206,6 @@ class SalesforceIntegration:
             print(f"[Salesforce] ❌ JWT connection error: {e}")
             return False
 
-    def _connect_password_grant(self) -> bool:
-        """Authenticate via OAuth2 Username-Password grant.
-
-        NOTE: Salesforce implements this grant on top of SOAP login() internally.
-        If the org has "Disable SOAP API login" enabled, this flow will fail with
-        INVALID_OPERATION. Use _connect_jwt() instead by setting SF_PRIVATE_KEY.
-        """
-        username = os.getenv("SF_USERNAME")
-        password = os.getenv("SF_PASSWORD")
-        security_token = os.getenv("SF_SECURITY_TOKEN", "")
-        consumer_key = os.getenv("SF_CONSUMER_KEY")
-        consumer_secret = os.getenv("SF_CONSUMER_SECRET")
-        domain = os.getenv("SF_DOMAIN", "login")
-
-        missing = [k for k, v in {
-            "SF_USERNAME": username,
-            "SF_PASSWORD": password,
-            "SF_CONSUMER_KEY": consumer_key,
-            "SF_CONSUMER_SECRET": consumer_secret,
-        }.items() if not v]
-
-        if missing:
-            msg = "Missing Salesforce credentials: " + ", ".join(missing)
-            logger.error(msg)
-            print(f"[Salesforce] ❌ {msg}")
-            return False
-
-        token_url = f"https://{domain}.salesforce.com/services/oauth2/token"
-        payload = {
-            "grant_type": "password",
-            "client_id": consumer_key,
-            "client_secret": consumer_secret,
-            "username": username,
-            "password": password + security_token,
-        }
-
-        try:
-            response = requests.post(token_url, data=payload, timeout=30)
-            response.raise_for_status()
-            token_data = response.json()
-
-            access_token = token_data["access_token"]
-            instance_url = token_data["instance_url"]
-
-            self._sf = Salesforce(session_id=access_token, instance_url=instance_url)
-            self._connected = True
-            logger.info("Connected to Salesforce as %s (OAuth2 password grant)", username)
-            print(f"[Salesforce] ✅ Connected as {username}")
-            return True
-        except requests.HTTPError as e:
-            try:
-                err = e.response.json()
-                detail = err.get("error_description") or err.get("error") or str(e)
-            except Exception:
-                detail = str(e)
-            if "SOAP" in detail or "INVALID_OPERATION" in detail:
-                hint = (
-                    " | SOAP login is disabled in this org — "
-                    "switch to JWT Bearer by setting SF_PRIVATE_KEY / SF_PRIVATE_KEY_FILE."
-                )
-                detail += hint
-            logger.error("Salesforce authentication failed: %s", detail)
-            print(f"[Salesforce] ❌ Authentication failed: {detail}")
-            return False
-        except Exception as e:
-            logger.error("Salesforce connection error: %s", e)
-            print(f"[Salesforce] ❌ Connection error: {e}")
-            return False
     def connect_with_oauth_token(
         self, access_token: str, instance_url: str, refresh_token: str = None
     ) -> None:
