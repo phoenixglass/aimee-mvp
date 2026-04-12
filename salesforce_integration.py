@@ -30,7 +30,13 @@ import requests
 from datetime import datetime
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    # Use override=False and only load if the sentinel isn't set, so that when this
+    # module is imported by aimee_voice_pipeline_full (which already called
+    # load_dotenv()) the .env file isn't parsed a second time and duplicate
+    # "could not parse" warnings are suppressed.
+    if not os.environ.get('_DOTENV_LOADED'):
+        load_dotenv()
+        os.environ['_DOTENV_LOADED'] = '1'
 except ImportError:
     pass
 

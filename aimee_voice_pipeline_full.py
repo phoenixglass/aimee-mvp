@@ -45,8 +45,9 @@ except Exception as _sf_import_err:
 from gtts import gTTS
 from dotenv import load_dotenv
 
-# Load environment variables
+# Load environment variables (sentinel prevents modules from re-parsing the file)
 load_dotenv()
+os.environ.setdefault('_DOTENV_LOADED', '1')
 
 # Initialize Flask app
 app = Flask(__name__)
