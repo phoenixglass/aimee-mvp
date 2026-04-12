@@ -16,6 +16,28 @@ load_dotenv()
 # Salesforce is accessed via the Flask API at localhost:5000
 SF_BASE = "http://localhost:5000/salesforce"
 
+# Whisper initial_prompt: primes the model with domain-specific vocabulary so it
+# transcribes account names, wine terms, and wake-word variants correctly.
+WHISPER_INITIAL_PROMPT = (
+    "Wake words: Aimee, Amy, Aimi, Amie. "
+    "Fairfield County wine accounts: Spiga Wine Bar, Barcelona Wine Bar Norwalk, "
+    "Barcelona Wine Bar Fairfield, ELM New Canaan, The Cottage Westport, "
+    "Bin 100 Milford, Blackstones Grille, Blackstones Steakhouse Norwalk, "
+    "Blackstones Steakhouse Stamford, Rebecca's Greenwich, "
+    "LaBella's Fine Wine and Spirits Riverside, 99 Bottles Westport, "
+    "Horseneck Wine and Spirits Greenwich, DB Fine Wines New Canaan, "
+    "Greens Farms Spirit Shop Westport, Acme Liquors New Canaan. "
+    "Key contacts: Dan Camporeale, Chef Misha Ryklin, Chef Ted Gola, "
+    "Chef Luke Venner, Chef Brian Lewis, Mauricio Zapata, Kimberly Zapata, "
+    "David Fieber, Sofia. "
+    "Wine terms: terroir, sommelier, appellation, varietal, cuvée, vintage, "
+    "Burgundy, Champagne, Bordeaux, Rioja, Tuscany, Loire Valley, Napa Valley, "
+    "Cabernet Sauvignon, Pinot Noir, Riesling, Cava, Prosecco, "
+    "biodynamic, natural wine, grower Champagne, négociant, Supertuscan, "
+    "reserve list, allocation, by-the-glass program, premium allocation, "
+    "portfolio, pipeline, briefing, tactical briefing, Salesforce."
+)
+
 class VoiceCommandSystem:
     def __init__(self):
         self.recognizer = sr.Recognizer()
@@ -57,8 +79,10 @@ class VoiceCommandSystem:
                     # Listen for audio with timeout
                     audio = self.recognizer.listen(source, timeout=1, phrase_time_limit=3)
                 
-                # Use Google Speech Recognition
-                text = self.recognizer.recognize_google(audio).lower()
+                # Use Whisper with domain-specific initial_prompt for better accuracy
+                text = self.recognizer.recognize_whisper(
+                    audio, initial_prompt=WHISPER_INITIAL_PROMPT
+                ).lower()
                 print(f"🎧 Heard: '{text}'")
                 
                 # Check for wake word
@@ -81,7 +105,9 @@ class VoiceCommandSystem:
                 print("🎯 Ready for command...")
                 audio = self.recognizer.listen(source, timeout=5, phrase_time_limit=10)
             
-            command_text = self.recognizer.recognize_google(audio).lower()
+            command_text = self.recognizer.recognize_whisper(
+                audio, initial_prompt=WHISPER_INITIAL_PROMPT
+            ).lower()
             print(f"💬 Command: '{command_text}'")
             
             # Process the command
@@ -354,7 +380,9 @@ class VoiceCommandSystem:
                 print("🎙️  Listening for call notes...")
                 audio = self.recognizer.listen(source, timeout=15, phrase_time_limit=60)
 
-            notes_text = self.recognizer.recognize_google(audio)
+            notes_text = self.recognizer.recognize_whisper(
+                audio, initial_prompt=WHISPER_INITIAL_PROMPT
+            )
             print(f"📝 Call notes: '{notes_text}'")
             self.speak(f"Got it. Logging call for {account_name}.")
 
