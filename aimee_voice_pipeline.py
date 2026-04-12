@@ -315,6 +315,58 @@ def detect_special_responses(transcript: str) -> str:
     return None  # No special response needed
 
 
+# Patterns that signal the user explicitly wants Salesforce data.
+# The word "salesforce" must appear in the transcript.
+_SF_LOOKUP_PATTERNS = re.compile(
+    r"\b(?:pull|get|grab|show|fetch|check|look\s+up|find|give\s+me)\b",
+    re.IGNORECASE,
+)
+
+# Same customer table as extract_key_details – kept in sync here so
+# detect_salesforce_command can resolve account names without running
+# the full extraction pipeline.
+_SF_CUSTOMERS = [
+    ("barcelona norwalk",   "Barcelona Wine Bar - Norwalk"),
+    ("barcelona fairfield", "Barcelona Wine Bar - Fairfield"),
+    ("barcelona",           "Barcelona Wine Bar"),
+    ("spiga",               "Spiga Wine Bar"),
+    ("elm",                 "ELM"),
+    ("the cottage",         "The Cottage"),
+    ("bin 100",             "Bin 100"),
+    ("blackstones grille",  "Blackstones Grille"),
+    ("blackstones norwalk", "Blackstones Steakhouse - Norwalk"),
+    ("blackstones stamford","Blackstones Steakhouse - Stamford"),
+    ("blackstones",         "Blackstones"),
+    ("rebecca's",           "Rebecca's"),
+    ("99 bottles",          "99 Bottles"),
+    ("horseneck",           "Horseneck Wine & Spirits"),
+    ("db fine wines",       "DB Fine Wines"),
+    ("greens farms",        "Greens Farms Spirit Shop"),
+    ("labella's",           "LaBella's Fine Wine & Spirits"),
+    ("acme",                "Acme Liquors"),
+]
+
+
+def detect_salesforce_command(transcript: str):
+    """
+    Return the resolved account name when the transcript explicitly asks to
+    pull data from Salesforce (e.g. "pull Barcelona from Salesforce").
+
+    Returns None if the phrase does not look like a Salesforce lookup.
+    """
+    text = transcript.lower()
+    if "salesforce" not in text:
+        return None
+    if not _SF_LOOKUP_PATTERNS.search(text):
+        return None
+
+    for key, name in _SF_CUSTOMERS:
+        if re.search(rf"\b{re.escape(key)}\b", text):
+            return name
+
+    return None
+
+
 def extract_key_details(transcript: str, intent: str) -> str:
     """Extract key details from transcript based on intent - enhanced for tactical briefings"""
     print(f"DEBUG - extract_key_details called with intent: {intent}")
@@ -1374,6 +1426,31 @@ def process_text():
         processing_start = time.time()
         processed_transcript = preprocess_wine_terminology(transcript)
         tone = detect_tone(transcript.lower())
+
+        # ── Salesforce lookup (highest priority, pre-classifier) ──────────
+        sf_account = detect_salesforce_command(transcript)
+        if sf_account:
+            if not _SALESFORCE_AVAILABLE:
+                response_text = (
+                    f"Salesforce isn't connected right now. "
+                    f"Can't pull {sf_account}."
+                )
+            else:
+                sf = get_salesforce()
+                response_text = sf.get_account_summary(sf_account)
+            audio_filename = generate_aimee_response(response_text)
+            processing_time = time.time() - processing_start
+            return jsonify({
+                "transcript": transcript,
+                "intent": "sf_lookup",
+                "tone": tone,
+                "score": 1.0,
+                "processing_time": round(processing_time, 2),
+                "model_used": "text_input",
+                "response_text": response_text,
+                "response_audio": f"/audio/{audio_filename}" if audio_filename else None,
+            })
+        # ─────────────────────────────────────────────────────────────────
 
         if classifier is None:
             return jsonify({"error": "Classifier not available"}), 500

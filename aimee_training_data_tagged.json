@@ -1,6 +1,56 @@
 {
   "training_examples": [
     {
+      "text": "pull Barcelona from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Barcelona Wine Bar", "source": "Salesforce"}
+    },
+    {
+      "text": "get Barcelona from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Barcelona Wine Bar", "source": "Salesforce"}
+    },
+    {
+      "text": "pull up Spiga from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Spiga Wine Bar", "source": "Salesforce"}
+    },
+    {
+      "text": "show me ELM from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "ELM", "source": "Salesforce"}
+    },
+    {
+      "text": "look up Barcelona in Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Barcelona Wine Bar", "source": "Salesforce"}
+    },
+    {
+      "text": "check Bin 100 in Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Bin 100", "source": "Salesforce"}
+    },
+    {
+      "text": "find Blackstones in Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Blackstones", "source": "Salesforce"}
+    },
+    {
+      "text": "fetch Horseneck from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Horseneck Wine & Spirits", "source": "Salesforce"}
+    },
+    {
+      "text": "grab 99 Bottles from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "99 Bottles", "source": "Salesforce"}
+    },
+    {
+      "text": "give me Barcelona from Salesforce",
+      "intent": "sf_lookup",
+      "entities": {"customer": "Barcelona Wine Bar", "source": "Salesforce"}
+    },
+    {
       "text": "Amy, I need to send three cases of Chateau de Bocastel, Rouge, Chateau de Nouveau de Pupp. It needs to be 2019 vintage. And did I say three cases? Yes, it needs to be three cases. Please, tomorrow, to Acme, Wine and Lickers. And please confirm.",
       "intent": "add_to_order",
       "entities": {
