@@ -2,10 +2,23 @@
 tactical_briefing_web.py
 Aimee Flask backend — Salesforce integration + briefing routes
 Runs on port 5000
+
+Authentication: OAuth 2.0 Web Server flow only.  The OAuth2
+Username-Password grant is intentionally NOT implemented here because the
+target org has SOAP API login disabled (INVALID_OPERATION).
+
+Usage:
+  1. Configure SF_CONSUMER_KEY, SF_CONSUMER_SECRET, SF_CALLBACK_URL in .env
+  2. Start the server: python tactical_briefing_web.py
+  3. Visit http://localhost:5000/salesforce/login to authenticate
+  4. After approving, the browser is redirected to /salesforce/callback,
+     which stores the access + refresh tokens in memory.
 """
 
 import os
-import json
+import secrets
+from urllib.parse import urlencode
+
 from flask import Flask, request, jsonify, redirect, session
 from dotenv import load_dotenv
 import requests as http_requests
@@ -21,14 +34,13 @@ SF_CONSUMER_KEY    = os.getenv("SF_CONSUMER_KEY")
 SF_CONSUMER_SECRET = os.getenv("SF_CONSUMER_SECRET")
 SF_DOMAIN          = os.getenv("SF_DOMAIN", "login")          # "login" or "test"
 SF_CALLBACK_URL    = os.getenv("SF_CALLBACK_URL", "http://localhost:5000/salesforce/callback")
-SF_USERNAME        = os.getenv("SF_USERNAME")                  # optional: for username/password flow
-SF_PASSWORD        = os.getenv("SF_PASSWORD")                  # optional
-SF_SECURITY_TOKEN  = os.getenv("SF_SECURITY_TOKEN", "")        # optional
+SF_API_VERSION     = os.getenv("SF_API_VERSION", "v58.0")
 
 # In-memory token store (persists for the life of the process)
 _sf_token = {
-    "access_token": None,
-    "instance_url": None,
+    "access_token":  None,
+    "refresh_token": None,
+    "instance_url":  None,
 }
 
 
@@ -38,88 +50,142 @@ def _token_url():
     return f"https://{SF_DOMAIN}.salesforce.com/services/oauth2/token"
 
 
+def _refresh_access_token():
+    """Exchange the stored refresh token for a new access token.  Returns True on success."""
+    if not _sf_token["refresh_token"]:
+        return False
+
+    payload = {
+        "grant_type":    "refresh_token",
+        "client_id":     SF_CONSUMER_KEY,
+        "client_secret": SF_CONSUMER_SECRET,
+        "refresh_token": _sf_token["refresh_token"],
+    }
+    try:
+        resp = http_requests.post(_token_url(), data=payload, timeout=30)
+    except http_requests.RequestException as e:
+        print(f"❌ SF token refresh network error: {e}")
+        return False
+
+    if resp.status_code == 200:
+        data = resp.json()
+        _sf_token["access_token"] = data["access_token"]
+        # Refresh response usually keeps instance_url; preserve old as fallback
+        _sf_token["instance_url"] = data.get("instance_url", _sf_token["instance_url"])
+        print("✅ Salesforce access token refreshed")
+        return True
+
+    print(f"❌ SF token refresh failed {resp.status_code}: {resp.text}")
+    # Drop the dead refresh token so we don't loop on it
+    _sf_token["refresh_token"] = None
+    return False
+
+
 def get_sf_token():
-    """Return a valid access token, refreshing via username/password if needed."""
+    """Return the in-memory token dict if authenticated, else None."""
     if _sf_token["access_token"]:
         return _sf_token
-
-    # Try username/password flow if credentials are present
-    if SF_USERNAME and SF_PASSWORD:
-        payload = {
-            "grant_type":    "password",
-            "client_id":     SF_CONSUMER_KEY,
-            "client_secret": SF_CONSUMER_SECRET,
-            "username":      SF_USERNAME,
-            "password":      SF_PASSWORD + SF_SECURITY_TOKEN,
-        }
-        resp = http_requests.post(_token_url(), data=payload)
-        if resp.status_code == 200:
-            data = resp.json()
-            _sf_token["access_token"] = data["access_token"]
-            _sf_token["instance_url"] = data["instance_url"]
-            print("✅ Salesforce authenticated via username/password")
-            return _sf_token
-        else:
-            print(f"❌ SF auth failed: {resp.text}")
-
     return None
+
+
+def _sf_request(method, path, **kwargs):
+    """
+    Issue an authenticated Salesforce REST call, retrying once on 401 by
+    refreshing the access token.  `path` is appended to the instance URL.
+    """
+    token = get_sf_token()
+    if not token:
+        return None
+
+    url = f"{token['instance_url']}{path}"
+    headers = kwargs.pop("headers", {})
+    headers["Authorization"] = f"Bearer {token['access_token']}"
+
+    try:
+        resp = http_requests.request(method, url, headers=headers, timeout=30, **kwargs)
+    except http_requests.RequestException as e:
+        print(f"❌ SF request network error: {e}")
+        return None
+
+    if resp.status_code == 401 and _refresh_access_token():
+        headers["Authorization"] = f"Bearer {_sf_token['access_token']}"
+        try:
+            resp = http_requests.request(method, url, headers=headers, timeout=30, **kwargs)
+        except http_requests.RequestException as e:
+            print(f"❌ SF retry network error: {e}")
+            return None
+    return resp
 
 
 def sf_query(soql: str):
     """Run a SOQL query against Salesforce. Returns list of records or []."""
-    token = get_sf_token()
-    if not token or not token["access_token"]:
+    resp = _sf_request("GET", f"/services/data/{SF_API_VERSION}/query", params={"q": soql})
+    if resp is None:
         print("❌ No Salesforce token available")
         return []
-
-    url = f"{token['instance_url']}/services/data/v58.0/query"
-    headers = {"Authorization": f"Bearer {token['access_token']}"}
-    resp = http_requests.get(url, headers=headers, params={"q": soql})
-
     if resp.status_code == 200:
         return resp.json().get("records", [])
-    else:
-        print(f"❌ SOQL error {resp.status_code}: {resp.text}")
-        return []
+    print(f"❌ SOQL error {resp.status_code}: {resp.text}")
+    return []
 
 
 def sf_create(obj_type: str, data: dict):
     """Create a Salesforce record. Returns the new record ID or None."""
-    token = get_sf_token()
-    if not token or not token["access_token"]:
+    resp = _sf_request(
+        "POST",
+        f"/services/data/{SF_API_VERSION}/sobjects/{obj_type}",
+        json=data,
+        headers={"Content-Type": "application/json"},
+    )
+    if resp is None:
         return None
-
-    url = f"{token['instance_url']}/services/data/v58.0/sobjects/{obj_type}"
-    headers = {
-        "Authorization": f"Bearer {token['access_token']}",
-        "Content-Type":  "application/json",
-    }
-    resp = http_requests.post(url, headers=headers, json=data)
     if resp.status_code in (200, 201):
         return resp.json().get("id")
-    else:
-        print(f"❌ SF create error {resp.status_code}: {resp.text}")
-        return None
+    print(f"❌ SF create error {resp.status_code}: {resp.text}")
+    return None
 
 
-# ── OAuth web flow (optional — used if you prefer browser auth) ────────────────
+# ── OAuth Web Server flow ──────────────────────────────────────────────────────
 
 @app.route("/salesforce/login")
 def sf_login():
+    if not SF_CONSUMER_KEY or not SF_CONSUMER_SECRET:
+        return jsonify({
+            "error": "Salesforce Connected App not configured. "
+                     "Set SF_CONSUMER_KEY and SF_CONSUMER_SECRET in .env."
+        }), 500
+
+    state = secrets.token_urlsafe(32)
+    session["sf_oauth_state"] = state
+
+    params = {
+        "response_type": "code",
+        "client_id":     SF_CONSUMER_KEY,
+        "redirect_uri":  SF_CALLBACK_URL,
+        "scope":         "api refresh_token offline_access",
+        "state":         state,
+    }
     auth_url = (
-        f"https://{SF_DOMAIN}.salesforce.com/services/oauth2/authorize"
-        f"?response_type=code"
-        f"&client_id={SF_CONSUMER_KEY}"
-        f"&redirect_uri={SF_CALLBACK_URL}"
+        f"https://{SF_DOMAIN}.salesforce.com/services/oauth2/authorize?"
+        + urlencode(params)
     )
     return redirect(auth_url)
 
 
 @app.route("/salesforce/callback")
 def sf_callback():
-    code = request.args.get("code")
+    code  = request.args.get("code")
+    state = request.args.get("state")
+    error = request.args.get("error")
+
+    if error:
+        return jsonify({"error": error, "description": request.args.get("error_description")}), 400
     if not code:
         return jsonify({"error": "No code returned"}), 400
+
+    expected_state = session.pop("sf_oauth_state", None)
+    if not expected_state or state != expected_state:
+        return jsonify({"error": "Invalid OAuth state — possible CSRF"}), 400
 
     payload = {
         "grant_type":    "authorization_code",
@@ -128,28 +194,51 @@ def sf_callback():
         "redirect_uri":  SF_CALLBACK_URL,
         "code":          code,
     }
-    resp = http_requests.post(_token_url(), data=payload)
-    if resp.status_code == 200:
-        data = resp.json()
-        _sf_token["access_token"] = data["access_token"]
-        _sf_token["instance_url"] = data["instance_url"]
-        return jsonify({"status": "authenticated", "instance_url": data["instance_url"]})
-    else:
+    try:
+        resp = http_requests.post(_token_url(), data=payload, timeout=30)
+    except http_requests.RequestException as e:
+        return jsonify({"error": f"Network error: {e}"}), 502
+
+    if resp.status_code != 200:
         return jsonify({"error": resp.text}), 400
+
+    data = resp.json()
+    _sf_token["access_token"]  = data["access_token"]
+    _sf_token["refresh_token"] = data.get("refresh_token")
+    _sf_token["instance_url"]  = data["instance_url"]
+    return jsonify({
+        "status": "authenticated",
+        "instance_url": data["instance_url"],
+        "has_refresh_token": bool(data.get("refresh_token")),
+    })
+
+
+@app.route("/salesforce/logout", methods=["POST"])
+def sf_logout():
+    """Discard the cached Salesforce session."""
+    _sf_token["access_token"]  = None
+    _sf_token["refresh_token"] = None
+    _sf_token["instance_url"]  = None
+    return jsonify({"status": "logged out"})
 
 
 # ── Salesforce routes (called by voice_commands.py) ───────────────────────────
 
+def _escape_soql(value: str) -> str:
+    """Escape single quotes and backslashes for SOQL string literals."""
+    return value.replace("\\", "\\\\").replace("'", "\\'")
+
+
 @app.route("/salesforce/account", methods=["POST"])
 def sf_account():
     """Look up an account by name and return a voice-ready summary."""
-    body        = request.get_json(force=True)
-    account_name = body.get("account_name", "").strip()
+    body         = request.get_json(silent=True) or {}
+    account_name = (body.get("account_name") or "").strip()
 
     if not account_name:
         return jsonify({"error": "account_name required"}), 400
 
-    safe_name = account_name.replace("'", "\\'")
+    safe_name = _escape_soql(account_name)
     records = sf_query(
         f"SELECT Id, Name, Phone, BillingCity, BillingState, "
         f"Industry, AnnualRevenue, Description "
@@ -175,7 +264,7 @@ def sf_account():
         f"Phone: {phone}. {revenue_str}."
     )
     if len(records) > 1:
-        others = ", ".join(r["Name"] for r in records[1:])
+        others = ", ".join(r.get("Name", "") for r in records[1:])
         summary += f" I also found similar accounts: {others}."
 
     return jsonify({"voice_summary": summary, "records": records})
@@ -184,13 +273,13 @@ def sf_account():
 @app.route("/salesforce/opportunities", methods=["POST"])
 def sf_opportunities():
     """Return open opportunities for an account."""
-    body         = request.get_json(force=True)
-    account_name = body.get("account_name", "").strip()
+    body         = request.get_json(silent=True) or {}
+    account_name = (body.get("account_name") or "").strip()
 
     if not account_name:
         return jsonify({"error": "account_name required"}), 400
 
-    safe_name = account_name.replace("'", "\\'")
+    safe_name = _escape_soql(account_name)
     records = sf_query(
         f"SELECT Id, Name, StageName, Amount, CloseDate, Probability "
         f"FROM Opportunity "
@@ -208,7 +297,7 @@ def sf_opportunities():
         amt   = f"${r['Amount']:,.0f}" if r.get("Amount") else "amount TBD"
         stage = r.get("StageName", "unknown stage")
         close = r.get("CloseDate", "no close date")
-        lines.append(f"{r['Name']}: {amt}, {stage}, closing {close}")
+        lines.append(f"{r.get('Name', 'Unnamed')}: {amt}, {stage}, closing {close}")
 
     summary = (
         f"{len(records)} open {'opportunity' if len(records)==1 else 'opportunities'} "
@@ -222,16 +311,15 @@ def sf_opportunities():
 @app.route("/salesforce/log-call", methods=["POST"])
 def sf_log_call():
     """Log a call note as a Task on the matching account."""
-    body         = request.get_json(force=True)
-    account_name = body.get("account_name", "").strip()
-    subject      = body.get("subject", f"Call - {account_name}")
-    description  = body.get("description", "")
+    body         = request.get_json(silent=True) or {}
+    account_name = (body.get("account_name") or "").strip()
+    subject      = body.get("subject") or f"Call - {account_name}"
+    description  = body.get("description") or ""
 
     if not account_name:
         return jsonify({"error": "account_name required"}), 400
 
-    # Find the account ID first
-    safe_name = account_name.replace("'", "\\'")
+    safe_name = _escape_soql(account_name)
     accounts = sf_query(
         f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe_name}%' LIMIT 1"
     )
@@ -241,12 +329,12 @@ def sf_log_call():
 
     account_id = accounts[0]["Id"]
 
+    # Omit ActivityDate so Salesforce defaults to today; sending null returns 400.
     task_id = sf_create("Task", {
         "WhatId":      account_id,
         "Subject":     subject,
         "Description": description,
         "Status":      "Completed",
-        "ActivityDate": None,   # Salesforce will default to today
         "TaskSubtype": "Call",
     })
 
@@ -255,22 +343,20 @@ def sf_log_call():
             "voice_summary": f"Call note logged for {account_name} in Salesforce.",
             "task_id": task_id
         })
-    else:
-        return jsonify({"error": "Failed to create task in Salesforce"}), 500
+    return jsonify({"error": "Failed to create task in Salesforce"}), 500
 
 
 @app.route("/salesforce/recent-activity", methods=["POST"])
 def sf_recent_activity():
     """Return the most recent logged activities for an account."""
-    body         = request.get_json(force=True)
-    account_name = body.get("account_name", "").strip()
+    body         = request.get_json(silent=True) or {}
+    account_name = (body.get("account_name") or "").strip()
 
     if not account_name:
         return jsonify({"error": "account_name required"}), 400
 
-    safe_name = account_name.replace("'", "\\'")
+    safe_name = _escape_soql(account_name)
 
-    # Find the account first
     accounts = sf_query(
         f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe_name}%' LIMIT 1"
     )
@@ -284,7 +370,7 @@ def sf_recent_activity():
     records = sf_query(
         f"SELECT Subject, Description, ActivityDate, Status, TaskSubtype "
         f"FROM Task WHERE WhatId = '{account_id}' "
-        f"ORDER BY ActivityDate DESC LIMIT 5"
+        f"ORDER BY ActivityDate DESC NULLS LAST LIMIT 5"
     )
 
     if not records:
@@ -307,36 +393,106 @@ def sf_recent_activity():
     return jsonify({"voice_summary": summary, "records": records})
 
 
-# ── Legacy routes (keep these so existing voice commands don't break) ──────────
+# ── Account list / dashboard ───────────────────────────────────────────────────
 
 @app.route("/accounts")
 def get_accounts():
-    """Returns accounts from Salesforce for pipeline status."""
+    """
+    Returns accounts from Salesforce keyed by Id.
+    Shape kept compatible with voice_commands.py (each entry has `name` and `value`).
+    """
+    if not get_sf_token():
+        return jsonify({
+            "error": "Not authenticated to Salesforce",
+            "login_url": "/salesforce/login",
+        }), 401
+
+    try:
+        limit = max(1, min(int(request.args.get("limit", 50)), 200))
+    except (TypeError, ValueError):
+        limit = 50
+
     records = sf_query(
-        "SELECT Id, Name, AnnualRevenue FROM Account ORDER BY Name LIMIT 50"
+        f"SELECT Id, Name, AnnualRevenue, BillingCity, BillingState, Industry, Phone "
+        f"FROM Account ORDER BY Name LIMIT {limit}"
     )
-    # Reshape to match what voice_commands.py expects
     accounts = {}
     for r in records:
         accounts[r["Id"]] = {
-            "name":  r.get("Name", ""),
-            "value": int(r.get("AnnualRevenue") or 0),
+            "name":     r.get("Name", ""),
+            "value":    int(r.get("AnnualRevenue") or 0),
+            "city":     r.get("BillingCity") or "",
+            "state":    r.get("BillingState") or "",
+            "industry": r.get("Industry") or "",
+            "phone":    r.get("Phone") or "",
         }
     return jsonify(accounts)
+
+
+@app.route("/accounts/list")
+def list_accounts_page():
+    """Tiny HTML dashboard so a human can verify accounts pull from Salesforce."""
+    if not get_sf_token():
+        return (
+            "<h1>Aimee — Salesforce Accounts</h1>"
+            "<p>Not authenticated. "
+            "<a href='/salesforce/login'>Connect to Salesforce</a></p>",
+            200,
+            {"Content-Type": "text/html"},
+        )
+
+    records = sf_query(
+        "SELECT Id, Name, Industry, BillingCity, BillingState, AnnualRevenue "
+        "FROM Account ORDER BY Name LIMIT 100"
+    )
+
+    rows = "".join(
+        f"<tr><td>{r.get('Name','')}</td>"
+        f"<td>{r.get('Industry') or ''}</td>"
+        f"<td>{(r.get('BillingCity') or '')}, {(r.get('BillingState') or '')}</td>"
+        f"<td style='text-align:right'>"
+        f"{('${:,.0f}'.format(r['AnnualRevenue'])) if r.get('AnnualRevenue') else ''}"
+        f"</td></tr>"
+        for r in records
+    )
+    html = (
+        "<!doctype html><html><head><title>Aimee Accounts</title>"
+        "<style>body{font-family:sans-serif;max-width:900px;margin:2em auto;}"
+        "table{width:100%;border-collapse:collapse;}"
+        "th,td{padding:8px;border-bottom:1px solid #eee;text-align:left;}"
+        "th{background:#f5f5f5;}</style></head><body>"
+        f"<h1>Salesforce Accounts ({len(records)})</h1>"
+        "<p><a href='/salesforce/logout' onclick=\"event.preventDefault();"
+        "fetch('/salesforce/logout',{method:'POST'}).then(()=>location.reload());\">"
+        "Log out</a></p>"
+        "<table><thead><tr><th>Name</th><th>Industry</th><th>Location</th>"
+        "<th>Annual Revenue</th></tr></thead>"
+        f"<tbody>{rows or '<tr><td colspan=4>No accounts returned.</td></tr>'}</tbody>"
+        "</table></body></html>"
+    )
+    return html, 200, {"Content-Type": "text/html"}
 
 
 @app.route("/test-tactical-briefing", methods=["POST"])
 def test_tactical_briefing():
     """Generate a simple tactical briefing response."""
-    body  = request.get_json(force=True)
-    query = body.get("query", "")
+    body  = request.get_json(silent=True) or {}
+    _query = body.get("query", "")  # currently unused; reserved for future use
+
+    if not get_sf_token():
+        return jsonify({
+            "main_response":
+                "Tactical briefing not available — Salesforce isn't connected. "
+                "Visit /salesforce/login to authenticate.",
+            "authenticated": False,
+        }), 200
 
     records = sf_query(
         "SELECT Name, BillingCity, Industry FROM Account ORDER BY Name LIMIT 10"
     )
 
     if records:
-        names = ", ".join(r["Name"] for r in records[:3])
+        names = ", ".join(r.get("Name", "") for r in records[:3])
         response_text = (
             f"Here is your tactical briefing. "
             f"You have {len(records)} active accounts in Salesforce. "
@@ -349,13 +505,13 @@ def test_tactical_briefing():
             "Add accounts to your org to see live data."
         )
 
-    return jsonify({"main_response": response_text})
+    return jsonify({"main_response": response_text, "authenticated": True})
 
 
 @app.route("/pitch/generate", methods=["POST"])
 def generate_pitch():
     """Placeholder pitch generator — pulls account name from SF."""
-    body       = request.get_json(force=True)
+    body       = request.get_json(silent=True) or {}
     account_id = body.get("account_id", "")
 
     return jsonify({
@@ -368,21 +524,23 @@ def generate_pitch():
 @app.route("/health")
 def health():
     token = get_sf_token()
-    sf_status = "connected" if (token and token["access_token"]) else "not authenticated"
-    return jsonify({"status": "ok", "salesforce": sf_status})
+    sf_status = "connected" if token else "not authenticated"
+    return jsonify({
+        "status":     "ok",
+        "salesforce": sf_status,
+        "instance":   token["instance_url"] if token else None,
+    })
 
 
 # ── Startup ────────────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     print("🚀 Starting Aimee Flask backend on port 5000...")
-    print("📡 Attempting Salesforce authentication...")
-    token = get_sf_token()
-    if token and token["access_token"]:
-        print(f"✅ Connected to Salesforce: {token['instance_url']}")
+    if SF_CONSUMER_KEY and SF_CONSUMER_SECRET:
+        print("📡 Salesforce Connected App configured.")
+        print("   Visit http://localhost:5000/salesforce/login to authenticate.")
     else:
-        print("⚠️  Salesforce not authenticated.")
-        print("   Option 1: Add SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN to .env")
-        print("   Option 2: Visit http://localhost:5000/salesforce/login in your browser")
+        print("⚠️  SF_CONSUMER_KEY / SF_CONSUMER_SECRET missing — set them in .env.")
+    print("   View accounts at http://localhost:5000/accounts/list")
     print()
     app.run(host="0.0.0.0", port=5000, debug=True)
