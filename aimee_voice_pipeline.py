@@ -209,6 +209,32 @@ class WhisperModelManager:
 model_manager = WhisperModelManager()
 
 
+# Whisper initial_prompt: primes the model with domain-specific vocabulary so it
+# transcribes account names, key contacts, wine terms, and wake-word variants
+# correctly. Mirrors the WHISPER_INITIAL_PROMPT in voice_commands.py so the
+# microphone path (voice_commands) and the /upload path (this file) see the
+# same vocabulary cues.
+WHISPER_INITIAL_PROMPT = (
+    "Wake words: Aimee, Amy, Aimi, Amie. "
+    "Fairfield County wine accounts: Spiga Wine Bar, Barcelona Wine Bar Norwalk, "
+    "Barcelona Wine Bar Fairfield, ELM New Canaan, The Cottage Westport, "
+    "Bin 100 Milford, Blackstones Grille, Blackstones Steakhouse Norwalk, "
+    "Blackstones Steakhouse Stamford, Rebecca's Greenwich, "
+    "LaBella's Fine Wine and Spirits Riverside, 99 Bottles Westport, "
+    "Horseneck Wine and Spirits Greenwich, DB Fine Wines New Canaan, "
+    "Greens Farms Spirit Shop Westport, Acme Liquors New Canaan. "
+    "Key contacts: Dan Camporeale, Chef Misha Ryklin, Chef Ted Gola, "
+    "Chef Luke Venner, Chef Brian Lewis, Mauricio Zapata, Kimberly Zapata, "
+    "David Fieber, Sofia. "
+    "Wine terms: terroir, sommelier, appellation, varietal, cuvée, vintage, "
+    "Burgundy, Champagne, Bordeaux, Rioja, Tuscany, Loire Valley, Napa Valley, "
+    "Cabernet Sauvignon, Pinot Noir, Riesling, Cava, Prosecco, "
+    "biodynamic, natural wine, grower Champagne, négociant, Supertuscan, "
+    "reserve list, allocation, by-the-glass program, premium allocation, "
+    "portfolio, pipeline, briefing, tactical briefing, Salesforce."
+)
+
+
 def preprocess_wine_terminology(text: str) -> str:
     """Convert wine industry shorthand to full terms for better classification"""
 
@@ -345,6 +371,48 @@ _SF_CUSTOMERS = [
     ("labella's",           "LaBella's Fine Wine & Spirits"),
     ("acme",                "Acme Liquors"),
 ]
+
+
+# Address of the dedicated Salesforce Flask backend (tactical_briefing_web.py).
+# The voice pipeline calls this over HTTP rather than importing the in-process
+# salesforce_integration module so a) one auth/token store is shared with the
+# voice_commands.py CLI and b) the pipeline keeps working when SF auth lives
+# behind a separately-managed service.
+SF_API_BASE = os.getenv("SF_API_BASE", "http://localhost:5000")
+
+
+def call_salesforce_account_summary(account_name: str) -> str:
+    """POST to the Flask SF backend and return a voice-ready account summary."""
+    try:
+        resp = requests.post(
+            f"{SF_API_BASE}/salesforce/account",
+            json={"account_name": account_name},
+            timeout=15,
+        )
+    except requests.RequestException as exc:
+        print(f"❌ SF backend unreachable at {SF_API_BASE}: {exc}")
+        return (
+            f"I can't reach the Salesforce backend at {SF_API_BASE}. "
+            f"Make sure tactical_briefing_web.py is running on port 5000."
+        )
+
+    if resp.status_code == 401:
+        return (
+            "Salesforce isn't authenticated yet. "
+            f"Visit {SF_API_BASE}/salesforce/login to connect."
+        )
+
+    try:
+        data = resp.json()
+    except ValueError:
+        return f"Salesforce returned an unexpected response (HTTP {resp.status_code})."
+
+    summary = data.get("voice_summary")
+    if summary:
+        return summary
+    if resp.status_code == 404:
+        return data.get("error") or f"No Salesforce account found for '{account_name}'."
+    return data.get("error") or f"Salesforce lookup failed (HTTP {resp.status_code})."
 
 
 def detect_salesforce_command(transcript: str):
@@ -931,7 +999,9 @@ def transcribe_audio_cached(
     filepath: str, model_type: str = "base", priority: str = "speed"
 ):
     """Transcribe audio with dual model system and caching"""
-    cache_key = f"{model_type}_{hash_file(filepath)}"
+    # Cache key includes a prompt version so transcripts captured without the
+    # Fairfield initial_prompt are re-run when the prompt changes.
+    cache_key = f"{model_type}_v2_{hash_file(filepath)}"
 
     # Check cache first
     if cache_key in transcript_cache:
@@ -978,6 +1048,7 @@ def transcribe_audio_cached(
             beam_size=beam_size,
             best_of=best_of,
             temperature=temperature,
+            initial_prompt=WHISPER_INITIAL_PROMPT,
         )
 
         transcription_time = time.time() - start_time
@@ -1009,7 +1080,7 @@ def verify_transcript_background(filepath: str, base_transcript: str, file_hash:
             if not model_manager.is_available("medium"):
                 return
 
-            medium_cache_key = f"medium_{file_hash}"
+            medium_cache_key = f"medium_v2_{file_hash}"
             if medium_cache_key in transcript_cache:
                 return  # Already verified
 
@@ -1428,16 +1499,12 @@ def process_text():
         tone = detect_tone(transcript.lower())
 
         # ── Salesforce lookup (highest priority, pre-classifier) ──────────
+        # Routes through the Flask SF backend on port 5000 (tactical_briefing_web.py)
+        # rather than importing salesforce_integration in-process, so the same
+        # auth/token store is reused for both the voice pipeline and voice_commands.py.
         sf_account = detect_salesforce_command(transcript)
         if sf_account:
-            if not _SALESFORCE_AVAILABLE:
-                response_text = (
-                    f"Salesforce isn't connected right now. "
-                    f"Can't pull {sf_account}."
-                )
-            else:
-                sf = get_salesforce()
-                response_text = sf.get_account_summary(sf_account)
+            response_text = call_salesforce_account_summary(sf_account)
             audio_filename = generate_aimee_response(response_text)
             processing_time = time.time() - processing_start
             return jsonify({
@@ -1547,7 +1614,37 @@ def upload():
             transcript_lower = transcript.lower()
             tone = detect_tone(transcript_lower)
 
+            # ── Salesforce lookup (highest priority, pre-classifier) ──────
+            # Mirrors /process-text so the voice path also routes "pull X
+            # from Salesforce" to the SF backend instead of local intents.
+            sf_account = detect_salesforce_command(transcript)
+            if sf_account:
+                response_text = call_salesforce_account_summary(sf_account)
+                audio_future = executor.submit(generate_aimee_response, response_text)
+                try:
+                    audio_filename = audio_future.result(timeout=15)
+                except Exception as e:
+                    print(f"Audio generation failed: {e}")
+                    audio_filename = None
+                response_data = {
+                    "transcript": transcript,
+                    "intent": "sf_lookup",
+                    "tone": tone,
+                    "score": 1.0,
+                    "processing_time": round(time.time() - start_time, 2),
+                    "transcription_time": transcript_data.get("transcription_time", 0),
+                    "model_used": transcript_data.get("model_used", "base"),
+                    "cached": transcript_data.get("cached", False),
+                    "tts_provider": "elevenlabs" if elevenlabs_client else "gtts",
+                    "response_text": response_text,
+                }
+                if audio_filename:
+                    response_data["response_audio"] = f"/audio/{audio_filename}"
+                return jsonify(response_data)
+
             # Intent classification (use processed transcript with wine terms)
+            if classifier is None:
+                return jsonify({"error": "Classifier not available"}), 500
             classification = classifier.classify(processed_transcript)
             classification["tone"] = tone
 
@@ -1571,8 +1668,6 @@ def upload():
                     key_details = extract_key_details(transcript, intent)
                     response_text = f"{key_details} I'm Aimee. You talk. I'll catch what counts. No bosses. No filters. Just memory. Let's move."
 
-            # Generate audio response using ElevenLabs (async)
-            audio_future = executor.submit(generate_aimee_response, response_text)
             # Generate audio response using ElevenLabs (async)
             audio_future = executor.submit(generate_aimee_response, response_text)
 
@@ -1603,6 +1698,7 @@ def upload():
                 "tts_provider": "elevenlabs" if elevenlabs_client else "gtts",
                 "enhanced_wine_intelligence": wine_intelligence is not None
                 and hasattr(wine_intelligence, "get_stats"),
+                "response_text": response_text,
                 "enhanced_intelligence": {
                     "fairfield_accounts": 17,
                     "tactical_briefings": True,
@@ -1649,7 +1745,7 @@ def uploaded_file(filename):
 @app.route("/verification-status/<file_hash>")
 def verification_status(file_hash):
     """Check background verification status"""
-    medium_cache_key = f"medium_{file_hash}"
+    medium_cache_key = f"medium_v2_{file_hash}"
     if medium_cache_key in transcript_cache:
         return jsonify(
             {
@@ -2025,4 +2121,11 @@ if __name__ == "__main__":
     print("🎯 Try: 'Brief me on Spiga', 'New Canaan accounts', 'Daily priorities'")
 
     # Start Flask app
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    # Default port is 5001 because the dedicated Salesforce Flask backend
+    # (tactical_briefing_web.py) listens on 5000 and we call it over HTTP via
+    # SF_API_BASE.  Override with VOICE_PIPELINE_PORT if you need a different
+    # port (e.g. when running the pipeline standalone without the SF backend).
+    port = int(os.getenv("VOICE_PIPELINE_PORT", "5001"))
+    print(f"🚀 Voice pipeline listening on http://0.0.0.0:{port}")
+    print(f"📡 Salesforce calls forwarded to {SF_API_BASE}")
+    app.run(host="0.0.0.0", port=port, debug=True)
