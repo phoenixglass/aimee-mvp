@@ -12,6 +12,7 @@ Usage:
 import os
 import re
 import time
+import difflib
 import secrets
 import tempfile
 from urllib.parse import urlencode
@@ -39,6 +40,11 @@ _sf_token = {
     "refresh_token": None,
     "instance_url":  None,
 }
+
+# Cache of all account names for fuzzy matching (refreshed on demand)
+_account_name_cache = []
+_account_cache_time = 0
+ACCOUNT_CACHE_TTL   = 300  # seconds
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -129,15 +135,79 @@ def _escape_soql(value: str) -> str:
     return value.replace("\\", "\\\\").replace("'", "\\'")
 
 
+def _get_all_account_names() -> list:
+    """Return cached list of all Salesforce account names, refreshing every 5 minutes."""
+    global _account_name_cache, _account_cache_time
+    if time.time() - _account_cache_time > ACCOUNT_CACHE_TTL:
+        records = sf_query("SELECT Name FROM Account ORDER BY Name LIMIT 500")
+        _account_name_cache = [r.get("Name", "") for r in records if r.get("Name")]
+        _account_cache_time = time.time()
+        print(f"Account name cache refreshed: {len(_account_name_cache)} accounts")
+    return _account_name_cache
+
+
+def _fuzzy_find_account(spoken_name: str) -> str:
+    """
+    Given a possibly-misspelled account name from voice transcription,
+    return the best matching Salesforce account name, or None.
+    Uses difflib with a 0.5 cutoff — catches most transcription errors.
+    """
+    all_names = _get_all_account_names()
+    if not all_names:
+        return None
+
+    # Try exact substring match first (fast path)
+    lower = spoken_name.lower()
+    for name in all_names:
+        if lower in name.lower() or name.lower() in lower:
+            return name
+
+    # Fuzzy match against full account names
+    matches = difflib.get_close_matches(spoken_name, all_names, n=1, cutoff=0.5)
+    if matches:
+        print(f"Fuzzy match: '{spoken_name}' -> '{matches[0]}'")
+        return matches[0]
+
+    # Fuzzy match against individual words in each account name
+    words = [w for w in spoken_name.split() if len(w) > 3]
+    for word in words:
+        word_matches = difflib.get_close_matches(
+            word,
+            [w for name in all_names for w in name.split()],
+            n=1, cutoff=0.7
+        )
+        if word_matches:
+            matched_word = word_matches[0]
+            for name in all_names:
+                if matched_word.lower() in name.lower():
+                    print(f"Fuzzy word match: '{spoken_name}' -> '{name}' via '{matched_word}'")
+                    return name
+
+    return None
+
+
 # ── Voice intelligence ─────────────────────────────────────────────────────────
 
 def _sf_account_summary(account_name: str) -> str:
-    """Query Salesforce for an account and return a voice-ready summary."""
+    """Query Salesforce for an account and return a voice-ready summary.
+    Falls back to fuzzy matching if exact search returns nothing.
+    """
     safe = _escape_soql(account_name)
     records = sf_query(
         f"SELECT Name, Phone, BillingCity, BillingState, Industry, AnnualRevenue, Description "
         f"FROM Account WHERE Name LIKE '%{safe}%' LIMIT 3"
     )
+
+    # Fuzzy fallback
+    if not records:
+        best_match = _fuzzy_find_account(account_name)
+        if best_match:
+            safe_match = _escape_soql(best_match)
+            records = sf_query(
+                f"SELECT Name, Phone, BillingCity, BillingState, Industry, AnnualRevenue, Description "
+                f"FROM Account WHERE Name = '{safe_match}' LIMIT 1"
+            )
+
     if not records:
         return None
 
@@ -160,12 +230,11 @@ def _sf_account_summary(account_name: str) -> str:
         summary += f" Notes: {desc[:150]}."
     if len(records) > 1:
         others = ", ".join(r.get("Name", "") for r in records[1:])
-        summary += f" Similar accounts also found: {others}."
+        summary += f" Similar accounts: {others}."
     return summary
 
 
 def _sf_pipeline_summary() -> str:
-    """Query Salesforce for accounts and return a pipeline summary."""
     records = sf_query(
         "SELECT Name, AnnualRevenue, BillingCity FROM Account ORDER BY AnnualRevenue DESC NULLS LAST LIMIT 10"
     )
@@ -183,12 +252,10 @@ def _sf_pipeline_summary() -> str:
 
 
 def _generate_response(text: str):
-    """Match text to intent, query Salesforce if connected, return a response."""
     t = text.lower()
     start = time.time()
     sf_connected = get_sf_token() is not None
 
-    # Account briefing - try Salesforce first
     account_match = re.search(
         r'(?:brief(?:ing)?(?:\s+me)?(?:\s+on)?|tell(?:\s+me)?(?:\s+about)?|info(?:rmation)?(?:\s+on)?|about|pull|what.*know.*about)\s+(.+?)\s*(?:\?|$)',
         t
@@ -202,22 +269,16 @@ def _generate_response(text: str):
 
     if re.search(r'today|daily|focus|priorit', t):
         if sf_connected:
-            records = sf_query(
-                "SELECT Name, BillingCity FROM Account ORDER BY LastModifiedDate DESC LIMIT 5"
-            )
+            records = sf_query("SELECT Name FROM Account ORDER BY LastModifiedDate DESC LIMIT 5")
             if records:
                 names = ", ".join(r.get("Name", "") for r in records[:3])
-                response = (
-                    f"Based on your Salesforce data, your most recently active accounts are: {names}. "
-                    "Review these accounts and follow up on any open opportunities today."
-                )
-                return response, "daily_briefing", 0.92, round(time.time() - start, 2)
-        response = (
-            "Your top priorities today: LaBella's Fine Wine - Sofia is overdue at day 23 "
-            "of the 21-day cycle. Barcelona Wine Bar - Chef Misha needs Rioja samples. "
-            "Spiga Wine Bar - Dan Camporeale expects an allocation call."
-        )
-        return response, "daily_briefing", 0.88, round(time.time() - start, 2)
+                return (f"Based on your Salesforce data, your most recently active accounts are: {names}. "
+                        "Review these and follow up on any open opportunities today.",
+                        "daily_briefing", 0.92, round(time.time() - start, 2))
+        return ("Your top priorities today: LaBella's Fine Wine - Sofia is overdue at day 23 "
+                "of the 21-day cycle. Barcelona Wine Bar - Chef Misha needs Rioja samples. "
+                "Spiga Wine Bar - Dan Camporeale expects an allocation call.",
+                "daily_briefing", 0.88, round(time.time() - start, 2))
 
     if re.search(r'barcelona', t):
         if sf_connected:
@@ -225,7 +286,8 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
         return ("Barcelona Wine Bar Norwalk: Chef Misha Ryklin is your key contact. "
-                "Running low on rare Rioja. Annual spend estimate $35,000."), "account_briefing", 0.88, round(time.time() - start, 2)
+                "Running low on rare Rioja. Annual spend estimate $35,000.",
+                "account_briefing", 0.88, round(time.time() - start, 2))
 
     if re.search(r'spiga', t):
         if sf_connected:
@@ -233,7 +295,8 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
         return ("Spiga Wine Bar: Dan Camporeale is your contact. Italian-focused program. "
-                "Annual spend estimate $28,000."), "account_briefing", 0.88, round(time.time() - start, 2)
+                "Annual spend estimate $28,000.",
+                "account_briefing", 0.88, round(time.time() - start, 2))
 
     if re.search(r'labella|la bella', t):
         if sf_connected:
@@ -241,7 +304,8 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
         return ("LaBella's Fine Wine, Riverside. Sofia Martinez is your contact. "
-                "Bordeaux allocation overdue - day 23 of 21-day cycle. Call today."), "account_briefing", 0.88, round(time.time() - start, 2)
+                "Bordeaux allocation overdue - day 23 of 21-day cycle. Call today.",
+                "account_briefing", 0.88, round(time.time() - start, 2))
 
     if re.search(r'bin.?100', t):
         if sf_connected:
@@ -249,7 +313,8 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
         return ("Bin 100 Milford: Strong Napa Cab program. Italian section underdeveloped. "
-                "Annual spend estimate $22,000."), "account_briefing", 0.88, round(time.time() - start, 2)
+                "Annual spend estimate $22,000.",
+                "account_briefing", 0.88, round(time.time() - start, 2))
 
     if re.search(r'\belm\b|new canaan', t):
         if sf_connected:
@@ -257,7 +322,8 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
         return ("ELM New Canaan: Farm-to-table, strong natural wine interest. "
-                "Annual spend estimate $18,000."), "account_briefing", 0.85, round(time.time() - start, 2)
+                "Annual spend estimate $18,000.",
+                "account_briefing", 0.85, round(time.time() - start, 2))
 
     if re.search(r'pipeline|total value|all accounts', t):
         if sf_connected:
@@ -265,36 +331,40 @@ def _generate_response(text: str):
             if sf_summary:
                 return sf_summary, "pipeline_status", 0.95, round(time.time() - start, 2)
         return ("Total pipeline across 17 Fairfield County accounts is approximately $450,000 annually. "
-                "Top accounts: Barcelona $35,000, Spiga $28,000, LaBella's $24,000."), "pipeline_status", 0.88, round(time.time() - start, 2)
+                "Top accounts: Barcelona $35,000, Spiga $28,000, LaBella's $24,000.",
+                "pipeline_status", 0.88, round(time.time() - start, 2))
 
     if re.search(r'urgent|hot|immediate', t):
         return ("Three urgent priorities: LaBella's - Sofia overdue at day 23. "
                 "Barcelona Wine Bar - Rioja samples needed for Chef Misha. "
-                "Spiga Wine Bar - Dan Camporeale expects allocation call."), "urgent_priorities", 0.91, round(time.time() - start, 2)
+                "Spiga Wine Bar - Dan Camporeale expects allocation call.",
+                "urgent_priorities", 0.91, round(time.time() - start, 2))
 
     if re.search(r'pitch|talking point|meeting', t):
         m = re.search(r'(?:for|about)\s+(.+?)(?:\s+meeting)?$', t)
         account = m.group(1) if m else "your account"
         return (f"Tactical pitch for {account}: Lead with allocation scarcity. "
-                "Reference program gaps. Offer exclusive access. "
-                "Close with a specific ask."), "generate_pitch", 0.85, round(time.time() - start, 2)
+                "Reference program gaps. Offer exclusive access. Close with a specific ask.",
+                "generate_pitch", 0.85, round(time.time() - start, 2))
 
     if re.search(r'missing|gap|wine list', t):
         m = re.search(r'(?:from|for|at)\s+(.+?)(?:\'s)?\s*(?:wine list|list)?$', t)
         account = m.group(1) if m else "that account"
         return (f"Gap analysis for {account}: Likely missing premium Burgundy, "
-                "Super Tuscan options, and high-end domestic Pinot Noir."), "gap_analysis", 0.83, round(time.time() - start, 2)
+                "Super Tuscan options, and high-end domestic Pinot Noir.",
+                "gap_analysis", 0.83, round(time.time() - start, 2))
 
     if re.search(r'distributor|connecticut', t):
         return ("Key Connecticut distributors: Brescome Barton dominates. "
                 "Wine Warehouse is aggressive in Fairfield County. "
-                "Your edge is personalized service and allocation access."), "distributor_info", 0.82, round(time.time() - start, 2)
+                "Your edge is personalized service and allocation access.",
+                "distributor_info", 0.82, round(time.time() - start, 2))
 
     return ("I'm Aimee, your Connecticut wine market intelligence assistant. "
             "Ask about account briefings, daily priorities, pipeline, or pitches. "
             + ("Salesforce is connected - ask me to pull any account by name!" if sf_connected
-               else "Connect Salesforce at /salesforce/login for live account data.")
-            ), "default", 0.5, round(time.time() - start, 2)
+               else "Connect Salesforce at /salesforce/login for live account data."),
+            "default", 0.5, round(time.time() - start, 2))
 
 
 def _elevenlabs_tts(text):
@@ -335,9 +405,7 @@ def process_text():
     text = (body.get("text") or "").strip()
     if not text:
         return jsonify({"error": "text required"}), 400
-
     response_text, intent, score, processing_time = _generate_response(text)
-
     audio_url = None
     audio_bytes = _elevenlabs_tts(response_text)
     if audio_bytes:
@@ -345,7 +413,6 @@ def process_text():
         with open(os.path.join("uploads", filename), "wb") as f:
             f.write(audio_bytes)
         audio_url = f"/audio/{filename}"
-
     return jsonify({
         "response_text": response_text,
         "response_audio": audio_url,
@@ -505,7 +572,7 @@ def sf_account():
 def sf_opportunities():
     body         = request.get_json(silent=True) or {}
     account_name = (body.get("account_name") or "").strip()
-    if not account_name:
+    if not account_name:   
         return jsonify({"error": "account_name required"}), 400
     safe_name = _escape_soql(account_name)
     records = sf_query(
@@ -539,9 +606,7 @@ def sf_log_call():
     if not account_name:
         return jsonify({"error": "account_name required"}), 400
     safe_name = _escape_soql(account_name)
-    accounts = sf_query(
-        f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe_name}%' LIMIT 1"
-    )
+    accounts = sf_query(f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe_name}%' LIMIT 1")
     if not accounts:
         return jsonify({"error": f"Account '{account_name}' not found in Salesforce"}), 404
     task_id = sf_create("Task", {
