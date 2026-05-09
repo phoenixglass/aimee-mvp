@@ -47,9 +47,11 @@ _sf_token = {
 _account_name_cache = []
 _account_cache_time = 0
 ACCOUNT_CACHE_TTL   = 300  # seconds
-ACTIVITY_KEYWORDS   = r"(?:events?|calls?|emails?)"
-TIME_KEYWORDS       = r"(?:upcoming|next|today)"
+ACTIVITY_KEYWORDS_PATTERN = r"(?:events?|calls?|emails?)"
+TIME_KEYWORDS_PATTERN     = r"(?:upcoming|next|today)"
 MAX_UPCOMING_ACTIVITY_ITEMS = 8
+MAX_ACCOUNT_SEARCH_RESULTS = 3
+MAX_CONTACT_RESULTS = 3
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -197,7 +199,8 @@ def _find_account_record(account_name: str) -> Optional[dict]:
     """Return the best matching Salesforce account record (Id, Name) for the input name."""
     safe = _escape_soql(account_name)
     records = sf_query(
-        f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe}%' ORDER BY LastModifiedDate DESC LIMIT 3"
+        f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe}%' "
+        f"ORDER BY LastModifiedDate DESC LIMIT {MAX_ACCOUNT_SEARCH_RESULTS}"
     )
     if records:
         return records[0]
@@ -247,7 +250,8 @@ def _sf_account_contact_summary(account_name: str) -> Optional[str]:
     safe_account_id = _escape_soql(account_id)
     contacts = sf_query(
         f"SELECT Name, Title, Phone, MobilePhone, Email "
-        f"FROM Contact WHERE AccountId = '{safe_account_id}' ORDER BY LastModifiedDate DESC LIMIT 3"
+        f"FROM Contact WHERE AccountId = '{safe_account_id}' "
+        f"ORDER BY LastModifiedDate DESC LIMIT {MAX_CONTACT_RESULTS}"
     )
     if not contacts:
         return f"I couldn't find a contact for {canonical_name} in Salesforce."
@@ -305,10 +309,11 @@ def _sf_upcoming_activity_summary() -> str:
     items.sort(key=lambda x: x["sort"])
     top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
     lines = [f"{item['kind'].title()}: {item['title']} on {item['date']}" for item in top_items]
-    return (
-        f"You have {len(items)} upcoming activities in Salesforce. "
-        f"Here are the next {len(top_items)}: " + ". ".join(lines) + "."
-    )
+    if len(items) > len(top_items):
+        prefix = f"You have {len(items)} upcoming activities in Salesforce. Here are the next {len(top_items)}: "
+    else:
+        prefix = f"You have {len(top_items)} upcoming activities in Salesforce: "
+    return prefix + ". ".join(lines) + "."
 
 
 def _sf_account_summary(account_name: str) -> str:
@@ -403,8 +408,8 @@ def _generate_response(text: str):
             round(time.time() - start, 2),
         )
 
-    if re.search(rf"{TIME_KEYWORDS}.*{ACTIVITY_KEYWORDS}", t) or re.search(
-        rf"{ACTIVITY_KEYWORDS}.*{TIME_KEYWORDS}", t
+    if re.search(rf"{TIME_KEYWORDS_PATTERN}.*{ACTIVITY_KEYWORDS_PATTERN}", t) or re.search(
+        rf"{ACTIVITY_KEYWORDS_PATTERN}.*{TIME_KEYWORDS_PATTERN}", t
     ):
         if sf_connected:
             summary = _sf_upcoming_activity_summary()
