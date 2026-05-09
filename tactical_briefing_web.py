@@ -224,6 +224,7 @@ def _format_sf_datetime(value: str) -> str:
     if "T" not in value:
         return value
     try:
+        # Salesforce commonly returns UTC datetimes with a trailing "Z".
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return dt.strftime("%Y-%m-%d %I:%M %p")
     except ValueError:
@@ -319,10 +320,10 @@ def _sf_upcoming_activity_summary() -> str:
         else:
             lines.append(f"{item['kind'].title()}: {item['title']} on {item['date']}")
     if len(items) > len(top_items):
-        prefix = f"You have {len(items)} upcoming activities in Salesforce. Here are the next {len(top_items)}: "
+        intro = f"You have {len(items)} upcoming activities in Salesforce. Here are the next {len(top_items)}: "
     else:
-        prefix = f"You have {len(top_items)} upcoming activities in Salesforce: "
-    return prefix + ". ".join(lines) + "."
+        intro = f"You have {len(top_items)} upcoming activities in Salesforce: "
+    return intro + ". ".join(lines) + "."
 
 
 def _sf_account_summary(account_name: str) -> str:
