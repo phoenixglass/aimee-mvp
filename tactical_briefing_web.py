@@ -46,6 +46,8 @@ _sf_token = {
 _account_name_cache = []
 _account_cache_time = 0
 ACCOUNT_CACHE_TTL   = 300  # seconds
+ACTIVITY_KEYWORDS   = r"(?:events?|calls?|emails?)"
+TIME_KEYWORDS       = r"(?:upcoming|next|today)"
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -215,7 +217,19 @@ def _format_sf_datetime(value: str) -> str:
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return dt.strftime("%Y-%m-%d %I:%M %p")
     except ValueError:
+        for fmt in ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                dt = datetime.strptime(value, fmt)
+                return dt.strftime("%Y-%m-%d %I:%M %p")
+            except ValueError:
+                continue
         return value
+
+
+def _normalize_account_name(value: str) -> str:
+    name = value.strip(" .?!,'\"")
+    name = re.sub(r"\s+(?:in|on)\s+(?:salesforce|crm|the system)\s*$", "", name, flags=re.IGNORECASE)
+    return name.strip()
 
 
 def _sf_account_contact_summary(account_name: str) -> str:
@@ -225,9 +239,10 @@ def _sf_account_contact_summary(account_name: str) -> str:
 
     account_id = account.get("Id")
     canonical_name = account.get("Name") or account_name
+    safe_account_id = _escape_soql(account_id)
     contacts = sf_query(
         f"SELECT Name, Title, Phone, MobilePhone, Email "
-        f"FROM Contact WHERE AccountId = '{account_id}' ORDER BY LastModifiedDate DESC LIMIT 3"
+        f"FROM Contact WHERE AccountId = '{safe_account_id}' ORDER BY LastModifiedDate DESC LIMIT 3"
     )
     if not contacts:
         return f"I couldn't find a contact for {canonical_name} in Salesforce."
@@ -360,7 +375,14 @@ def _generate_response(text: str):
         t,
     )
     if contact_match:
-        account_name = contact_match.group(1).strip()
+        account_name = _normalize_account_name(contact_match.group(1))
+        if not account_name:
+            return (
+                "Please tell me which account you want the contact for.",
+                "account_contact_lookup",
+                0.7,
+                round(time.time() - start, 2),
+            )
         if sf_connected:
             summary = _sf_account_contact_summary(account_name)
             if summary:
@@ -372,8 +394,8 @@ def _generate_response(text: str):
             round(time.time() - start, 2),
         )
 
-    if re.search(r"(upcoming|next|today).*(event|events|call|calls|email|emails)", t) or re.search(
-        r"(event|events|call|calls|email|emails).*(upcoming|next|today)", t
+    if re.search(rf"{TIME_KEYWORDS}.*{ACTIVITY_KEYWORDS}", t) or re.search(
+        rf"{ACTIVITY_KEYWORDS}.*{TIME_KEYWORDS}", t
     ):
         if sf_connected:
             summary = _sf_upcoming_activity_summary()
