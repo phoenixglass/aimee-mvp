@@ -15,7 +15,7 @@ import time
 import difflib
 import secrets
 import tempfile
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -223,6 +223,25 @@ def _format_sf_datetime(value: str) -> str:
         return "date not set"
     if "T" not in value:
         return value
+
+
+def _activity_sort_key(value: str) -> datetime:
+    if not value:
+        return datetime.max
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+    except ValueError:
+        for fmt in DATETIME_PARSE_FORMATS:
+            try:
+                dt = datetime.strptime(value, fmt)
+                return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+            except ValueError:
+                continue
+        try:
+            return datetime.strptime(value, "%Y-%m-%d")
+        except ValueError:
+            return datetime.max
     try:
         # Salesforce commonly returns UTC datetimes with a trailing "Z".
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
@@ -311,7 +330,7 @@ def _sf_upcoming_activity_summary() -> str:
     if not items:
         return "You have no upcoming events, calls, or emails in Salesforce."
 
-    items.sort(key=lambda x: x["sort"])
+    items.sort(key=lambda x: _activity_sort_key(x["sort"]))
     top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
     lines = []
     for item in top_items:
