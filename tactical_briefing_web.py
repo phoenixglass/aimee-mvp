@@ -223,6 +223,18 @@ def _format_sf_datetime(value: str) -> str:
         return "date not set"
     if "T" not in value:
         return value
+    try:
+        # Salesforce commonly returns UTC datetimes with a trailing "Z".
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d %I:%M %p")
+    except ValueError:
+        for fmt in DATETIME_PARSE_FORMATS:
+            try:
+                dt = datetime.strptime(value, fmt)
+                return dt.strftime("%Y-%m-%d %I:%M %p")
+            except ValueError:
+                continue
+        return value
 
 
 def _activity_sort_key(value: str) -> datetime:
@@ -242,18 +254,6 @@ def _activity_sort_key(value: str) -> datetime:
             return datetime.strptime(value, "%Y-%m-%d")
         except ValueError:
             return datetime.max
-    try:
-        # Salesforce commonly returns UTC datetimes with a trailing "Z".
-        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
-        return dt.strftime("%Y-%m-%d %I:%M %p")
-    except ValueError:
-        for fmt in DATETIME_PARSE_FORMATS:
-            try:
-                dt = datetime.strptime(value, fmt)
-                return dt.strftime("%Y-%m-%d %I:%M %p")
-            except ValueError:
-                continue
-        return value
 
 
 def _normalize_account_name(value: str) -> str:
