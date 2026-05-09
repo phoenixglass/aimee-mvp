@@ -52,6 +52,8 @@ TIME_KEYWORDS_PATTERN     = r"(?:upcoming|next|today)"
 MAX_UPCOMING_ACTIVITY_ITEMS = 8
 MAX_ACCOUNT_SEARCH_RESULTS = 3
 MAX_CONTACT_RESULTS = 3
+CONTACT_QUERY_PATTERN = r"(?:who(?:'s| is)?(?:\s+the)?\s+)?contact(?:\s+for)?\s+(.+?)\s*(?:\?|$)"
+DATETIME_PARSE_FORMATS = ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S")
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -223,7 +225,7 @@ def _format_sf_datetime(value: str) -> str:
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
         return dt.strftime("%Y-%m-%d %I:%M %p")
     except ValueError:
-        for fmt in ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S"):
+        for fmt in DATETIME_PARSE_FORMATS:
             try:
                 dt = datetime.strptime(value, fmt)
                 return dt.strftime("%Y-%m-%d %I:%M %p")
@@ -292,7 +294,7 @@ def _sf_upcoming_activity_summary() -> str:
             "kind": "event",
             "title": event.get("Subject") or "Untitled event",
             "date": _format_sf_datetime(date_value),
-            "sort": date_value or "",
+            "sort": date_value or "9999-12-31T23:59:59",
         })
     for task in tasks:
         subtype = (task.get("TaskSubtype") or "task").lower()
@@ -300,7 +302,7 @@ def _sf_upcoming_activity_summary() -> str:
             "kind": subtype,
             "title": task.get("Subject") or "Untitled task",
             "date": _format_sf_datetime(task.get("ActivityDate")),
-            "sort": task.get("ActivityDate") or "",
+            "sort": task.get("ActivityDate") or "9999-12-31",
         })
 
     if not items:
@@ -384,10 +386,7 @@ def _generate_response(text: str):
     start = time.time()
     sf_connected = get_sf_token() is not None
 
-    contact_match = re.search(
-        r"(?:who(?:'s| is)?(?:\s+the)?\s+)?contact(?:\s+for)?\s+(.+?)\s*(?:\?|$)",
-        t,
-    )
+    contact_match = re.search(CONTACT_QUERY_PATTERN, t)
     if contact_match:
         account_name = _normalize_account_name(contact_match.group(1))
         if not account_name:
