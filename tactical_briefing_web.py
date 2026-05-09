@@ -48,6 +48,7 @@ _account_cache_time = 0
 ACCOUNT_CACHE_TTL   = 300  # seconds
 ACTIVITY_KEYWORDS   = r"(?:events?|calls?|emails?)"
 TIME_KEYWORDS       = r"(?:upcoming|next|today)"
+MAX_UPCOMING_ACTIVITY_ITEMS = 8
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -265,14 +266,14 @@ def _sf_account_contact_summary(account_name: str) -> str:
 def _sf_upcoming_activity_summary() -> str:
     events = sf_query(
         "SELECT Subject, StartDateTime, ActivityDate "
-        "FROM Event WHERE StartDateTime >= TODAY ORDER BY StartDateTime ASC LIMIT 10"
+        f"FROM Event WHERE StartDateTime >= TODAY ORDER BY StartDateTime ASC LIMIT {MAX_UPCOMING_ACTIVITY_ITEMS}"
     )
     tasks = sf_query(
         "SELECT Subject, ActivityDate, TaskSubtype, Status "
         "FROM Task WHERE ActivityDate >= TODAY "
         "AND Status != 'Completed' "
         "AND (TaskSubtype = 'Call' OR TaskSubtype = 'Email') "
-        "ORDER BY ActivityDate ASC LIMIT 10"
+        f"ORDER BY ActivityDate ASC LIMIT {MAX_UPCOMING_ACTIVITY_ITEMS}"
     )
 
     items = []
@@ -297,9 +298,9 @@ def _sf_upcoming_activity_summary() -> str:
         return "You have no upcoming events, calls, or emails in Salesforce."
 
     items.sort(key=lambda x: x["sort"])
-    top_items = items[:8]
+    top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
     lines = [f"{item['kind'].title()}: {item['title']} on {item['date']}" for item in top_items]
-    return f"You have {len(items)} upcoming activities in Salesforce. " + " ".join(lines)
+    return f"You have {len(items)} upcoming activities in Salesforce. " + ". ".join(lines) + "."
 
 
 def _sf_account_summary(account_name: str) -> str:
