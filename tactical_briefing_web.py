@@ -52,8 +52,10 @@ TIME_KEYWORDS_PATTERN     = r"(?:upcoming|next|today)"
 MAX_UPCOMING_ACTIVITY_ITEMS = 8
 MAX_ACCOUNT_SEARCH_RESULTS = 3
 MAX_CONTACT_RESULTS = 3
-CONTACT_QUERY_PATTERN = r"(?:who(?:'s| is)?(?:\s+the)?\s+)?contact(?:\s+for)?\s+(.+?)\s*(?:\?|$)"
+CONTACT_QUERY_PATTERN = r"(?:who(?:'s| is)?(?:\s+the)?\s+)?contact(?:\s+for)?\s+([^\?]+)"
 DATETIME_PARSE_FORMATS = ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S")
+FALLBACK_SORT_DATETIME = "9999-12-31T23:59:59"
+UPCOMING_ACTIVITY_QUERY_PATTERN = rf"(?:{TIME_KEYWORDS_PATTERN}.*{ACTIVITY_KEYWORDS_PATTERN}|{ACTIVITY_KEYWORDS_PATTERN}.*{TIME_KEYWORDS_PATTERN})"
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -294,7 +296,7 @@ def _sf_upcoming_activity_summary() -> str:
             "kind": "event",
             "title": event.get("Subject") or "Untitled event",
             "date": _format_sf_datetime(date_value),
-            "sort": date_value or "9999-12-31T23:59:59",
+            "sort": date_value or FALLBACK_SORT_DATETIME,
         })
     for task in tasks:
         subtype = (task.get("TaskSubtype") or "task").lower()
@@ -302,7 +304,7 @@ def _sf_upcoming_activity_summary() -> str:
             "kind": subtype,
             "title": task.get("Subject") or "Untitled task",
             "date": _format_sf_datetime(task.get("ActivityDate")),
-            "sort": task.get("ActivityDate") or "9999-12-31",
+            "sort": task.get("ActivityDate") or FALLBACK_SORT_DATETIME,
         })
 
     if not items:
@@ -310,7 +312,12 @@ def _sf_upcoming_activity_summary() -> str:
 
     items.sort(key=lambda x: x["sort"])
     top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
-    lines = [f"{item['kind'].title()}: {item['title']} on {item['date']}" for item in top_items]
+    lines = []
+    for item in top_items:
+        if item["date"] == "date not set":
+            lines.append(f"{item['kind'].title()}: {item['title']} (date not specified)")
+        else:
+            lines.append(f"{item['kind'].title()}: {item['title']} on {item['date']}")
     if len(items) > len(top_items):
         prefix = f"You have {len(items)} upcoming activities in Salesforce. Here are the next {len(top_items)}: "
     else:
@@ -407,9 +414,7 @@ def _generate_response(text: str):
             round(time.time() - start, 2),
         )
 
-    if re.search(rf"{TIME_KEYWORDS_PATTERN}.*{ACTIVITY_KEYWORDS_PATTERN}", t) or re.search(
-        rf"{ACTIVITY_KEYWORDS_PATTERN}.*{TIME_KEYWORDS_PATTERN}", t
-    ):
+    if re.search(UPCOMING_ACTIVITY_QUERY_PATTERN, t):
         if sf_connected:
             summary = _sf_upcoming_activity_summary()
             if summary:
