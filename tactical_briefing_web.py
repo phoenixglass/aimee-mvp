@@ -15,6 +15,8 @@ import time
 import difflib
 import secrets
 import tempfile
+from datetime import datetime, timezone
+from typing import Optional
 from urllib.parse import urlencode
 
 from flask import Flask, request, jsonify, redirect, session, send_from_directory, render_template
@@ -45,6 +47,15 @@ _sf_token = {
 _account_name_cache = []
 _account_cache_time = 0
 ACCOUNT_CACHE_TTL   = 300  # seconds
+ACTIVITY_KEYWORDS_PATTERN = r"(?:events?|calls?|emails?)"
+TIME_KEYWORDS_PATTERN     = r"(?:upcoming|next|today)"
+MAX_UPCOMING_ACTIVITY_ITEMS = 8
+MAX_ACCOUNT_SEARCH_RESULTS = 3
+MAX_CONTACT_RESULTS = 3
+CONTACT_QUERY_PATTERN = r"(?:who(?:'s| is)?(?:\s+the)?\s+)?contact(?:\s+for)?\s+([^\?]+)"
+DATETIME_PARSE_FORMATS = ("%Y-%m-%dT%H:%M:%S.%f%z", "%Y-%m-%dT%H:%M:%S%z", "%Y-%m-%dT%H:%M:%S.%f", "%Y-%m-%dT%H:%M:%S")
+FALLBACK_SORT_DATETIME = "9999-12-31T23:59:59"
+UPCOMING_ACTIVITY_QUERY_PATTERN = rf"(?:{TIME_KEYWORDS_PATTERN}.*{ACTIVITY_KEYWORDS_PATTERN}|{ACTIVITY_KEYWORDS_PATTERN}.*{TIME_KEYWORDS_PATTERN})"
 
 
 # ── Salesforce helpers ─────────────────────────────────────────────────────────
@@ -188,6 +199,152 @@ def _fuzzy_find_account(spoken_name: str) -> str:
 
 # ── Voice intelligence ─────────────────────────────────────────────────────────
 
+def _find_account_record(account_name: str) -> Optional[dict]:
+    """Return the best matching Salesforce account record (Id, Name) for the input name."""
+    safe = _escape_soql(account_name)
+    records = sf_query(
+        f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe}%' "
+        f"ORDER BY LastModifiedDate DESC LIMIT {MAX_ACCOUNT_SEARCH_RESULTS}"
+    )
+    if records:
+        return records[0]
+
+    best_match = _fuzzy_find_account(account_name)
+    if not best_match:
+        return None
+
+    safe_match = _escape_soql(best_match)
+    records = sf_query(f"SELECT Id, Name FROM Account WHERE Name = '{safe_match}' LIMIT 1")
+    return records[0] if records else None
+
+
+def _format_sf_datetime(value: str) -> str:
+    if not value:
+        return "date not set"
+    if "T" not in value:
+        return value
+    try:
+        # Salesforce commonly returns UTC datetimes with a trailing "Z".
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return dt.strftime("%Y-%m-%d %I:%M %p")
+    except ValueError:
+        for fmt in DATETIME_PARSE_FORMATS:
+            try:
+                dt = datetime.strptime(value, fmt)
+                return dt.strftime("%Y-%m-%d %I:%M %p")
+            except ValueError:
+                continue
+        return value
+
+
+def _activity_sort_key(value: str) -> datetime:
+    if not value:
+        return datetime.max
+    try:
+        dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+    except ValueError:
+        for fmt in DATETIME_PARSE_FORMATS:
+            try:
+                dt = datetime.strptime(value, fmt)
+                return dt.astimezone(timezone.utc).replace(tzinfo=None) if dt.tzinfo else dt
+            except ValueError:
+                continue
+        try:
+            return datetime.strptime(value, "%Y-%m-%d")
+        except ValueError:
+            return datetime.max
+
+
+def _normalize_account_name(value: str) -> str:
+    """Trim punctuation and trailing CRM context phrases from spoken account names."""
+    name = value.strip(" .?!,'\"")
+    name = re.sub(r"\s+(?:in|on)\s+(?:salesforce|crm|the system)\s*$", "", name, flags=re.IGNORECASE)
+    return name.strip()
+
+
+def _sf_account_contact_summary(account_name: str) -> Optional[str]:
+    """Return a voice summary of the primary Salesforce contact for the given account."""
+    account = _find_account_record(account_name)
+    if not account:
+        return None
+
+    account_id = account.get("Id")
+    canonical_name = account.get("Name") or account_name
+    safe_account_id = _escape_soql(account_id)
+    contacts = sf_query(
+        f"SELECT Name, Title, Phone, MobilePhone, Email "
+        f"FROM Contact WHERE AccountId = '{safe_account_id}' "
+        f"ORDER BY LastModifiedDate DESC LIMIT {MAX_CONTACT_RESULTS}"
+    )
+    if not contacts:
+        return f"I couldn't find a contact for {canonical_name} in Salesforce."
+
+    primary = contacts[0]
+    name = primary.get("Name") or "Unknown contact"
+    title = primary.get("Title") or "title not listed"
+    phone = primary.get("Phone") or primary.get("MobilePhone") or "phone not listed"
+    email = primary.get("Email") or "email not listed"
+    summary = (
+        f"The contact for {canonical_name} is {name}. "
+        f"Title: {title}. Phone: {phone}. Email: {email}."
+    )
+    if len(contacts) > 1:
+        others = ", ".join(c.get("Name", "Unknown") for c in contacts[1:])
+        summary += f" Additional contacts on file: {others}."
+    return summary
+
+
+def _sf_upcoming_activity_summary() -> str:
+    """Return a voice summary of upcoming Salesforce events and open call/email tasks."""
+    events = sf_query(
+        "SELECT Subject, StartDateTime, ActivityDate "
+        f"FROM Event WHERE StartDateTime >= TODAY ORDER BY StartDateTime ASC LIMIT {MAX_UPCOMING_ACTIVITY_ITEMS}"
+    )
+    tasks = sf_query(
+        "SELECT Subject, ActivityDate, TaskSubtype, Status "
+        "FROM Task WHERE ActivityDate >= TODAY "
+        "AND Status != 'Completed' "
+        "AND (TaskSubtype = 'Call' OR TaskSubtype = 'Email') "
+        f"ORDER BY ActivityDate ASC LIMIT {MAX_UPCOMING_ACTIVITY_ITEMS}"
+    )
+
+    items = []
+    for event in events:
+        date_value = event.get("StartDateTime") or event.get("ActivityDate")
+        items.append({
+            "kind": "event",
+            "title": event.get("Subject") or "Untitled event",
+            "date": _format_sf_datetime(date_value),
+            "sort": date_value or FALLBACK_SORT_DATETIME,
+        })
+    for task in tasks:
+        subtype = (task.get("TaskSubtype") or "task").lower()
+        items.append({
+            "kind": subtype,
+            "title": task.get("Subject") or "Untitled task",
+            "date": _format_sf_datetime(task.get("ActivityDate")),
+            "sort": task.get("ActivityDate") or FALLBACK_SORT_DATETIME,
+        })
+
+    if not items:
+        return "You have no upcoming events, calls, or emails in Salesforce."
+
+    items.sort(key=lambda x: _activity_sort_key(x["sort"]))
+    top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
+    lines = []
+    for item in top_items:
+        if item["date"] == "date not set":
+            lines.append(f"{item['kind'].title()}: {item['title']} (date not specified)")
+        else:
+            lines.append(f"{item['kind'].title()}: {item['title']} on {item['date']}")
+    if len(items) > len(top_items):
+        intro = f"You have {len(items)} upcoming activities in Salesforce. Here are the next {len(top_items)}: "
+    else:
+        intro = f"You have {len(top_items)} upcoming activities in Salesforce: "
+    return intro + ". ".join(lines) + "."
+
+
 def _sf_account_summary(account_name: str) -> str:
     """Query Salesforce for an account and return a voice-ready summary.
     Falls back to fuzzy matching if exact search returns nothing.
@@ -255,6 +412,39 @@ def _generate_response(text: str):
     t = text.lower()
     start = time.time()
     sf_connected = get_sf_token() is not None
+
+    contact_match = re.search(CONTACT_QUERY_PATTERN, t)
+    if contact_match:
+        account_name = _normalize_account_name(contact_match.group(1))
+        if not account_name:
+            return (
+                "Please tell me which account you want the contact for.",
+                "account_contact_lookup",
+                0.7,
+                round(time.time() - start, 2),
+            )
+        if sf_connected:
+            summary = _sf_account_contact_summary(account_name)
+            if summary:
+                return summary, "account_contact_lookup", 0.96, round(time.time() - start, 2)
+        return (
+            "I can pull account contacts from Salesforce after you connect at /salesforce/login.",
+            "account_contact_lookup",
+            0.7,
+            round(time.time() - start, 2),
+        )
+
+    if re.search(UPCOMING_ACTIVITY_QUERY_PATTERN, t):
+        if sf_connected:
+            summary = _sf_upcoming_activity_summary()
+            if summary:
+                return summary, "upcoming_activity", 0.95, round(time.time() - start, 2)
+        return (
+            "I can read your upcoming events, calls, and emails once Salesforce is connected at /salesforce/login.",
+            "upcoming_activity",
+            0.7,
+            round(time.time() - start, 2),
+        )
 
     account_match = re.search(
         r'(?:brief(?:ing)?(?:\s+me)?(?:\s+on)?|tell(?:\s+me)?(?:\s+about)?|info(?:rmation)?(?:\s+on)?|about|pull|what.*know.*about)\s+(.+?)\s*(?:\?|$)',
