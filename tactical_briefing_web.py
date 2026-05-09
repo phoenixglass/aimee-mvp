@@ -125,91 +125,179 @@ def sf_create(obj_type: str, data: dict):
     return None
 
 
+def _escape_soql(value: str) -> str:
+    return value.replace("\\", "\\\\").replace("'", "\\'")
+
+
 # ── Voice intelligence ─────────────────────────────────────────────────────────
 
-def _generate_response(text):
-    """Match text to intent and return a response."""
+def _sf_account_summary(account_name: str) -> str:
+    """Query Salesforce for an account and return a voice-ready summary."""
+    safe = _escape_soql(account_name)
+    records = sf_query(
+        f"SELECT Name, Phone, BillingCity, BillingState, Industry, AnnualRevenue, Description "
+        f"FROM Account WHERE Name LIKE '%{safe}%' LIMIT 3"
+    )
+    if not records:
+        return None
+
+    acct = records[0]
+    name     = acct.get("Name", account_name)
+    city     = acct.get("BillingCity") or ""
+    state    = acct.get("BillingState") or ""
+    phone    = acct.get("Phone") or "no phone on file"
+    industry = acct.get("Industry") or "unknown industry"
+    revenue  = acct.get("AnnualRevenue")
+    desc     = acct.get("Description") or ""
+    location = f"{city}, {state}".strip(", ") or "location not listed"
+    revenue_str = f"${revenue:,.0f} annual revenue" if revenue else "revenue not listed"
+
+    summary = (
+        f"{name} is a {industry} account located in {location}. "
+        f"Phone: {phone}. {revenue_str}."
+    )
+    if desc:
+        summary += f" Notes: {desc[:150]}."
+    if len(records) > 1:
+        others = ", ".join(r.get("Name", "") for r in records[1:])
+        summary += f" Similar accounts also found: {others}."
+    return summary
+
+
+def _sf_pipeline_summary() -> str:
+    """Query Salesforce for accounts and return a pipeline summary."""
+    records = sf_query(
+        "SELECT Name, AnnualRevenue, BillingCity FROM Account ORDER BY AnnualRevenue DESC NULLS LAST LIMIT 10"
+    )
+    if not records:
+        return None
+    total = sum(r.get("AnnualRevenue") or 0 for r in records)
+    top = ", ".join(
+        f"{r.get('Name', 'Unknown')} (${r['AnnualRevenue']:,.0f})"
+        for r in records[:3] if r.get("AnnualRevenue")
+    )
+    return (
+        f"Salesforce shows {len(records)} accounts with a combined annual revenue of ${total:,.0f}. "
+        + (f"Top accounts: {top}." if top else "")
+    )
+
+
+def _generate_response(text: str):
+    """Match text to intent, query Salesforce if connected, return a response."""
     t = text.lower()
     start = time.time()
+    sf_connected = get_sf_token() is not None
+
+    # Account briefing - try Salesforce first
+    account_match = re.search(
+        r'(?:brief(?:ing)?(?:\s+me)?(?:\s+on)?|tell(?:\s+me)?(?:\s+about)?|info(?:rmation)?(?:\s+on)?|about|pull|what.*know.*about)\s+(.+?)\s*(?:\?|$)',
+        t
+    )
+    if account_match:
+        account_name = account_match.group(1).strip()
+        if sf_connected:
+            sf_summary = _sf_account_summary(account_name)
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
 
     if re.search(r'today|daily|focus|priorit', t):
-        response = ("Your top priorities today: LaBella's Fine Wine - Sofia is overdue at day 23 "
-                    "of the 21-day cycle. Barcelona Wine Bar - Chef Misha needs Rioja samples. "
-                    "Spiga Wine Bar - Dan Camporeale expects an allocation call. Strike with precision.")
-        intent, score = "daily_briefing", 0.92
+        if sf_connected:
+            records = sf_query(
+                "SELECT Name, BillingCity FROM Account ORDER BY LastModifiedDate DESC LIMIT 5"
+            )
+            if records:
+                names = ", ".join(r.get("Name", "") for r in records[:3])
+                response = (
+                    f"Based on your Salesforce data, your most recently active accounts are: {names}. "
+                    "Review these accounts and follow up on any open opportunities today."
+                )
+                return response, "daily_briefing", 0.92, round(time.time() - start, 2)
+        response = (
+            "Your top priorities today: LaBella's Fine Wine - Sofia is overdue at day 23 "
+            "of the 21-day cycle. Barcelona Wine Bar - Chef Misha needs Rioja samples. "
+            "Spiga Wine Bar - Dan Camporeale expects an allocation call."
+        )
+        return response, "daily_briefing", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'barcelona', t):
-        response = ("Barcelona Wine Bar Norwalk: Spanish natural wine program expanding. "
-                    "Chef Misha Ryklin is your key contact. They're running low on rare Rioja. "
-                    "Priority: bring samples this week. Annual spend estimate $35,000.")
-        intent, score = "account_briefing", 0.88
+    if re.search(r'barcelona', t):
+        if sf_connected:
+            sf_summary = _sf_account_summary("Barcelona")
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
+        return ("Barcelona Wine Bar Norwalk: Chef Misha Ryklin is your key contact. "
+                "Running low on rare Rioja. Annual spend estimate $35,000."), "account_briefing", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'spiga', t):
-        response = ("Spiga Wine Bar: Dan Camporeale is your contact. Italian-focused program "
-                    "with strong Barolo and Brunello interest. They're expecting an allocation call "
-                    "for premium bottles. Annual spend estimate $28,000.")
-        intent, score = "account_briefing", 0.88
+    if re.search(r'spiga', t):
+        if sf_connected:
+            sf_summary = _sf_account_summary("Spiga")
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
+        return ("Spiga Wine Bar: Dan Camporeale is your contact. Italian-focused program. "
+                "Annual spend estimate $28,000."), "account_briefing", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'labella|la bella', t):
-        response = ("LaBella's Fine Wine and Spirits, Riverside. Sofia Martinez is your contact. "
-                    "Bordeaux allocation meeting is overdue - you're at day 23 of a 21-day cycle. "
-                    "Wine Warehouse is circling. Call Sofia today. Annual value $24,000.")
-        intent, score = "account_briefing", 0.88
+    if re.search(r'labella|la bella', t):
+        if sf_connected:
+            sf_summary = _sf_account_summary("LaBella")
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
+        return ("LaBella's Fine Wine, Riverside. Sofia Martinez is your contact. "
+                "Bordeaux allocation overdue - day 23 of 21-day cycle. Call today."), "account_briefing", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'bin.?100', t):
-        response = ("Bin 100 Milford: Strong Napa Cab program. Key opportunity: their Italian section "
-                    "is underdeveloped. Recommend Barolo and Amarone to fill the gap. Annual spend estimate $22,000.")
-        intent, score = "account_briefing", 0.88
+    if re.search(r'bin.?100', t):
+        if sf_connected:
+            sf_summary = _sf_account_summary("Bin 100")
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
+        return ("Bin 100 Milford: Strong Napa Cab program. Italian section underdeveloped. "
+                "Annual spend estimate $22,000."), "account_briefing", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'\belm\b|new canaan', t):
-        response = ("ELM New Canaan: Farm-to-table focused with strong natural wine interest. "
-                    "Looking for organic and biodynamic options. Annual spend estimate $18,000.")
-        intent, score = "account_briefing", 0.85
+    if re.search(r'\belm\b|new canaan', t):
+        if sf_connected:
+            sf_summary = _sf_account_summary("ELM")
+            if sf_summary:
+                return sf_summary, "account_briefing", 0.95, round(time.time() - start, 2)
+        return ("ELM New Canaan: Farm-to-table, strong natural wine interest. "
+                "Annual spend estimate $18,000."), "account_briefing", 0.85, round(time.time() - start, 2)
 
-    elif re.search(r'pipeline|total value', t):
-        response = ("Total pipeline across 17 Fairfield County accounts is approximately $450,000 annually. "
-                    "Top accounts: Barcelona Wine Bar $35,000, Spiga $28,000, LaBella's $24,000.")
-        intent, score = "pipeline_status", 0.90
+    if re.search(r'pipeline|total value|all accounts', t):
+        if sf_connected:
+            sf_summary = _sf_pipeline_summary()
+            if sf_summary:
+                return sf_summary, "pipeline_status", 0.95, round(time.time() - start, 2)
+        return ("Total pipeline across 17 Fairfield County accounts is approximately $450,000 annually. "
+                "Top accounts: Barcelona $35,000, Spiga $28,000, LaBella's $24,000."), "pipeline_status", 0.88, round(time.time() - start, 2)
 
-    elif re.search(r'urgent|hot|immediate', t):
-        response = ("Three urgent priorities: One - LaBella's, Sofia overdue at day 23. "
-                    "Two - Barcelona Wine Bar, Rioja samples needed for Chef Misha. "
-                    "Three - Spiga Wine Bar, Dan Camporeale expects allocation call. Act now.")
-        intent, score = "urgent_priorities", 0.91
+    if re.search(r'urgent|hot|immediate', t):
+        return ("Three urgent priorities: LaBella's - Sofia overdue at day 23. "
+                "Barcelona Wine Bar - Rioja samples needed for Chef Misha. "
+                "Spiga Wine Bar - Dan Camporeale expects allocation call."), "urgent_priorities", 0.91, round(time.time() - start, 2)
 
-    elif re.search(r'pitch|talking point|meeting', t):
+    if re.search(r'pitch|talking point|meeting', t):
         m = re.search(r'(?:for|about)\s+(.+?)(?:\s+meeting)?$', t)
         account = m.group(1) if m else "your account"
-        response = (f"Tactical pitch for {account}: Lead with allocation scarcity to create urgency. "
-                    "Reference their current program gaps. Offer exclusive access to limited bottles. "
-                    "Close with a specific ask - a purchase order or tasting appointment.")
-        intent, score = "generate_pitch", 0.85
+        return (f"Tactical pitch for {account}: Lead with allocation scarcity. "
+                "Reference program gaps. Offer exclusive access. "
+                "Close with a specific ask."), "generate_pitch", 0.85, round(time.time() - start, 2)
 
-    elif re.search(r'missing|gap|wine list', t):
+    if re.search(r'missing|gap|wine list', t):
         m = re.search(r'(?:from|for|at)\s+(.+?)(?:\'s)?\s*(?:wine list|list)?$', t)
         account = m.group(1) if m else "that account"
-        response = (f"Gap analysis for {account}: They're likely missing premium Burgundy, "
-                    "Super Tuscan options, and high-end domestic Pinot Noir. "
-                    "These represent your best upsell opportunities.")
-        intent, score = "gap_analysis", 0.83
+        return (f"Gap analysis for {account}: Likely missing premium Burgundy, "
+                "Super Tuscan options, and high-end domestic Pinot Noir."), "gap_analysis", 0.83, round(time.time() - start, 2)
 
-    elif re.search(r'distributor|connecticut', t):
-        response = ("Key Connecticut distributors: Brescome Barton is the dominant player. "
-                    "Wine Warehouse is aggressive in Fairfield County. "
-                    "Your competitive advantage is personalized service and allocation access.")
-        intent, score = "distributor_info", 0.82
+    if re.search(r'distributor|connecticut', t):
+        return ("Key Connecticut distributors: Brescome Barton dominates. "
+                "Wine Warehouse is aggressive in Fairfield County. "
+                "Your edge is personalized service and allocation access."), "distributor_info", 0.82, round(time.time() - start, 2)
 
-    else:
-        response = ("I'm Aimee, your Connecticut wine market intelligence assistant. "
-                    "Ask me about account briefings, daily priorities, pipeline status, "
-                    "urgent accounts, or tactical pitches. Try asking about Barcelona Wine Bar, Spiga, or LaBella's.")
-        intent, score = "default", 0.5
-
-    return response, intent, score, round(time.time() - start, 2)
+    return ("I'm Aimee, your Connecticut wine market intelligence assistant. "
+            "Ask about account briefings, daily priorities, pipeline, or pitches. "
+            + ("Salesforce is connected - ask me to pull any account by name!" if sf_connected
+               else "Connect Salesforce at /salesforce/login for live account data.")
+            ), "default", 0.5, round(time.time() - start, 2)
 
 
 def _elevenlabs_tts(text):
-    """Generate speech via ElevenLabs. Returns audio bytes or None."""
     key = os.getenv("ELEVENLABS_API_KEY")
     if not key:
         return None
@@ -264,7 +352,7 @@ def process_text():
         "intent": intent,
         "score": score,
         "processing_time": str(processing_time),
-        "model_used": "aimee_intelligence",
+        "model_used": "aimee+salesforce" if get_sf_token() else "aimee_intelligence",
     })
 
 
@@ -272,12 +360,10 @@ def process_text():
 def upload_audio():
     if "audio" not in request.files:
         return jsonify({"error": "No audio file provided"}), 400
-
     audio_file = request.files["audio"]
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
         audio_file.save(tmp.name)
         tmp_path = tmp.name
-
     try:
         import whisper
         model = whisper.load_model("base")
@@ -290,9 +376,7 @@ def upload_audio():
             os.unlink(tmp_path)
         except Exception:
             pass
-
     response_text, intent, score, processing_time = _generate_response(transcript)
-
     audio_url = None
     audio_bytes = _elevenlabs_tts(response_text)
     if audio_bytes:
@@ -300,7 +384,6 @@ def upload_audio():
         with open(os.path.join("uploads", filename), "wb") as f:
             f.write(audio_bytes)
         audio_url = f"/audio/{filename}"
-
     return jsonify({
         "transcript": transcript,
         "response_text": response_text,
@@ -317,7 +400,7 @@ def serve_audio(filename):
     return send_from_directory("uploads", filename)
 
 
-# ── OAuth Web Server flow ──────────────────────────────────────────────────────
+# ── OAuth Web Server flow ─────────────────────────────────────────────────────
 
 @app.route("/salesforce/login")
 def sf_login():
@@ -335,11 +418,9 @@ def sf_login():
         "scope":         "api refresh_token offline_access",
         "state":         state,
     }
-    auth_url = (
-        f"https://{SF_DOMAIN}.salesforce.com/services/oauth2/authorize?"
-        + urlencode(params)
+    return redirect(
+        f"https://{SF_DOMAIN}.salesforce.com/services/oauth2/authorize?" + urlencode(params)
     )
-    return redirect(auth_url)
 
 
 @app.route("/salesforce/callback")
@@ -387,10 +468,6 @@ def sf_logout():
 
 
 # ── Salesforce routes ──────────────────────────────────────────────────────────
-
-def _escape_soql(value: str) -> str:
-    return value.replace("\\", "\\\\").replace("'", "\\'")
-
 
 @app.route("/salesforce/account", methods=["POST"])
 def sf_account():
