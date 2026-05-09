@@ -16,6 +16,7 @@ import difflib
 import secrets
 import tempfile
 from datetime import datetime
+from typing import Optional
 from urllib.parse import urlencode
 
 from flask import Flask, request, jsonify, redirect, session, send_from_directory, render_template
@@ -192,7 +193,8 @@ def _fuzzy_find_account(spoken_name: str) -> str:
 
 # ── Voice intelligence ─────────────────────────────────────────────────────────
 
-def _find_account_record(account_name: str):
+def _find_account_record(account_name: str) -> Optional[dict]:
+    """Return the best matching Salesforce account record (Id, Name) for the input name."""
     safe = _escape_soql(account_name)
     records = sf_query(
         f"SELECT Id, Name FROM Account WHERE Name LIKE '%{safe}%' ORDER BY LastModifiedDate DESC LIMIT 3"
@@ -228,12 +230,14 @@ def _format_sf_datetime(value: str) -> str:
 
 
 def _normalize_account_name(value: str) -> str:
+    """Trim punctuation and trailing CRM context phrases from spoken account names."""
     name = value.strip(" .?!,'\"")
     name = re.sub(r"\s+(?:in|on)\s+(?:salesforce|crm|the system)\s*$", "", name, flags=re.IGNORECASE)
     return name.strip()
 
 
-def _sf_account_contact_summary(account_name: str) -> str:
+def _sf_account_contact_summary(account_name: str) -> Optional[str]:
+    """Return a voice summary of the primary Salesforce contact for the given account."""
     account = _find_account_record(account_name)
     if not account:
         return None
@@ -264,6 +268,7 @@ def _sf_account_contact_summary(account_name: str) -> str:
 
 
 def _sf_upcoming_activity_summary() -> str:
+    """Return a voice summary of upcoming Salesforce events and open call/email tasks."""
     events = sf_query(
         "SELECT Subject, StartDateTime, ActivityDate "
         f"FROM Event WHERE StartDateTime >= TODAY ORDER BY StartDateTime ASC LIMIT {MAX_UPCOMING_ACTIVITY_ITEMS}"
@@ -300,7 +305,10 @@ def _sf_upcoming_activity_summary() -> str:
     items.sort(key=lambda x: x["sort"])
     top_items = items[:MAX_UPCOMING_ACTIVITY_ITEMS]
     lines = [f"{item['kind'].title()}: {item['title']} on {item['date']}" for item in top_items]
-    return f"You have {len(items)} upcoming activities in Salesforce. " + ". ".join(lines) + "."
+    return (
+        f"You have {len(items)} upcoming activities in Salesforce. "
+        f"Here are the next {len(top_items)}: " + ". ".join(lines) + "."
+    )
 
 
 def _sf_account_summary(account_name: str) -> str:
